@@ -1,0 +1,25 @@
+/*
+ * Header
+ */
+.header {
+    background: #e8e8e8;
+    color: #656565;
+    padding: 0;
+    line-height: 2;
+    margin-bottom: 10px;
+}
+.header a {
+    color: #000;
+    text-decoration: underline;
+}
+.header a:hover {
+    color: #656565;
+}
+/*
+ * Media-Queries
+ */
+@media(min-width:768px) {
+    body {
+        background: url('../images/background.jpg') top center no-repeat;
+    }
+}

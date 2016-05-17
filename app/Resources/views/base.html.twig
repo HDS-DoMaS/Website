@@ -4,14 +4,31 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}DoMaS{% endblock %}</title>
         <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
         <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet" type="text/css" />
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="header container-fluid">
+            <div class="container">
+                {% block header %}
+                    <div class="pull-left">Angemeldet als: Student</div>
+                    <div class="pull-right"><a href="#">Logout</a></div>
+
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="body container">
+            {% block body %}{% endblock %}
+        </div>
+
+        <div class="footer container">
+            {% block footer %}{% endblock %}
+        </div>
+
         {% block javascripts %}{% endblock %}
         <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
