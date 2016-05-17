@@ -10,7 +10,6 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/")
-     * @Route("/DoMaS/")
      */
     public function indexAction(Request $request)
     {

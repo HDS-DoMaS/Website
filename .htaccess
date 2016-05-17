@@ -1,0 +1,29 @@
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Explicitly disable rewriting for front controllers
+    RewriteRule ^/web/app_dev.php - [L]
+    RewriteRule ^/web/app.php - [L]
+
+    # Fix the bundles folder
+    RewriteRule ^bundles/(.*)$ /web/bundles/$1  [QSA,L]
+    RewriteRule ^assets/(.*)$ /web/assets/$1  [QSA,L]
+
+    # nowottnik.com
+    RewriteCond %{HTTP_HOST} ^nowottnik.com$ [NC,OR]
+    RewriteCond %{HTTP_HOST} ^www.nowottnik.com$
+    RewriteRule ^$ /DoMaS/web/app_dev.php [L,R]
+
+    RewriteCond %{HTTP_HOST} ^nowottnik.com$ [NC,OR]
+    RewriteCond %{HTTP_HOST} ^www.nowottnik.com$
+    RewriteCond %{REQUEST_FILENAME} !-f
+    #RewriteRule ^(.*)$ /DoMaS/web/app.php [QSA,L]
+    RewriteRule ^(.*)$ /DoMaS/web/app_dev.php [QSA,L]
+
+    # localhost
+    RewriteCond %{REQUEST_FILENAME} !-f
+    #RewriteRule ^(.*)$ /web/app.php [QSA,L]
+    RewriteRule ^(.*)$ /web/app_dev.php [QSA,L]
+</IfModule>

@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 class LuckyController extends Controller {
     /**
      * @Route("/lucky/number/{count}", defaults={"count" = 1})
-     * @Route("/DoMaS/lucky/number/{count}", defaults={"count" = 1})
      */
     public function numberAction($count) {
         $numbers = array();
