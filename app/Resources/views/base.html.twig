@@ -10,11 +10,11 @@
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}" />
     </head>
-    <body>
+    <body class="{% block bodyclass %}{% endblock %}">
         <div class="header container-fluid">
             <div class="container">
                 {% block header %}
-                    <div class="pull-left">Angemeldet als: Student</div>
+                    <div class="pull-left">Angemeldet als: {% block username %}Student{% endblock %}</div>
                     <div class="pull-right"><a href="#">Logout</a></div>
 
                 {% endblock %}
