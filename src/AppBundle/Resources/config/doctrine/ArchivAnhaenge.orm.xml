@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\ArchivAnhaenge" table="Archiv_Anhaenge">
+    <indexes>
+      <index name="FK_Archiv_ID" columns="Archiv_ID"/>
+      <index name="FK_Datei_Kategorie_ID" columns="Datei_Kategorie_ID"/>
+    </indexes>
+    <id name="archivAnhangId" type="integer" column="Archiv_Anhang_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="archivId" type="integer" column="Archiv_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="dateiKategorieId" type="integer" column="Datei_Kategorie_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="pfad" type="string" column="Pfad" length="80" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="versionsnummer" type="string" column="Versionsnummer" length="40" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+  </entity>
+</doctrine-mapping>
