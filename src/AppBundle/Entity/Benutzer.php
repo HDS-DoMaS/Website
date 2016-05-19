@@ -2,39 +2,30 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Benutzer
- *
- * @ORM\Table(name="Benutzer")
- * @ORM\Entity
  */
 class Benutzer
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="Vorname", type="string", length=40, nullable=false)
      */
     private $vorname;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Nachname", type="string", length=40, nullable=false)
      */
     private $nachname;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Benutzer_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $benutzerId;
 
+    /**
+     * @var \AppBundle\Entity\Archivierung
+     */
+    private $archivierung;
 
 
     /**
@@ -94,4 +85,29 @@ class Benutzer
     {
         return $this->benutzerId;
     }
+
+    /**
+     * Set archivierung
+     *
+     * @param \AppBundle\Entity\Archivierung $archivierung
+     *
+     * @return Benutzer
+     */
+    public function setArchivierung(\AppBundle\Entity\Archivierung $archivierung = null)
+    {
+        $this->archivierung = $archivierung;
+
+        return $this;
+    }
+
+    /**
+     * Get archivierung
+     *
+     * @return \AppBundle\Entity\Archivierung
+     */
+    public function getArchivierung()
+    {
+        return $this->archivierung;
+    }
 }
+

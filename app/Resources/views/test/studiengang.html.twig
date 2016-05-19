@@ -1,0 +1,29 @@
+{% extends '/test/index.html.twig' %}
+
+{% block name %}Studiengang{% endblock %}
+
+{% block attribute %}
+    <dt>ID</dt>
+    <dd>{{ studiengang.getStudiengangId() }}</dd>
+
+    <dt>Bezeichnung</dt>
+    <dd>{{ studiengang.getBezeichnung() }}</dd>
+
+    <dt>FachbereichId</dt>
+    <dd>{{ studiengang.getFachbereichId() }}</dd>
+
+    <dt></dt>
+    <dd>
+        <dl>
+            <dt>Fachbereich</dt>
+            <dd></dd>
+
+            <dt>ID</dt>
+            <dd>{{ studiengang.getFachbereich().getFachbereichId() }}</dd>
+
+            <dt>Bezeichnung</dt>
+            <dd>{{ studiengang.getFachbereich().getBezeichnung() }}</dd>
+        </dl>
+    </dd>
+{% endblock %}
+

@@ -1,6 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{ fachbereich.getBezeichnung() }}
+    <dl class="dl-horizontal">
+        <dt>{% block name %}{% endblock %}</dt>
+        <dd></dd>
+
+        {% block attribute %}{% endblock %}
+    </dl>
 {% endblock %}
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\Studiengaenge" table="Studiengaenge">
+  <entity name="AppBundle\Entity\Studiengang" table="Studiengaenge">
     <indexes>
       <index name="FK_Fachbereich_ID" columns="Fachbereich_ID"/>
     </indexes>
@@ -17,5 +17,9 @@
         <option name="fixed"/>
       </options>
     </field>
+    <one-to-one field="archivierung" target-entity="Archivierung" mapped-by="studiengang" />
+    <one-to-one field="fachbereich" target-entity="Fachbereich" inversed-by="studiengang">
+      <join-column name="Fachbereich_ID" referenced-column-name="Fachbereich_ID" />
+    </one-to-one>
   </entity>
 </doctrine-mapping>

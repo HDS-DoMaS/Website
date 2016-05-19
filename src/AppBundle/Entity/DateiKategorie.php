@@ -2,32 +2,25 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * DateiKategorien
- *
- * @ORM\Table(name="Datei_Kategorien")
- * @ORM\Entity
+ * DateiKategorie
  */
-class DateiKategorien
+class DateiKategorie
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Datei_Kategorie_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $dateiKategorieId;
 
+    /**
+     * @var \AppBundle\Entity\ArchivAnhang
+     */
+    private $archivAnhang;
 
 
     /**
@@ -35,7 +28,7 @@ class DateiKategorien
      *
      * @param string $bezeichnung
      *
-     * @return DateiKategorien
+     * @return DateiKategorie
      */
     public function setBezeichnung($bezeichnung)
     {
@@ -63,4 +56,29 @@ class DateiKategorien
     {
         return $this->dateiKategorieId;
     }
+
+    /**
+     * Set archivAnhang
+     *
+     * @param \AppBundle\Entity\ArchivAnhang $archivAnhang
+     *
+     * @return DateiKategorie
+     */
+    public function setArchivAnhang(\AppBundle\Entity\ArchivAnhang $archivAnhang = null)
+    {
+        $this->archivAnhang = $archivAnhang;
+
+        return $this;
+    }
+
+    /**
+     * Get archivAnhang
+     *
+     * @return \AppBundle\Entity\ArchivAnhang
+     */
+    public function getArchivAnhang()
+    {
+        return $this->archivAnhang;
+    }
 }
+

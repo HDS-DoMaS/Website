@@ -1,0 +1,12 @@
+{% extends '/test/index.html.twig' %}
+
+{% block name %}Fachbereich{% endblock %}
+
+{% block attribute %}
+    <dt>ID</dt>
+    <dd>{{ fachbereich.getFachbereichId() }}</dd>
+
+    <dt>Bezeichnung</dt>
+    <dd>{{ fachbereich.getBezeichnung() }}</dd>
+{% endblock %}
+

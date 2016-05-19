@@ -15,9 +15,12 @@
         <div class="header container-fluid">
             <div class="container">
                 {% block header %}
-                    <div class="pull-left">Angemeldet als: {% block username %}Student{% endblock %}</div>
-                    <div class="pull-right"><a href="#">Logout</a></div>
-
+                    {% if is_granted("ROLE") %}
+                        <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
+                        <div class="pull-right"><a href="#">Logout</a></div>
+                    {% else %}
+                        <div class="pull-right"><a href="#">Login</a></div>
+                    {% endif %}
                 {% endblock %}
             </div>
         </div>

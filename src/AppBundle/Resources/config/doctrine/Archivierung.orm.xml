@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="AppBundle\Entity\Archivierung" table="Archivierungen">
+    <indexes>
+      <index name="FK_Studiengang_ID" columns="Studiengang_ID"/>
+      <index name="FK_Fachbereich_ID" columns="Fachbereich_ID"/>
+      <index name="FK_Benutzer_ID" columns="Benutzer_ID"/>
+      <index name="FK_Archiv_Kategorie_ID" columns="Archiv_Kategorie_ID"/>
+    </indexes>
+    <id name="archivId" type="integer" column="Archiv_ID">
+      <generator strategy="IDENTITY"/>
+    </id>
+    <field name="studiengangId" type="integer" column="Studiengang_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="fachbereichId" type="integer" column="Fachbereich_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="benutzerId" type="integer" column="Benutzer_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="archivKategorieId" type="integer" column="Archiv_Kategorie_ID" nullable="false">
+      <options>
+        <option name="unsigned"/>
+      </options>
+    </field>
+    <field name="titel" type="string" column="Titel" length="255" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="sichtbarkeit" type="boolean" column="Sichtbarkeit" nullable="false"/>
+    <field name="beschreibung" type="string" column="Beschreibung" length="1023" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="abgabedatum" type="date" column="Abgabedatum" nullable="true"/>
+    <field name="erstelldatum" type="date" column="Erstelldatum" nullable="false"/>
+    <field name="anmerkung" type="string" column="Anmerkung" length="1023" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <one-to-one field="studiengang" target-entity="Studiengang" inversed-by="archivierung">
+      <join-column name="Studiengang_ID" referenced-column-name="Studiengang_ID" />
+    </one-to-one>
+    <one-to-one field="fachbereich" target-entity="Fachbereich" inversed-by="archivierung">
+      <join-column name="Fachbereich_ID" referenced-column-name="Fachbereich_ID" />
+    </one-to-one>
+    <one-to-one field="benutzer" target-entity="Benutzer" inversed-by="archivierung">
+      <join-column name="Benutzer_ID" referenced-column-name="Benutzer_ID" />
+    </one-to-one>
+    <one-to-one field="kategorie" target-entity="ArchivKategorie" inversed-by="archivierung">
+      <join-column name="Archiv_Kategorie_ID" referenced-column-name="Archiv_Kategorie_ID" />
+    </one-to-one>
+    <many-to-many field="keywords" inversed-by="archivierungen" target-entity="Keyword">
+      <join-table name="Archiv_Keywords">
+        <join-columns>
+          <join-column name="Archiv_ID" referenced-column-name="Archiv_ID" />
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="Keyword_ID" referenced-column-name="Keyword_ID" />
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="zusaetze" inversed-by="archivierungen" target-entity="ArchivZusatz">
+      <join-table name="Archiv_Zusatz_Referenzen">
+        <join-columns>
+          <join-column name="Archiv_ID" referenced-column-name="Archiv_ID" />
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="Archiv_Zusatz_ID" referenced-column-name="Archiv_Zusatz_ID" />
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="referenzen" inversed-by="referenziert" target-entity="Archivierung">
+      <join-table name="Archiv_Referenzen">
+        <join-columns>
+          <join-column name="Eltern_Archiv_ID" referenced-column-name="Archiv_ID" />
+        </join-columns>
+        <inverse-join-columns>
+          <join-column name="Kind_Archiv_ID" referenced-column-name="Archiv_ID" />
+        </inverse-join-columns>
+      </join-table>
+    </many-to-many>
+    <many-to-many field="referenziert" mapped-by="referenzen" target-entity="Archivierung" />
+    <one-to-many field="anhaenge" target-entity="ArchivAnhang" mapped-by="archivierung" />
+  </entity>
+</doctrine-mapping>

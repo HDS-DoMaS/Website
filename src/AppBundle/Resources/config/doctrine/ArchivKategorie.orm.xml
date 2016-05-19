@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\Fachbereiche" table="Fachbereiche">
-    <id name="fachbereichId" type="integer" column="Fachbereich_ID">
+  <entity name="AppBundle\Entity\ArchivKategorie" table="Archiv_Kategorien">
+    <id name="archivKategorieId" type="integer" column="Archiv_Kategorie_ID">
       <generator strategy="IDENTITY"/>
     </id>
     <field name="bezeichnung" type="string" column="Bezeichnung" length="40" nullable="false">
@@ -9,5 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
+    <one-to-one field="archivierung" target-entity="Archivierung" mapped-by="kategorie" />
+    <one-to-many field="felder" target-entity="ArchivKategorieFeld" mapped-by="archivKategorie" />
   </entity>
 </doctrine-mapping>

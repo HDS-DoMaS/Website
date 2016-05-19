@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\DateiKategorien" table="Datei_Kategorien">
-    <id name="dateiKategorieId" type="integer" column="Datei_Kategorie_ID">
+  <entity name="AppBundle\Entity\Keyword" table="Keywords">
+    <id name="keywordId" type="integer" column="Keyword_ID">
       <generator strategy="IDENTITY"/>
     </id>
-    <field name="bezeichnung" type="string" column="Bezeichnung" length="40" nullable="false">
+    <field name="keyword" type="string" column="Keyword" length="40" nullable="false">
       <options>
         <option name="fixed"/>
       </options>
     </field>
+    <many-to-many field="archivierungen" mapped-by="keywords" target-entity="Archivierung"/>
   </entity>
 </doctrine-mapping>

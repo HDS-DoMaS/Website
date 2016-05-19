@@ -2,53 +2,45 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ArchivAnhaenge
- *
- * @ORM\Table(name="Archiv_Anhaenge", indexes={@ORM\Index(name="FK_Archiv_ID", columns={"Archiv_ID"}), @ORM\Index(name="FK_Datei_Kategorie_ID", columns={"Datei_Kategorie_ID"})})
- * @ORM\Entity
+ * ArchivAnhang
  */
-class ArchivAnhaenge
+class ArchivAnhang
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_ID", type="integer", nullable=false)
      */
     private $archivId;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Datei_Kategorie_ID", type="integer", nullable=false)
      */
     private $dateiKategorieId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Pfad", type="string", length=80, nullable=false)
      */
     private $pfad;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Versionsnummer", type="string", length=40, nullable=true)
      */
     private $versionsnummer;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_Anhang_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivAnhangId;
 
+    /**
+     * @var \AppBundle\Entity\DateiKategorie
+     */
+    private $dateiKategorie;
+
+    /**
+     * @var \AppBundle\Entity\Archivierung
+     */
+    private $archivierung;
 
 
     /**
@@ -56,7 +48,7 @@ class ArchivAnhaenge
      *
      * @param integer $archivId
      *
-     * @return ArchivAnhaenge
+     * @return ArchivAnhang
      */
     public function setArchivId($archivId)
     {
@@ -80,7 +72,7 @@ class ArchivAnhaenge
      *
      * @param integer $dateiKategorieId
      *
-     * @return ArchivAnhaenge
+     * @return ArchivAnhang
      */
     public function setDateiKategorieId($dateiKategorieId)
     {
@@ -104,7 +96,7 @@ class ArchivAnhaenge
      *
      * @param string $pfad
      *
-     * @return ArchivAnhaenge
+     * @return ArchivAnhang
      */
     public function setPfad($pfad)
     {
@@ -128,7 +120,7 @@ class ArchivAnhaenge
      *
      * @param string $versionsnummer
      *
-     * @return ArchivAnhaenge
+     * @return ArchivAnhang
      */
     public function setVersionsnummer($versionsnummer)
     {
@@ -156,4 +148,53 @@ class ArchivAnhaenge
     {
         return $this->archivAnhangId;
     }
+
+    /**
+     * Set dateiKategorie
+     *
+     * @param \AppBundle\Entity\DateiKategorie $dateiKategorie
+     *
+     * @return ArchivAnhang
+     */
+    public function setDateiKategorie(\AppBundle\Entity\DateiKategorie $dateiKategorie = null)
+    {
+        $this->dateiKategorie = $dateiKategorie;
+
+        return $this;
+    }
+
+    /**
+     * Get dateiKategorie
+     *
+     * @return \AppBundle\Entity\DateiKategorie
+     */
+    public function getDateiKategorie()
+    {
+        return $this->dateiKategorie;
+    }
+
+    /**
+     * Set archivierung
+     *
+     * @param \AppBundle\Entity\Archivierung $archivierung
+     *
+     * @return ArchivAnhang
+     */
+    public function setArchivierung(\AppBundle\Entity\Archivierung $archivierung = null)
+    {
+        $this->archivierung = $archivierung;
+
+        return $this;
+    }
+
+    /**
+     * Get archivierung
+     *
+     * @return \AppBundle\Entity\Archivierung
+     */
+    public function getArchivierung()
+    {
+        return $this->archivierung;
+    }
 }
+

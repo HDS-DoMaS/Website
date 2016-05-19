@@ -2,34 +2,20 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ArchivReferenzen
- *
- * @ORM\Table(name="Archiv_Referenzen", indexes={@ORM\Index(name="FK_Kind_Archiv_ID", columns={"Kind_Archiv_ID"})})
- * @ORM\Entity
+ * ArchivReferenz
  */
-class ArchivReferenzen
+class ArchivReferenz
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Eltern_Archiv_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $elternArchivId;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Kind_Archiv_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $kindArchivId;
-
 
 
     /**
@@ -37,7 +23,7 @@ class ArchivReferenzen
      *
      * @param integer $elternArchivId
      *
-     * @return ArchivReferenzen
+     * @return ArchivReferenz
      */
     public function setElternArchivId($elternArchivId)
     {
@@ -61,7 +47,7 @@ class ArchivReferenzen
      *
      * @param integer $kindArchivId
      *
-     * @return ArchivReferenzen
+     * @return ArchivReferenz
      */
     public function setKindArchivId($kindArchivId)
     {
@@ -80,3 +66,4 @@ class ArchivReferenzen
         return $this->kindArchivId;
     }
 }
+

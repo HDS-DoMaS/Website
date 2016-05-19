@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\ArchivKategorien" table="Archiv_Kategorien">
-    <id name="archivKategorieId" type="integer" column="Archiv_Kategorie_ID">
+  <entity name="AppBundle\Entity\ArchivZusatzKategorie" table="Archiv_Zusatz_Kategorien">
+    <id name="archivZusatzKategorieId" type="integer" column="Archiv_Zusatz_Kategorie_ID">
       <generator strategy="IDENTITY"/>
     </id>
     <field name="bezeichnung" type="string" column="Bezeichnung" length="40" nullable="false">
@@ -9,5 +9,7 @@
         <option name="fixed"/>
       </options>
     </field>
+    <field name="istNM" type="boolean" column="Ist_n_m" nullable="false"/>
+    <one-to-one field="zusatz" target-entity="ArchivZusatz" mapped-by="zusatzKategorie" />
   </entity>
 </doctrine-mapping>

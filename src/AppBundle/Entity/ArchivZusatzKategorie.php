@@ -2,39 +2,30 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ArchivZusatzKategorien
- *
- * @ORM\Table(name="Archiv_Zusatz_Kategorien")
- * @ORM\Entity
+ * ArchivZusatzKategorie
  */
-class ArchivZusatzKategorien
+class ArchivZusatzKategorie
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var boolean
-     *
-     * @ORM\Column(name="Ist_n_m", type="boolean", nullable=false)
      */
     private $istNM;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_Zusatz_Kategorie_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivZusatzKategorieId;
 
+    /**
+     * @var \AppBundle\Entity\ArchivZusatz
+     */
+    private $zusatz;
 
 
     /**
@@ -42,7 +33,7 @@ class ArchivZusatzKategorien
      *
      * @param string $bezeichnung
      *
-     * @return ArchivZusatzKategorien
+     * @return ArchivZusatzKategorie
      */
     public function setBezeichnung($bezeichnung)
     {
@@ -66,7 +57,7 @@ class ArchivZusatzKategorien
      *
      * @param boolean $istNM
      *
-     * @return ArchivZusatzKategorien
+     * @return ArchivZusatzKategorie
      */
     public function setIstNM($istNM)
     {
@@ -94,4 +85,29 @@ class ArchivZusatzKategorien
     {
         return $this->archivZusatzKategorieId;
     }
+
+    /**
+     * Set zusatz
+     *
+     * @param \AppBundle\Entity\ArchivZusatz $zusatz
+     *
+     * @return ArchivZusatzKategorie
+     */
+    public function setZusatz(\AppBundle\Entity\ArchivZusatz $zusatz = null)
+    {
+        $this->zusatz = $zusatz;
+
+        return $this;
+    }
+
+    /**
+     * Get zusatz
+     *
+     * @return \AppBundle\Entity\ArchivZusatz
+     */
+    public function getZusatz()
+    {
+        return $this->zusatz;
+    }
 }
+

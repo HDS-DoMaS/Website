@@ -2,41 +2,30 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * ArchivKategorieFelder
- *
- * @ORM\Table(name="Archiv_Kategorie_Felder")
- * @ORM\Entity
+ * ArchivKategorieFeld
  */
-class ArchivKategorieFelder
+class ArchivKategorieFeld
 {
     /**
      * @var string
-     *
-     * @ORM\Column(name="Default", type="string", length=80, nullable=true)
      */
     private $default;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_Kategorie_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $archivKategorieId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Feldname", type="string", length=40)
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $feldname;
 
+    /**
+     * @var \AppBundle\Entity\ArchivKategorie
+     */
+    private $archivKategorie;
 
 
     /**
@@ -44,7 +33,7 @@ class ArchivKategorieFelder
      *
      * @param string $default
      *
-     * @return ArchivKategorieFelder
+     * @return ArchivKategorieFeld
      */
     public function setDefault($default)
     {
@@ -68,7 +57,7 @@ class ArchivKategorieFelder
      *
      * @param integer $archivKategorieId
      *
-     * @return ArchivKategorieFelder
+     * @return ArchivKategorieFeld
      */
     public function setArchivKategorieId($archivKategorieId)
     {
@@ -92,7 +81,7 @@ class ArchivKategorieFelder
      *
      * @param string $feldname
      *
-     * @return ArchivKategorieFelder
+     * @return ArchivKategorieFeld
      */
     public function setFeldname($feldname)
     {
@@ -110,4 +99,29 @@ class ArchivKategorieFelder
     {
         return $this->feldname;
     }
+
+    /**
+     * Set archivKategorie
+     *
+     * @param \AppBundle\Entity\ArchivKategorie $archivKategorie
+     *
+     * @return ArchivKategorieFeld
+     */
+    public function setArchivKategorie(\AppBundle\Entity\ArchivKategorie $archivKategorie = null)
+    {
+        $this->archivKategorie = $archivKategorie;
+
+        return $this;
+    }
+
+    /**
+     * Get archivKategorie
+     *
+     * @return \AppBundle\Entity\ArchivKategorie
+     */
+    public function getArchivKategorie()
+    {
+        return $this->archivKategorie;
+    }
 }
+

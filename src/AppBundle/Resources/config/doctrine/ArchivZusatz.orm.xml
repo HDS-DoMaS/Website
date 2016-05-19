@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\ArchivZusaetze" table="Archiv_Zusaetze">
+  <entity name="AppBundle\Entity\ArchivZusatz" table="Archiv_Zusaetze">
     <indexes>
       <index name="FK_Archiv_Zusatz_Kategorie_ID" columns="Archiv_Zusatz_Kategorie_ID"/>
     </indexes>
@@ -22,5 +22,9 @@
         <option name="fixed"/>
       </options>
     </field>
+    <many-to-many field="archivierungen" mapped-by="zusaetze" target-entity="Archivierung"/>
+    <one-to-one field="zusatzKategorie" target-entity="ArchivZusatzKategorie" inversed-by="zusatz">
+      <join-column name="Zusatz_Kategorie_ID" referenced-column-name="Zusatz_Kategorie_ID" />
+    </one-to-one>
   </entity>
 </doctrine-mapping>
