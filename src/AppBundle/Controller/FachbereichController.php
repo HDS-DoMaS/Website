@@ -16,13 +16,8 @@ class FachbereichController extends Controller {
      * )
      */
     public function showFachbereicheAction() {
+        // Alle Fachbereiche holen
         $fachbereiche = $this->getFachbereiche();
-
-        if ($fachbereiche == null) {
-            throw $this->createNotFoundException(
-                'Keine Fachbereiche'
-            );
-        }
 
         return $this->render(
             'fachbereich/overview.html.twig',
@@ -37,13 +32,8 @@ class FachbereichController extends Controller {
      * )
      */
     public function showFachbereichAction($fachbereichId) {
+        // Fachbereich mit der Fachbereich_ID = $fachbereichId holen
         $fachbereich = $this->getFachbereich($fachbereichId);
-
-        if ($fachbereich == null) {
-            throw $this->createNotFoundException(
-                'Kein Fachbereich mit der id ' . $fachbereichId
-            );
-        }
 
         return $this->render(
             'fachbereich/detail.html.twig',
@@ -57,17 +47,29 @@ class FachbereichController extends Controller {
      * )
      */
     public function neuFachbereichAction(Request $request) {
+        // Neuer Fachbereich
         $fachbereich = new Fachbereich();
 
+        // Formular erstellen
         $form = $this->getFachbereichForm($fachbereich);
-
         $form->handleRequest($request);
 
+        // Wurde das Formular abgesendet?
         if ($form->isSubmitted()) {
 
+            // Ist das Forumlar valide?
             if($form->isValid()) {
+                // Fachbereich in der DB anlegen
                 $this->saveFachbereich($fachbereich);
-            } else {
+
+                // Benachrichtigung: gespeichert
+                $this->addFlash(
+                    'success',
+                    'Ihre Eingaben wurden erfolgreich gespeichert.'
+                );
+            }
+            // Formular enthält Fehler
+            else {
 
             }
         }
@@ -86,25 +88,31 @@ class FachbereichController extends Controller {
      * )
      */
     public function editFachbereichAction(Request $request, $fachbereichId) {
+        // Fachbereich mit der Fachbereich_ID = $fachbereichId holen
         $fachbereich = $this->getFachbereich($fachbereichId);
 
-        if (!$fachbereich) {
-            throw $this->createNotFoundException(
-                'Kein Fachbereich mit der id ' . $fachbereichId
-            );
-        }
-
+        // Formular erstellen
         $form = $this->getFachbereichForm($fachbereich);
-
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->saveFachbereich($fachbereich);
+        // Wurde das Formular abgesendet?
+        if ($form->isSubmitted()) {
 
-            $this->addFlash(
-                'success',
-                'Ihre Eingaben wurden erfolgreich gespeichert.'
-            );
+            // Ist das Forumlar valide?
+            if($form->isValid()) {
+                // Fachbereich in der DB anlegen
+                $this->saveFachbereich($fachbereich);
+
+                // Benachrichtigung: gespeichert
+                $this->addFlash(
+                    'success',
+                    'Ihre Eingaben wurden erfolgreich gespeichert.'
+                );
+            }
+            // Formular enthält Fehler
+            else {
+
+            }
         }
 
         return $this->render(
@@ -121,14 +129,10 @@ class FachbereichController extends Controller {
      * )
      */
     public function deleteFachbereichAction(Request $request, $fachbereichId) {
+        // Fachbereich mit der Fachbereich_ID = $fachbereichId holen
         $fachbereich = $this->getFachbereich($fachbereichId);
 
-        if (!$fachbereich) {
-            throw $this->createNotFoundException(
-                'Kein Fachbereich mit der id ' . $fachbereichId
-            );
-        }
-
+        // Benachrichtigung: wirklich löschen?
         $this->addFlash(
             'delete',
             'Möchten Sie den Fachbereich wirklich löschen?'
@@ -146,24 +150,20 @@ class FachbereichController extends Controller {
      * )
      */
     public function deleteConfirmFachbereichAction(Request $request, $fachbereichId) {
+        // Fachbereich mit der Fachbereich_ID = $fachbereichId holen
         $fachbereich = $this->getFachbereich($fachbereichId);
 
-        if (!$fachbereich) {
-            throw $this->createNotFoundException(
-                'Kein Fachbereich mit der id ' . $fachbereichId
-            );
-        }
-
+        // Fachbereich aus der DB entfernen
         $this->removeFachbereich($fachbereich);
 
+        // Benachrichtigung: Fachbereich gelöscht
         $this->addFlash(
             'success',
             'Der Fachbereich wurde gelöscht.'
         );
 
-
+        // URL für weiterleitung
         $url = $this->generateUrl("_showFachbereiche");
-
         return $this->redirect($url);
     }
 
@@ -180,10 +180,18 @@ class FachbereichController extends Controller {
             ->getRepository('AppBundle:Fachbereich')
             ->find($fachbereichId);
 
+        // Keinen Fachbereich gefunden
+        if (!$fachbereich) {
+            throw $this->createNotFoundException(
+                'Kein Fachbereich mit der id ' . $fachbereichId
+            );
+        }
+
         return $fachbereich;
     }
 
     private function getFachbereichForm($fachbereich) {
+        // Erzeugt ein Formular für das Objekt Fachbereich
         $form = $this->createFormBuilder($fachbereich)
             ->add('bezeichnung', TextType::class)
             ->add('speichern', SubmitType::class)
@@ -205,7 +213,7 @@ class FachbereichController extends Controller {
     private function removeFachbereich($fachbereich) {
         $entityManager = $this->getDoctrine()->getManager();
 
-        // tells Doctrine you want to (eventually) save the Product (no queries yet)
+        // tells Doctrine you want to (eventually) delete the Product (no queries yet)
         $entityManager->remove($fachbereich);
 
         // actually executes the queries (i.e. the INSERT query)
