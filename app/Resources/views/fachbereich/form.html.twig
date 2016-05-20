@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    <h1>{% block h1 %}Neuer Fachbereich{% endblock %}</h1>
+
+    {% for flash_message in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    <a href="{{ path('_showFachbereiche') }}" class="btn btn-default">
+        zurück
+    </a>
+{% endblock %}
+

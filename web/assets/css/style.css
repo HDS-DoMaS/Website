@@ -37,6 +37,7 @@ h1 small {
     color: #ccc;
     padding: 0;
     line-height: 2;
+    padding-bottom: 2px;
     margin-bottom: 10px;
 }
 .header a {
@@ -69,7 +70,7 @@ h1 small {
  * Media-Queries
  */
 @media(min-width:768px) {
-    body {
+    body.index {
         background: url('../images/background.jpg') top center no-repeat;
     }
 }
