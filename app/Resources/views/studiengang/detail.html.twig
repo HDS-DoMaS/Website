@@ -5,32 +5,35 @@
         <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             {{ flash_message }}
-            <a href="{{ path('_deleteConfirmFachbereich', {'fachbereichId': fachbereich.getFachbereichId()}) }}">
-                Fachbereich Löschen
+            <a href="{{ path('_deleteConfirmStudiengang', {'studiengangId': studiengang.getStudiengangId()}) }}">
+                Studiengang Löschen
             </a>
         </div>
     {% endfor %}
 
-    <h1>Fachbereich</h1>
+    <h1>Studiengang</h1>
 
-    <a href="{{ path('_editFachbereich', {'fachbereichId': fachbereich.getFachbereichId()}) }}" class="btn btn-sm btn-default">
+    <a href="{{ path('_editStudiengang', {'studiengangId': studiengang.getStudiengangId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
     </a>
 
-    <a href="{{ path('_deleteFachbereich', {'fachbereichId': fachbereich.getFachbereichId()}) }}" class="btn btn-sm btn-default">
+    <a href="{{ path('_deleteStudiengang', {'studiengangId': studiengang.getStudiengangId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
 
     <dl class="dl-horizontal">
         <dt>ID</dt>
-        <dd>{{ fachbereich.getFachbereichId() }}</dd>
+        <dd>{{ studiengang.getStudiengangId() }}</dd>
 
         <dt>Bezeichnung</dt>
-        <dd>{{ fachbereich.getBezeichnung() }}</dd>
+        <dd>{{ studiengang.getBezeichnung() }}</dd>
+
+        <dt>Fachbereich</dt>
+        <dd>{{ studiengang.getFachbereich().getBezeichnung() }}</dd>
     </dl>
 
     {% if app.request.headers.get('referer') == null %}
-        <a href="{{ path('_showFachbereiche') }}" class="btn btn-default">
+        <a href="{{ path('_showStudiengaenge') }}" class="btn btn-default">
             zurück
         </a>
     {% else %}
@@ -38,4 +41,7 @@
             zurück
         </a>
     {% endif %}
+
+
+
 {% endblock %}

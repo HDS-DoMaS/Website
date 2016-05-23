@@ -3,7 +3,7 @@
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block body %}
-    <h1>{% block h1 %}Neuer Fachbereich{% endblock %}</h1>
+    <h1>{% block h1 %}Neuer Studiengang{% endblock %}</h1>
 
     {% for flash_message in app.session.flashBag.get('success') %}
         <div class="alert alert-success">
@@ -17,7 +17,7 @@
     {{ form_end(form) }}
 
     {% if app.request.headers.get('referer') == null %}
-        <a href="{{ path('_showFachbereiche') }}" class="btn btn-default">
+        <a href="{{ path('_showStudiengaenge') }}" class="btn btn-default">
             zurück
         </a>
     {% else %}
