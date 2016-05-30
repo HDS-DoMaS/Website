@@ -13,8 +13,8 @@
             {% set betreuer1, betreuer2 = null, null %}
 
             {% for betreuer in archivierung.getZusaetze() %}
-                {% if betreuer.getZusatzKategorie().getBezeichnung() === "betreuer"  %}
-                   {% if betreuer1 === null %}
+                {% if betreuer.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
+                   {% if betreuer1 is not null %}
                        {% set betreuer1 = betreuer.getBezeichnung() %}
                    {% else %}
                        {% set betreuer2 = betreuer.getBezeichnung() %}
@@ -26,14 +26,9 @@
 
         <dt>Unternehmen</dt>
         {% for unternehmen in archivierung.getZusaetze() %}
-            {% if unternehmen.getZusatzKategorie().getBezeichnung() === "unternehmen"  %}
+            {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
                 <dd>{{ unternehmen.getBezeichnung() }}</dd>
             {% endif %}
-        {% endfor %}
-
-        <dt>Referenz in DoMas</dt>
-        {% for referenz in archivierung.getReferenzen() %}
-            <dd><a href="{{ path('_detailView'), {'archivierung': referenz} }}"> {{ referenz.getTitel() }}</a></dd>
         {% endfor %}
 
         <dt>Keywords</dt>

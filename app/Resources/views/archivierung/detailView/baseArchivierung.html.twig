@@ -32,27 +32,38 @@
 
         <dt>Autor</dt>
         {% for autor in archivierung.getZusaetze() %}
-            {% if autor.getZusatzKategorie().getBezeichnung() === "autor"  %}
-                <dd>{{ autor.getBezeichnung() }}</dd>
+            {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
+                <dd>
+                    {{ autor.getBezeichnung() }}
+                    {% if autor.getMatrikelnummer() is not null %}
+                        {{ autor.getMatrikelnummer() }}
+                    {% endif %}
+                </dd>
             {% endif %}
         {% endfor %}
 
         <dt>Abgabedatum</dt>
         <dd>{{ archivierung.getAbgabedatum() }}</dd>
 
+        <dt>Erstellt am, von</dt>
+        <dd>{{ archivierung.getErstelldatum() ~" | "~ archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
+
         <dt>Anhänge</dt>
         {% for anhang in archivierung.getAnhaenge() %}
              <dd>{{ anhang.getPfad() }}</dd>
         {% endfor %}
 
-        <dt>Erstellt am, von</dt>
-        <dd>{{ archivierung.getErstelldatum() ~" | "~ archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
+        <dt>Referenz in DoMas</dt>
+        {% for referenz in archivierung.getReferenzen() %}
+            <dd><a href="{{ path('_detailView'), {'archivierung': referenz} }}"> {{ referenz.getTitel() }}</a></dd>
+        {% endfor %}
+
 
         {% block spezifischeAttribute %}{% endblock %}
 
     </dl>
 
-    {% if app.request.headers.get('referer') == null %}
+    {% if app.request.headers.get('referer') is not null %}
         <a href="{{ path('_default') }}" class="btn btn-default">
             zurück
         </a>
