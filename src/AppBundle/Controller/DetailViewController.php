@@ -16,6 +16,8 @@ class DetailViewController extends Controller
      *     name="_detailView",
      *     requirements={"archivId": "\d+"}
      * )
+     * @param $archivId
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function detailViewAction($archivId)
     {
@@ -31,18 +33,20 @@ class DetailViewController extends Controller
     }
 
 
-    private function getArchivierung($_archivId)
+    private function getArchivierung($archivId)
     {
         $archivierung = $this->getDoctrine()
             ->getRepository('AppBundle:Archivierung')
-            ->find($_archivId);
+            ->find($archivId);
 
         // Keine Archivierung gefunden
         if (!$archivierung) {
             throw $this->createNotFoundException(
-                'Keine Archivierung mit der id ' . $_archivId . 'gefunden!'
+                'Keine Archivierung mit der id ' . $archivId . 'gefunden!'
             );
         }
+
+        return $archivierung;
     }
 
 
