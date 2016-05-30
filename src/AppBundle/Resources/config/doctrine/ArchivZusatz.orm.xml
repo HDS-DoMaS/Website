@@ -24,7 +24,7 @@
     </field>
     <many-to-many field="archivierungen" mapped-by="zusaetze" target-entity="Archivierung"/>
     <one-to-one field="zusatzKategorie" target-entity="ArchivZusatzKategorie" inversed-by="zusatz">
-      <join-column name="Zusatz_Kategorie_ID" referenced-column-name="Zusatz_Kategorie_ID" />
+      <join-column name="Archiv_Zusatz_Kategorie_ID" referenced-column-name="Archiv_Zusatz_Kategorie_ID" />
     </one-to-one>
   </entity>
 </doctrine-mapping>
