@@ -3,6 +3,7 @@
 {% block bodyclass %}detailView{% endblock %}
 
 {% block body %}
+
     {% for flash_message in app.session.flashBag.get('success') %}
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -27,6 +28,9 @@
         <dt>Sichtbarkeit</dt>
         <dd>{{ archivierung.getSichtbarkeit() }}</dd>
 
+        <dt>Kategorie</dt>
+        <dd>{{ archivierung.getKategorie().getBezeichnung() }}</dd>
+
         <dt>Titel</dt>
         <dd>{{ archivierung.getTitel() }}</dd>
 
@@ -36,34 +40,46 @@
                 <dd>
                     {{ autor.getBezeichnung() }}
                     {% if autor.getMatrikelnummer() is not null %}
-                        {{ autor.getMatrikelnummer() }}
+                        {{ " - MatrikelNr: " ~ autor.getMatrikelnummer() }}
                     {% endif %}
                 </dd>
             {% endif %}
         {% endfor %}
 
         <dt>Abgabedatum</dt>
-        <dd>{{ archivierung.getAbgabedatum() }}</dd>
+        <dd>{{ archivierung.getAbgabedatum().format('d.m.Y') }}</dd>
 
-        <dt>Erstellt am, von</dt>
-        <dd>{{ archivierung.getErstelldatum() ~" | "~ archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
+        <dt>Ersteller</dt>
+        <dd>{{ archivierung.getBenutzer().getVorname() ~ archivierung.getBenutzer().getNachname() }}</dd>
+
+        <dt>Erstelldatum</dt>
+        <dd>{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
 
         <dt>Anhänge</dt>
         {% for anhang in archivierung.getAnhaenge() %}
-             <dd>{{ anhang.getPfad() }}</dd>
+            {% if anhang.getVersionsnummer() is not null %}
+                <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
+            {% else %}
+                <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
+            {% endif %}
         {% endfor %}
+        {% if archivierung.getAnhaenge()|length <= 0 %}
+            <dd></dd>
+        {% endif %}
 
-        <dt>Referenz in DoMas</dt>
+        <dt>Referenzen in DoMas</dt>
         {% for referenz in archivierung.getReferenzen() %}
-            <dd><a href="{{ path('_detailView', {'archivierung': referenz}) }}"> {{ referenz.getTitel() }}</a></dd>
+            <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
         {% endfor %}
-
+        {% if archivierung.getReferenzen()|length <= 0 %}
+            <dd></dd>
+        {% endif %}
 
         {% block spezifischeAttribute %}{% endblock %}
 
     </dl>
 
-    {% if app.request.headers.get('referer') is not null %}
+    {% if app.request.headers.get('referer') is null %}
         <a href="{{ path('_default') }}" class="btn btn-default">
             zurück
         </a>

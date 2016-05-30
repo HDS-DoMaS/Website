@@ -2,40 +2,48 @@
 
 {% block spezifischeAttribute %}
 
-        <dt>Fachbereich und Studiengang</dt>
-        <dd>{{ archivierung.getFachbereich().getBezeichnung() ~ " " ~ archivierung.getStudiengang().getBezeichnung() }}</dd>
+        <dt>Fachbereich</dt>
+        <dd>{{ archivierung.getFachbereich().getBezeichnung() }}</dd>
+
+        <dt>Studiengang</dt>
+        <dd>{{ archivierung.getStudiengang().getBezeichnung() }}</dd>
 
         <dt>Beschreibung</dt>
-        <dd><p>{{ archivierung.getBeschreibung() }}</p></dd>
+        <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
 
-        <dt>Betreuer 1 & 2</dt>
-
-            {% set betreuer1, betreuer2 = null, null %}
-
-            {% for betreuer in archivierung.getZusaetze() %}
-                {% if betreuer.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
-                   {% if betreuer1 is not null %}
-                       {% set betreuer1 = betreuer.getBezeichnung() %}
-                   {% else %}
-                       {% set betreuer2 = betreuer.getBezeichnung() %}
-                   {% endif %}
+        <dt>Betreuer</dt>
+        {% set betreuer1, betreuer2 = null, null %}
+        {% for betreuer in archivierung.getZusaetze() %}
+            {% if betreuer.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
+                {% if betreuer1 is null %}
+                    {% set betreuer1 = betreuer.getBezeichnung() %}
+                {% else %}
+                    {% set betreuer2 = betreuer.getBezeichnung() %}
                 {% endif %}
-            {% endfor %}
-
-        <dd>{{ betreuer1 ~ " & " ~ betreuer2 }}</dd>
-
-        <dt>Unternehmen</dt>
-        {% for unternehmen in archivierung.getZusaetze() %}
-            {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
-                <dd>{{ unternehmen.getBezeichnung() }}</dd>
             {% endif %}
         {% endfor %}
+        <dd>{{ betreuer1 }}</dd>
+        <dd>{{ betreuer2 }}</dd>
+
+        <dt>Unternehmen</dt>
+        <dd>
+            {% for unternehmen in archivierung.getZusaetze() %}
+                {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
+                    {{ unternehmen.getBezeichnung() }}
+                {% endif %}
+            {% endfor %}
+        </dd>
 
         <dt>Keywords</dt>
         <dd>
-        {% for keyword in archivierung.getKeywords() %}
-            {{ keyword.getKeyword() ~ " " }}
-        {% endfor %}
+            {% set isFirstOne = true %}
+            {% for keyword in archivierung.getKeywords() %}
+                {% if isFirstOne == false %}
+                    {{ ", " }}
+                {% endif %}
+                {{ keyword.getKeyword() }}
+                {% set isFirstOne = false %}
+            {% endfor %}
         </dd>
 
 {% endblock %}
