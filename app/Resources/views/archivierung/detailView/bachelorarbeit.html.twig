@@ -33,7 +33,7 @@
 
         <dt>Referenz in DoMas</dt>
         {% for referenz in archivierung.getReferenzen() %}
-            <dd><a href="{{ path('_detailView'), {'archivierung': referenz }}"> {{ referenz.getTitel() }}</a></dd>
+            <dd><a href="{{ path('_detailView'), {'archivierung': referenz} }}"> {{ referenz.getTitel() }}</a></dd>
         {% endfor %}
 
         <dt>Keywords</dt>
