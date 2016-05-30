@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block spezifischeAttribute %}
+
+        <dt>Fachbereich und Studiengang</dt>
+        <dd>{{ archivierung.getFachbereich().getBezeichnung() ~ " " ~ archivierung.getStudiengang().getBezeichnung() }}</dd>
+
+        <dt>Beschreibung</dt>
+        <dd><p>{{ archivierung.getBeschreibung() }}</p></dd>
+
+        <dt>Betreuer 1 & 2</dt>
+
+            {% set betreuer1, betreuer2 = null, null %}
+
+            {% for betreuer in archivierung.getZusaetze() %}
+                {% if betreuer.getZusatzKategorie().getBezeichnung() === "betreuer"  %}
+                   {% if betreuer1 === null %}
+                       {% set betreuer1 = betreuer.getBezeichnung() %}
+                   {% else %}
+                       {% set betreuer2 = betreuer.getBezeichnung() %}
+                   {% endif %}
+                {% endif %}
+            {% endfor %}
+
+        <dd>{{ betreuer1 ~ " & " ~ betreuer2 }}</dd>
+
+        <dt>Unternehmen</dt>
+        {% for unternehmen in archivierung.getZusaetze() %}
+            {% if unternehmen.getZusatzKategorie().getBezeichnung() === "unternehmen"  %}
+                <dd>{{ unternehmen.getBezeichnung() }}</dd>
+            {% endif %}
+        {% endfor %}
+
+        <dt>Referenz in DoMas</dt>
+        {% for referenz in archivierung.getReferenzen() %}
+            <dd><a href="{{ path('_detailView'), {'archivierung': referenz }}"> {{ referenz.getTitel() }}</a></dd>
+        {% endfor %}
+
+        <dt>Keywords</dt>
+        <dd>
+        {% for keyword in archivierung.getKeywords() %}
+            {{ keyword.getKeyword() ~ " " }}
+        {% endfor %}
+        </dd>
+
+{% endblock %}

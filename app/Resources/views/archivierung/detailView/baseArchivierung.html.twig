@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block bodyclass %}detailView{% endblock %}
+
 {% block body %}
     {% for flash_message in app.session.flashBag.get('success') %}
         <div class="alert alert-success">
@@ -18,7 +20,7 @@
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
 
-    <dl class="dl-horizontal">
+    <dl class="dl-horizontal {% block archivKategorie %}archivierungRaw{% endblock %}">
         <dt>Archiv-ID</dt>
         <dd>{{ archivierung.getArchivId() }}</dd>
 
@@ -44,7 +46,9 @@
         {% endfor %}
 
         <dt>Erstellt am, von</dt>
-        <dd>{{ archivierung.getErstelldatum() ." | ". archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
+        <dd>{{ archivierung.getErstelldatum() ~" | "~ archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
+
+        {% block spezifischeAttribute %}{% endblock %}
 
     </dl>
 
