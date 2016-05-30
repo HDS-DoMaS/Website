@@ -20,14 +20,31 @@
 
     <dl class="dl-horizontal">
         <dt>Archiv-ID</dt>
-        <dd>{{ archivierung.getarchivId() }}</dd>
+        <dd>{{ archivierung.getArchivId() }}</dd>
+
+        <dt>Sichtbarkeit</dt>
+        <dd>{{ archivierung.getSichtbarkeit() }}</dd>
 
         <dt>Titel</dt>
         <dd>{{ archivierung.getTitel() }}</dd>
 
-        <dt>Beschreibung</dt>
-        <dd>{{ archivierung.getBeschreibung() }}</dd>
+        <dt>Autor</dt>
+        {% for autor in archivierung.getZusaetze() %}
+            {% if autor.getZusatzKategorie().getBezeichnung() === "autor"  %}
+                <dd>{{ autor.getBezeichnung() }}</dd>
+            {% endif %}
+        {% endfor %}
 
+        <dt>Abgabedatum</dt>
+        <dd>{{ archivierung.getAbgabedatum() }}</dd>
+
+        <dt>Anhänge</dt>
+        {% for anhang in archivierung.getAnhaenge() %}
+             <dd>{{ anhang.getPfad() }}</dd>
+        {% endfor %}
+
+        <dt>Erstellt am, von</dt>
+        <dd>{{ archivierung.getErstelldatum() ." | ". archivierung.getBenutzer().getVorname() . archivierung.getBenutzer().getNachname() }}</dd>
 
     </dl>
 
