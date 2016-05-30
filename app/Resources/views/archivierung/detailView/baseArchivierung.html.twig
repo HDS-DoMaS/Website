@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flash_message in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    <h1>Detailansicht</h1>
+
+    <a href="{{ path('_editArchivierung', {'archivId': archivierung.getarchivId()}) }}" class="btn btn-sm btn-default">
+        <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
+    </a>
+
+    <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getarchivId()}) }}" class="btn btn-sm btn-default">
+        <span class="glyphicon glyphicon-trash"></span> Löschen
+    </a>
+
+    <dl class="dl-horizontal">
+        <dt>Archiv-ID</dt>
+        <dd>{{ archivierung.getarchivId() }}</dd>
+
+        <dt>Titel</dt>
+        <dd>{{ archivierung.getTitel() }}</dd>
+
+        <dt>Beschreibung</dt>
+        <dd>{{ archivierung.getBeschreibung() }}</dd>
+
+
+    </dl>
+
+    {% if app.request.headers.get('referer') == null %}
+        <a href="{{ path('_default') }}" class="btn btn-default">
+            zurück
+        </a>
+    {% else %}
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default">
+            zurück
+        </a>
+    {% endif %}
+
+
+
+{% endblock %}
