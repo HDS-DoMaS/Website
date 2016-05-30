@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +18,7 @@ class StudiengangController extends Controller {
      * )
      */
     public function showStudiengaengeAction() {
-        // Alle studiengaenge holen
+        // Alle Studiengaenge holen
         $studiengaenge = $this->getStudiengaenge();
 
         return $this->render(
@@ -27,7 +29,7 @@ class StudiengangController extends Controller {
 
     /**
      * @Route("/studiengang/{studiengangId}",
-     *     name="_showStudiengange",
+     *     name="_showStudiengang",
      *     requirements={"studiengangId": "\d+"}
      * )
      */
@@ -163,16 +165,16 @@ class StudiengangController extends Controller {
         );
 
         // URL für weiterleitung
-        $url = $this->generateUrl("_showStudiengange");
+        $url = $this->generateUrl("_showStudiengaenge");
         return $this->redirect($url);
     }
 
     private function getStudiengaenge() {
-        $studiengange = $this->getDoctrine()
+        $studiengaenge = $this->getDoctrine()
             ->getRepository('AppBundle:Studiengang')
             ->findAll();
 
-        return $studiengange;
+        return $studiengaenge;
     }
 
     private function getStudiengang($studiengangId) {
@@ -194,6 +196,19 @@ class StudiengangController extends Controller {
         // Erzeugt ein Formular für das Objekt Studiengang
         $form = $this->createFormBuilder($studiengang)
             ->add('bezeichnung', TextType::class)
+            ->add('fachbereich', EntityType::class, array(
+                // query choices from this entity
+                'class' => 'AppBundle:Fachbereich',
+                
+                // use the User.username property as the visible option string
+                'choice_label' => 'bezeichnung',
+
+                'placeholder' => 'Bitte wählen',
+
+                // used to render a select box, check boxes or radios
+                'multiple' => false,
+                'expanded' => false,
+            ))
             ->add('speichern', SubmitType::class)
             ->getForm();
 
