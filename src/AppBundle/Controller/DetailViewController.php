@@ -12,7 +12,7 @@ use AppBundle\Entity\Archivierung;
 class DetailViewController extends Controller
 {
     /**
-     * @Route("/detailView/{archivId}",
+     * @Route("/archivierung/{archivId}",
      *     name="_detailView",
      *     requirements={"archivId": "\d+"}
      * )
