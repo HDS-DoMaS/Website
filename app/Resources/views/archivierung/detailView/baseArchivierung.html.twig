@@ -11,7 +11,7 @@
     {% endfor %}
 
     <h1>Detailansicht</h1>
-
+{#
     <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
     </a>
@@ -19,7 +19,7 @@
     <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
-
+#}
     <dl class="dl-horizontal {% block archivKategorie %}archivierungRaw{% endblock %}">
         <dt>Archiv-ID</dt>
         <dd>{{ archivierung.getArchivId() }}</dd>
