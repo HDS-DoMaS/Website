@@ -32,6 +32,15 @@ class DetailViewController extends Controller
                 array('archivierung' => $archivierung)
             );
         }
+
+        elseif(($kategorie == "Gutachten")) {
+
+            $response = $this->render(
+                'archivierung/detailView/gutachten.html.twig',
+                array('archivierung' => $archivierung)
+            );
+        }
+
         else{
             $response = $this->render(
                 'archivierung/detailView/arbeit.html.twig',

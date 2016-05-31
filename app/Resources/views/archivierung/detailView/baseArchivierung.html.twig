@@ -23,14 +23,14 @@
     </a>
 #}
 
-    {# TODO Einsicht erlauben wenn aktiver User == Ersteller #}
+    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) #}
     {% if archivierung.getSichtbarkeit() == 0 %}
-        <div id="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
-        {% if archivierung.getKategorie().getBezeichnung() == "Gutachten" %}
-            <div id="giftschrankMessage2">Für Einsicht bitte den angegebenen Autor kontaktieren</div>
-        {% else %}
-            <div id="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
-        {% endif %}
+        <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
+
+        {% block giftschrankMessage %}
+            <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
+        {% endblock %}
+
     {% endif %}
 
 
