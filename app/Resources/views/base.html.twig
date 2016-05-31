@@ -25,6 +25,8 @@
             </div>
         </div>
 
+        {% block top %}{% endblock %}
+
         <div class="body container">
             {% block body %}{% endblock %}
         </div>
@@ -33,8 +35,8 @@
             {% block footer %}{% endblock %}
         </div>
 
-        {% block javascripts %}{% endblock %}
         <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
         <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
