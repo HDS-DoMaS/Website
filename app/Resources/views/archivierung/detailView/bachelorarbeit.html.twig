@@ -1,5 +1,9 @@
 {% extends 'archivierung/detailView/baseArchivierung.html.twig' %}
 
+{% block bodyclass %}
+    {{ parent() }} detailViewBachelorarbeit
+{% endblock %}
+
 {% block spezifischeAttribute %}
 
         <dt>Fachbereich</dt>
