@@ -1,0 +1,49 @@
+{% extends 'archivierung/detailView/baseArchivierung.html.twig' %}
+
+{# Twig für: Anleitung #}
+
+{% block bodyclass %}
+    {{ parent() }} detailViewAnleitung
+{% endblock %}
+
+{% block spezifischeAttributeOben %}
+
+        <dt>Titel/Gerät</dt>
+        <dd>{{ archivierung.getTitel() }}</dd>
+
+        <dt>Autor/Hersteller</dt>
+        {% for autor in archivierung.getZusaetze() %}
+            {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
+                <dd>
+                    {{ autor.getBezeichnung() }}
+                    {% if autor.getMatrikelnummer() is not null %}
+                        {{ " - MatrikelNr: " ~ autor.getMatrikelnummer() }}
+                    {% endif %}
+                </dd>
+            {% endif %}
+        {% endfor %}
+
+{% endblock %}
+
+{% block spezifischeAttributeMitte %}
+
+        <dt>Beschreibung</dt>
+        <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
+
+{% endblock %}
+
+{% block spezifischeAttributeUnten %}
+
+        <dt>Keywords</dt>
+        <dd>
+            {% set isFirstOne = true %}
+            {% for keyword in archivierung.getKeywords() %}
+                {% if isFirstOne == false %}
+                    {{ ", " }}
+                {% endif %}
+                {{ keyword.getKeyword() }}
+                {% set isFirstOne = false %}
+            {% endfor %}
+        </dd>
+
+{% endblock %}

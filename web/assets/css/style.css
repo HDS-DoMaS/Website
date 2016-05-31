@@ -13,6 +13,15 @@ h1 small {
     color: #d83734;
     display: block;
 }
+
+a:hover {
+    color: #d83734;
+}
+::selection {
+    background-color: #B73533;
+    color: rgb(255,255,255);
+}
+
 /*
  * Classes
  */

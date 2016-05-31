@@ -12,6 +12,7 @@
     {% endfor %}
 
     <h1>Detailansicht</h1>
+
 {#
     <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
@@ -21,61 +22,73 @@
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
 #}
+
+    {# TODO Einsicht erlauben wenn aktiver User == Ersteller #}
+    {% if archivierung.getSichtbarkeit() == 0 %}
+        <div id="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
+        {% if archivierung.getKategorie().getBezeichnung() == "Gutachten" %}
+            <div id="giftschrankMessage2">Für Einsicht bitte den angegebenen Autor kontaktieren</div>
+        {% else %}
+            <div id="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
+        {% endif %}
+    {% endif %}
+
+
     <dl class="dl-horizontal {% block archivKategorie %}archivierungRaw{% endblock %}">
+
         <dt>Archiv-ID</dt>
         <dd>{{ archivierung.getArchivId() }}</dd>
-
-        <dt>Sichtbarkeit</dt>
-        <dd>{{ archivierung.getSichtbarkeit() }}</dd>
 
         <dt>Kategorie</dt>
         <dd>{{ archivierung.getKategorie().getBezeichnung() }}</dd>
 
-        <dt>Titel</dt>
-        <dd>{{ archivierung.getTitel() }}</dd>
 
-        <dt>Autor</dt>
-        {% for autor in archivierung.getZusaetze() %}
-            {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
-                <dd>
-                    {{ autor.getBezeichnung() }}
-                    {% if autor.getMatrikelnummer() is not null %}
-                        {{ " - MatrikelNr: " ~ autor.getMatrikelnummer() }}
-                    {% endif %}
-                </dd>
-            {% endif %}
-        {% endfor %}
+        {% block spezifischeAttributeOben %}{% endblock %}
+
 
         <dt>Abgabedatum</dt>
-        <dd>{{ archivierung.getAbgabedatum().format('d.m.Y') }}</dd>
-
-        <dt>Ersteller</dt>
-        <dd>{{ archivierung.getBenutzer().getVorname() ~ archivierung.getBenutzer().getNachname() }}</dd>
-
-        <dt>Erstelldatum</dt>
-        <dd>{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
-
-        <dt>Anhänge</dt>
-        {% for anhang in archivierung.getAnhaenge() %}
-            {% if anhang.getVersionsnummer() is not null %}
-                <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
-            {% else %}
-                <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
+        <dd>
+            {% if archivierung.getAbgabedatum() is not null %}
+                {{ archivierung.getAbgabedatum().format('d.m.Y') }}
             {% endif %}
-        {% endfor %}
-        {% if archivierung.getAnhaenge()|length <= 0 %}
-            <dd></dd>
+        </dd>
+
+
+        {% block spezifischeAttributeMitte %}{% endblock %}
+
+
+        {% if archivierung.getSichtbarkeit() == 1 %}
+
+            <dt>Datei-Anhänge</dt>
+            {% for anhang in archivierung.getAnhaenge() %}
+                {% if anhang.getVersionsnummer() is not null %}
+                    <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
+                {% else %}
+                    <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
+                {% endif %}
+            {% endfor %}
+            {% if archivierung.getAnhaenge()|length <= 0 %}
+                <dd></dd>
+            {% endif %}
+
+            <dt>Referenzen in DoMas</dt>
+            {% for referenz in archivierung.getReferenzen() %}
+                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
+            {% endfor %}
+            {% if archivierung.getReferenzen()|length <= 0 %}
+                <dd></dd>
+            {% endif %}
+
         {% endif %}
 
-        <dt>Referenzen in DoMas</dt>
-        {% for referenz in archivierung.getReferenzen() %}
-            <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
-        {% endfor %}
-        {% if archivierung.getReferenzen()|length <= 0 %}
-            <dd></dd>
-        {% endif %}
+        <dt title="Uploader in DoMaS">Ersteller</dt>
+        <dd title="Uploader in DoMaS">{{ archivierung.getBenutzer().getVorname() ~ "" ~ archivierung.getBenutzer().getNachname() }}</dd>
 
-        {% block spezifischeAttribute %}{% endblock %}
+        <dt title="Uploaddatum in DoMaS">Erstelldatum</dt>
+        <dd title="Uploaddatum in DoMaS">{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
+
+
+        {% block spezifischeAttributeUnten %}{% endblock %}
 
     </dl>
 

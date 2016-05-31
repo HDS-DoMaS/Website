@@ -21,12 +21,25 @@ class DetailViewController extends Controller
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
+        $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
-        //// PROVISIORISCH ZUM TESTEN
-        return $this->render(
-            'archivierung/detailView/bachelorarbeit.html.twig',
-            array('archivierung' => $archivierung)
-        );
+        global $response;
+        $response = null;
+
+        if($kategorie == "Anleitung") {
+            $response = $this->render(
+                'archivierung/detailView/anleitung.html.twig',
+                array('archivierung' => $archivierung)
+            );
+        }
+        else{
+            $response = $this->render(
+                'archivierung/detailView/arbeit.html.twig',
+                array('archivierung' => $archivierung)
+            );
+        }
+
+        return $response;
     }
 
 
