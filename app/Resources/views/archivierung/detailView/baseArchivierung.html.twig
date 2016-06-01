@@ -12,8 +12,6 @@
     {% endfor %}
 
 
-    {# TODO gutachten=anhang FERTIG, db bereinigen FERTIG, Controller umschreiben für paths ,,, Titel und layout nach rechts FERTIG  #}
-
     <h1>{{ archivierung.getTitel() }}</h1>
 
     {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
@@ -71,6 +69,7 @@
         <div class="detailViewNachRechts" style="background-color: blueviolet;">
 
             {% if archivierung.getSichtbarkeit() == 1 %}
+            {# TODO oder wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
 
                 <dt>Datei-Anhänge</dt>
                 {% for anhang in archivierung.getAnhaenge() %}
