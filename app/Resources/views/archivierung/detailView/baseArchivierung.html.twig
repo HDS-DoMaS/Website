@@ -73,11 +73,16 @@
 
                 <dt>Datei-Anhänge</dt>
                 {% for anhang in archivierung.getAnhaenge() %}
-                    {% if anhang.getVersionsnummer() is not null %}
-                        <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
-                    {% else %}
-                        <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
-                    {% endif %}
+
+                    <dd>
+                        <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}">
+
+                            {{ anhang.getDateiKategorie().getBezeichnung  }}
+                            {% if anhang.getVersionsnummer() is not null %}
+                                    {{ " - Version: " ~ anhang.getVersionsnummer() }}
+                            {% endif %}
+                        </a>
+                    </dd>
                 {% endfor %}
                 {% if archivierung.getAnhaenge()|length <= 0 %}
                     <dd></dd>

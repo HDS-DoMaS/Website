@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class ArchivierungController extends Controller {
+
     /**
      * @Route("/archivierung/neu",
      *     name="_neuArchivierung"
@@ -44,7 +45,6 @@ class ArchivierungController extends Controller {
 
             }
         }
-
         return $this->render(
             'Archivierung/form.html.twig',
             array(
@@ -53,9 +53,11 @@ class ArchivierungController extends Controller {
         );
     }
 
+
     /**
      * @Route("/archivierung/bearbeiten/{archivierungId}",
-     *     name="_editArchivierung"
+     *     name="_editArchivierung",
+     *     requirements={"archivId": "\d+"}
      * )
      */
     public function editArchivierungAction(Request $request, $archivierungId) {
@@ -91,6 +93,7 @@ class ArchivierungController extends Controller {
             )
         );
     }
+
 
     /**
      * @Route("/archivierung/detail/{archivId}",
@@ -130,18 +133,29 @@ class ArchivierungController extends Controller {
     }
 
     /**
-     * @Route("/archivierung/detail/anhang/{path}",
-     *     name="_detailViewFile"
+     * @Route("/archivierung/detail/anhang/{anhangId}",
+     *     name="_detailViewFile",
+     *     requirements={"archivId": "\d+"}
      * )
-     * @Method("POST")
-     *
-     * @param $path
+     * @param $anhangId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function detailViewFileAction($path, $erstellerId) {
+    public function detailViewFileAction($anhangId) {
+
         // checken ob Zugriff auf Path erlaubt
         // TODO wenn userId == erstellerId oder Admin oder Prof, und wenn referer = detailseite.
+        
+
+
+
         // TODO PDF returnen
+
+
+        //PROVISORISCH
+        throw $this->createNotFoundException(
+            'TEST ... '
+        );
+
     }
 
     private function getArchivierung($archivierungId) {
