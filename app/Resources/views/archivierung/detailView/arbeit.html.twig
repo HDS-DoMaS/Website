@@ -8,9 +8,6 @@
 
 {% block spezifischeAttributeOben %}
 
-        <dt>Titel</dt>
-        <dd>{{ archivierung.getTitel() }}</dd>
-
         <dt>Autor</dt>
         {% for autor in archivierung.getZusaetze() %}
             {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
@@ -26,9 +23,6 @@
 {% endblock %}
 
 {% block spezifischeAttributeMitte %}
-
-        <dt>Beschreibung</dt>
-        <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
 
         <dt>Fachbereich</dt>
         <dd>{{ archivierung.getFachbereich().getBezeichnung() }}</dd>
@@ -58,22 +52,6 @@
                 {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
                     {{ unternehmen.getBezeichnung() }}
                 {% endif %}
-            {% endfor %}
-        </dd>
-
-{% endblock %}
-
-{% block spezifischeAttributeUnten %}
-
-        <dt>Keywords</dt>
-        <dd>
-            {% set isFirstOne = true %}
-            {% for keyword in archivierung.getKeywords() %}
-                {% if isFirstOne == false %}
-                    {{ ", " }}
-                {% endif %}
-                {{ keyword.getKeyword() }}
-                {% set isFirstOne = false %}
             {% endfor %}
         </dd>
 

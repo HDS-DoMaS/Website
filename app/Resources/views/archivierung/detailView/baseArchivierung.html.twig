@@ -11,7 +11,17 @@
         </div>
     {% endfor %}
 
-    <h1>Detailansicht</h1>
+
+    {# TODO gutachten=anhang FERTIG, db bereinigen FERTIG, Controller umschreiben für paths ,,, Titel und layout nach rechts FERTIG  #}
+
+    <h1>{{ archivierung.getTitel() }}</h1>
+
+    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
+    {% if archivierung.getSichtbarkeit() == 0 %}
+        <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
+        <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
+    {% endif %}
+
 
 {#
     <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
@@ -22,16 +32,6 @@
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
 #}
-
-    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) #}
-    {% if archivierung.getSichtbarkeit() == 0 %}
-        <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
-
-        {% block giftschrankMessage %}
-            <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
-        {% endblock %}
-
-    {% endif %}
 
 
     <dl class="dl-horizontal {% block archivKategorie %}archivierungRaw{% endblock %}">
@@ -53,33 +53,12 @@
             {% endif %}
         </dd>
 
+        <dt>Beschreibung</dt>
+        <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
+
 
         {% block spezifischeAttributeMitte %}{% endblock %}
 
-
-        {% if archivierung.getSichtbarkeit() == 1 %}
-
-            <dt>Datei-Anhänge</dt>
-            {% for anhang in archivierung.getAnhaenge() %}
-                {% if anhang.getVersionsnummer() is not null %}
-                    <dd><a href="{{ anhang.getPfad() }}"><span class="glyphicon glyphicon-paperclip"></span>{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
-                {% else %}
-                    <dd><a href="{{ anhang.getPfad() }}"><span class="glyphicon glyphicon-paperclip"></span>{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
-                {% endif %}
-            {% endfor %}
-            {% if archivierung.getAnhaenge()|length <= 0 %}
-                <dd></dd>
-            {% endif %}
-
-            <dt>Referenzen in DoMas</dt>
-            {% for referenz in archivierung.getReferenzen() %}
-                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
-            {% endfor %}
-            {% if archivierung.getReferenzen()|length <= 0 %}
-                <dd></dd>
-            {% endif %}
-
-        {% endif %}
 
         <dt title="Uploader in DoMaS">Ersteller</dt>
         <dd title="Uploader in DoMaS">{{ archivierung.getBenutzer().getVorname() ~ "" ~ archivierung.getBenutzer().getNachname() }}</dd>
@@ -88,8 +67,46 @@
         <dd title="Uploaddatum in DoMaS">{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
 
 
-        {% block spezifischeAttributeUnten %}{% endblock %}
+        {# TODO diesen block iwie rechts darstellen #}
+        <div class="detailViewNachRechts" style="background-color: blueviolet;">
 
+            {% if archivierung.getSichtbarkeit() == 1 %}
+
+                <dt>Datei-Anhänge</dt>
+                {% for anhang in archivierung.getAnhaenge() %}
+                    {% if anhang.getVersionsnummer() is not null %}
+                        <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
+                    {% else %}
+                        <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
+                    {% endif %}
+                {% endfor %}
+                {% if archivierung.getAnhaenge()|length <= 0 %}
+                    <dd></dd>
+                {% endif %}
+
+                <dt>Referenzen in DoMas</dt>
+                {% for referenz in archivierung.getReferenzen() %}
+                    <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
+                {% endfor %}
+                {% if archivierung.getReferenzen()|length <= 0 %}
+                    <dd></dd>
+                {% endif %}
+
+            {% endif %}
+
+            <dt>Keywords</dt>
+            <dd>
+                {% set isFirstOne = true %}
+                {% for keyword in archivierung.getKeywords() %}
+                    {% if isFirstOne == false %}
+                        {{ ", " }}
+                    {% endif %}
+                    {{ keyword.getKeyword() }}
+                    {% set isFirstOne = false %}
+                {% endfor %}
+            </dd>
+
+        </div>
     </dl>
 
     {% if app.request.headers.get('referer') is null %}

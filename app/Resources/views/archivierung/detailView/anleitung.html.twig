@@ -24,26 +24,3 @@
         {% endfor %}
 
 {% endblock %}
-
-{% block spezifischeAttributeMitte %}
-
-        <dt>Beschreibung</dt>
-        <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
-
-{% endblock %}
-
-{% block spezifischeAttributeUnten %}
-
-        <dt>Keywords</dt>
-        <dd>
-            {% set isFirstOne = true %}
-            {% for keyword in archivierung.getKeywords() %}
-                {% if isFirstOne == false %}
-                    {{ ", " }}
-                {% endif %}
-                {{ keyword.getKeyword() }}
-                {% set isFirstOne = false %}
-            {% endfor %}
-        </dd>
-
-{% endblock %}
