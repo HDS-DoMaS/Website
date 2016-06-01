@@ -76,6 +76,7 @@ a:hover {
     line-height: 120px;
     text-align: center;
     background: #d83834;
+    margin-bottom: 20px;
 }
 /*
  * Tables
@@ -83,6 +84,7 @@ a:hover {
 table {}
 th {
     background: #000;
+    color:#fff;
 }
 th a {
     color: #fff;
