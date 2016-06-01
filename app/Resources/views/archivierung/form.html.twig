@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    <h1>{% block h1 %}Neue Archivierung{% endblock %}</h1>
+
+    {% for flash_message in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    {% if app.request.headers.get('referer') == null %}
+        <a href="#suchseite" class="btn btn-default">
+            zurück
+        </a>
+    {% else %}
+        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default">
+            zurück
+        </a>
+    {% endif %}
+{% endblock %}
+
