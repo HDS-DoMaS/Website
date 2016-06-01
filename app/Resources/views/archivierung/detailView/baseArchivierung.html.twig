@@ -62,9 +62,9 @@
             <dt>Datei-Anhänge</dt>
             {% for anhang in archivierung.getAnhaenge() %}
                 {% if anhang.getVersionsnummer() is not null %}
-                    <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
+                    <dd><a href="{{ anhang.getPfad() }}"><span class="glyphicon glyphicon-paperclip"></span>{{ anhang.getDateiKategorie().getBezeichnung ~ " - Version: " ~ anhang.getVersionsnummer() }}</a></dd>
                 {% else %}
-                    <dd><a href="{{ anhang.getPfad() }}">{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
+                    <dd><a href="{{ anhang.getPfad() }}"><span class="glyphicon glyphicon-paperclip"></span>{{ anhang.getDateiKategorie().getBezeichnung }}</a></dd>
                 {% endif %}
             {% endfor %}
             {% if archivierung.getAnhaenge()|length <= 0 %}
@@ -73,7 +73,7 @@
 
             <dt>Referenzen in DoMas</dt>
             {% for referenz in archivierung.getReferenzen() %}
-                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
+                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
             {% endfor %}
             {% if archivierung.getReferenzen()|length <= 0 %}
                 <dd></dd>
