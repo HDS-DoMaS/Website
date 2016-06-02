@@ -21,6 +21,7 @@
         <div class="col-sm-4">
             <div class="transparent">
                 <form method="get" name="form" id="form" class="form-horizontal" action="{{ path('_suche') }}">
+                    <input id="hdn-collapse" type="hidden" value="collapsed" name="form[hdncollapse]">
 
                     <div class="circle center-block">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -33,20 +34,6 @@
 
                     {{ form_widget(form._token) }}
                 </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <div class="transparent" style="height: auto; padding-bottom: 30px; padding-top: 30px">
-                <a href="{{ path('_showStudiengaenge') }}" class="btn btn-block">
-                    Studiengänge
-                </a>
-
-                <a href="{{ path('_showFachbereiche') }}" class="btn btn-block">
-                    Fachbereiche
-                </a>
             </div>
         </div>
     </div>
