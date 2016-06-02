@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 class ArchivierungController extends Controller {
 
@@ -142,20 +145,50 @@ class ArchivierungController extends Controller {
      */
     public function detailViewFileAction($anhangId) {
 
+        // Provisiorisch hardgecodet:
+        $userId = 1;
+        $adminId = 1;
+        $profId = 3;
+
+        $anhang = $this->getAnhang($anhangId);
+        $erstellerId = $anhang->getArchivierung()->getBenutzerId();
+
         // checken ob Zugriff auf Path erlaubt
-        // TODO wenn userId == erstellerId oder Admin oder Prof, und wenn referer = detailseite.
-        
+        if($userId === $adminId || $userId === $profId || $userId === $erstellerId) {
+
+            // PDF returnen
+            $pfad = "/anhaenge/" . $anhangId . "/" . $anhang->getPfad();
+            // TEST
+            $pfad = "DoMaS/anhaenge/TestPdf.pdf";   ////////////////////////////////////////////////////// HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+            $response = new BinaryFileResponse($pfad);
+            $response->trustXSendfileTypeHeader();
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $pfad);
+            return $response;
+        }
+
+        else{ // Nicht Berechtigt
+
+            throw $this->createAccessDeniedException(
+                'Sie haben keine Zugriffsberechtigung auf diesen Anhang!'
+            );
+        }
+    }
 
 
+    private function getAnhang($anhangId) {
+        $archivierung = $this->getDoctrine()
+            ->getRepository('AppBundle:ArchivAnhang')
+            ->find($anhangId);
 
-        // TODO PDF returnen
+        // Keinen Anhang gefunden
+        if (!$anhangId) {
+            throw $this->createNotFoundException(
+                'Keinen Anhang mit der id ' . $anhangId . ' gefunden!'
+            );
+        }
 
-
-        //PROVISORISCH
-        throw $this->createNotFoundException(
-            'TEST ... '
-        );
-
+        return $archivierung;
     }
 
     private function getArchivierung($archivierungId) {
@@ -163,10 +196,10 @@ class ArchivierungController extends Controller {
             ->getRepository('AppBundle:Archivierung')
             ->find($archivierungId);
 
-        // Keinen Archivierung gefunden
+        // Keine Archivierung gefunden
         if (!$archivierung) {
             throw $this->createNotFoundException(
-                'Keine Archivierung mit der id ' . $archivierungId . 'gefunden!'
+                'Keine Archivierung mit der id ' . $archivierungId . ' gefunden!'
             );
         }
 
