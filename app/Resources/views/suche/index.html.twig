@@ -1,0 +1,287 @@
+{% extends 'base.html.twig' %}
+
+{% block bodyclass %}suche{% endblock %}
+
+{% block top %}
+    <div class="top container-fluid">
+        <form method="get" name="form" id="form" class="container form-horizontal">
+            <input type="hidden" id="hdn-collapse" name="form[hdncollapse]" value="{{ form.hdncollapse.vars.value }}">
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <a class="hompage" href="{{ path('_default') }}">DoMaS</a>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="col-sm-8 nopadding">
+                        <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="{{ form.freitext.vars.value }}" placeholder="Archivierungen durchsuchen">
+                    </div>
+                    <div class="col-sm-4 nopadding">
+                        <button type="submit" class="btn" name="form[submittop]">Suchen</button>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <a class="btn btn-red btn-collapse {{ form.hdncollapse.vars.value }}{% if form.hdncollapse.vars.value is null %} collapsed{% endif %}" role="button" data-toggle="collapse" href="#collapse" aria-expanded="false" aria-controls="collapseExample">
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                        <span class="glyphicon glyphicon-arrow-up"></span>
+                        Erweiterte Suche
+                    </a>
+                </div>
+            </div>
+
+            <div class="collapse {{ form.hdncollapse.vars.value }}" id="collapse">
+                <div class="row">
+                    <div class="col-sm-6">
+
+                        {# Titel #}
+                        <div class="form-group">
+                            <label for="form_titel" class="col-sm-4 control-label">Titel</label>
+                            <div class="col-sm-8">
+                                <input id="form_titel" name="form[titel]" class="form-control typeahead" data-typehead="archiv-titel" type="text" value="{{ form.titel.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Autor #}
+                        <div class="form-group">
+                            <label for="form_autor" class="col-sm-4 control-label">Autor</label>
+                            <div class="col-sm-8">
+                                <input id="form_autor" name="form[autor]" class="form-control typeahead" data-typehead="zusatz-autor" type="text" value="{{ form.autor.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Fachbereich #}
+                        <div class="form-group">
+                            <label for="form_fachbereich" class="col-sm-4 control-label">Fachbereich</label>
+                            <div class="col-sm-8">
+                                <input id="form_fachbereich" name="form[fachbereich]" class="form-control typeahead" data-typehead="fachbereich" type="text" value="{{ form.fachbereich.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Studiengang #}
+                        <div class="form-group">
+                            <label for="form_studiengang" class="col-sm-4 control-label">Studiengang</label>
+                            <div class="col-sm-8">
+                                <input id="form_studiengang" name="form[studiengang]" class="form-control typeahead" data-typehead="studiengang" type="text" value="{{ form.studiengang.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Kategorie #}
+                        <div class="form-group">
+                            <label for="form_kategorie" class="col-sm-4 control-label">Kategorie</label>
+                            <div class="col-sm-8">
+                                <input id="form_kategorie" name="form[kategorie]" class="form-control typeahead" data-typehead="kategorie" type="text" value="{{ form.kategorie.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Abgabedatum #}
+                        <div class="form-group">
+                            <label for="form_abgabedatum" class="col-sm-4 control-label">Abgabedatum</label>
+                            <div class="col-sm-8">
+                                <input id="form_abgabedatum" name="form[abgabedatum]" class="form-control" type="date" value="{{ form.abgabedatum.vars.value }}" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+
+                        {# Betreuer #}
+                        <div class="form-group">
+                            <label for="form_betreuer" class="col-sm-4 control-label">Betreuer</label>
+                            <div class="col-sm-8">
+                                <input id="form_betreuer" name="form[betreuer]" class="form-control typeahead" data-typehead="zusatz-betreuer" type="text" value="{{ form.betreuer.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Unternehmen #}
+                        <div class="form-group">
+                            <label for="form_unternehmen" class="col-sm-4 control-label">Unternehmen</label>
+                            <div class="col-sm-8">
+                                <input id="form_unternehmen" name="form[unternehmen]" class="form-control typeahead" data-typehead="zusatz-unternehmen" type="text" value="{{ form.unternehmen.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Keywords #}
+                        <div class="form-group">
+                            <label for="form_keywords" class="col-sm-4 control-label">Keywords</label>
+                            <div class="col-sm-8">
+                                <input id="form_keywords" name="form[keywords]" class="form-control typeahead" data-typehead="keywords" type="text" value="{{ form.keywords.vars.value }}">
+                            </div>
+                        </div>
+
+
+                        {# Ersteller #}
+                        <div class="form-group">
+                            <label for="form_benutzer" class="col-sm-4 control-label">Ersteller</label>
+                            <div class="col-sm-8">
+                                <input id="form_benutzer" name="form[benutzer]" class="form-control typeahead" data-typehead="benutzer" type="text" value="{{ form.benutzer.vars.value }}">
+                            </div>
+                        </div>
+
+                        {# Erstelldatum #}
+                        <div class="form-group">
+                            <label for="form_abgabedatum" class="col-sm-4 control-label">Erstelldatum</label>
+                            <div class="col-sm-8">
+                                <input id="form_abgabedatum" name="form[abgabedatum]" class="form-control" type="date" value="{{ form.abgabedatum.vars.value }}" disabled>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-red" name="form[submit]">Archivierungen durchsuchen</button>
+                        <button type="reset" class="btn btn-grey" id="reset">Zurücksetzen</button>
+                    </div>
+                </div>
+            </div>
+
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+{% endblock %}
+
+{% block body %}
+    {% if pagination is not null %}
+        {% set showFrom = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() - pagination.getItemNumberPerPage() + 1  %}
+        {% set showTo = pagination.getCurrentPageNumber() * pagination.getItemNumberPerPage() %}
+        {% if showTo > pagination.getTotalItemCount() %}
+            {% set showTo = pagination.getTotalItemCount() %}
+        {% endif %}
+        <h2>
+            {{ pagination.getTotalItemCount }} Archivierung{% if pagination.getTotalItemCount != 1 %}en{% endif %}
+            <small>Zeige {{ showFrom }} bis {{ showTo }} </small>
+        </h2>
+
+        {% if pagination.getTotalItemCount > 0 %}
+            <table class="table table-striped table-bordered table-condensed table-hover table-responsive">
+                <tr>
+                    <th{% if pagination.isSorted('archiv.titel') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Titel', 'archiv.titel') }}
+                    </th>
+                    <th{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.archivId') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Autor', ['zusaetze.archivZusatzKategorieId', 'zusaetze.bezeichnung', 'archiv.archivId']) }}
+                    </th>
+                    <th{% if pagination.isSorted('fachbereich.bezeichnung') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Fachbereich', 'fachbereich.bezeichnung') }}
+                    </th>
+                    <th{% if pagination.isSorted('studiengang.bezeichnung') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Studiengang', 'studiengang.bezeichnung') }}
+                    </th>
+                    <th{% if pagination.isSorted('kategorie.bezeichnung') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Kategorie', 'kategorie.bezeichnung') }}
+                    </th>
+                    <th{% if pagination.isSorted('archiv.abgabedatum') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                        {{ knp_pagination_sortable(pagination, 'Abgabe', 'archiv.abgabedatum') }}
+                    </th>
+
+                    {# Betreuer #}
+                    {% if form.betreuer.vars.value is not empty %}
+                        <th{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.titel') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Betreuer', ['zusaetze.archivZusatzKategorieId', 'zusaetze.bezeichnung', 'archiv.titel']) }}
+                        </th>
+                    {% endif %}
+
+                    {# Unternehmen #}
+                    {% if form.unternehmen.vars.value is not empty %}
+                        <th{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+fachbereich.bezeichnung') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Unternehmen', ['zusaetze.archivZusatzKategorieId', 'zusaetze.bezeichnung', 'fachbereich.bezeichnung']) }}
+                        </th>
+                    {% endif %}
+
+                    {# Keywords #}
+                    {% if form.keywords.vars.value is not empty %}
+                        <th{% if pagination.isSorted('keywords.keyword') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Keywords', 'keywords.keyword') }}
+                        </th>
+                    {% endif %}
+
+                    {# Ersteller #}
+                    {% if form.benutzer.vars.value is not empty %}
+                        <th{% if pagination.isSorted('benutzer.vorname+benutzer.nachname') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Ersteller', ['benutzer.vorname', 'benutzer.nachname']) }}
+                        </th>
+                    {% endif %}
+                </tr>
+
+                {# table body #}
+                {% for archivierung in pagination %}
+                    <tr class="clickable-row" data-href="{{ path('_detailView', {'archivId': archivierung.archivId}) }}">
+                        <td{% if pagination.isSorted('archiv.titel') %} class="sorted"{% endif %}>
+                            {{ archivierung.titel | highlight(form.freitext.vars.value, form.titel.vars.value) | raw }}
+                        </td>
+                        <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.archivId') %} class="sorted"{% endif %}>
+                            {% set autor = [] %}
+                            {% for zusatz in archivierung.getZusaetze() %}
+                                {% if zusatz.getZusatzKategorie().getBezeichnung() == "Autor"  %}
+                                    {% set autor = autor | merge([zusatz.bezeichnung]) %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ autor | join(', ') | highlight(form.freitext.vars.value, form.autor.vars.value) | raw }}
+                        </td>
+                        <td{% if pagination.isSorted('fachbereich.bezeichnung') %} class="sorted"{% endif %}>
+                            {{ archivierung.getFachbereich().bezeichnung | highlight(form.freitext.vars.value, form.fachbereich.vars.value) | raw }}
+                        </td>
+                        <td{% if pagination.isSorted('studiengang.bezeichnung') %} class="sorted"{% endif %}>
+                            {{ archivierung.getStudiengang().bezeichnung | highlight(form.freitext.vars.value, form.studiengang.vars.value) | raw }}
+                        </td>
+                        <td{% if pagination.isSorted('kategorie.bezeichnung') %} class="sorted"{% endif %}>
+                            {{ archivierung.getKategorie().bezeichnung | highlight(form.freitext.vars.value, form.kategorie.vars.value) | raw }}
+                        </td>
+                        <td{% if pagination.isSorted('archiv.abgabedatum') %} class="sorted"{% endif %}>
+                            {{ archivierung.abgabedatum | date('Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                        </td>
+
+                        {# Betreuer #}
+                        {% if form.betreuer.vars.value is not empty %}
+                            <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.titel') %} class="sorted"{% endif %}>                                {% set betreuer = [] %}
+                                {% for zusatz in archivierung.getZusaetze() %}
+                                    {% if zusatz.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
+                                        {% set betreuer = betreuer | merge([zusatz.bezeichnung]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ betreuer | join(', ') | highlight(form.freitext.vars.value, form.betreuer.vars.value) | raw }}
+                            </td>
+                        {% endif %}
+
+                        {# Unternehmen #}
+                        {% if form.unternehmen.vars.value is not empty %}
+                            <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+fachbereich.bezeichnung') %} class="sorted"{% endif %}>
+                                {% set unternehmen = [] %}
+                                {% for zusatz in archivierung.getZusaetze() %}
+                                    {% if zusatz.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
+                                        {% set unternehmen = unternehmen | merge([zusatz.bezeichnung]) %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ unternehmen | join(', ') | highlight(form.freitext.vars.value, form.unternehmen.vars.value) | raw }}
+                            </td>
+                        {% endif %}
+
+                        {# Keywords #}
+                        {% if form.keywords.vars.value is not empty %}
+                            <td{% if pagination.isSorted('keywords.keyword') %} class="sorted"{% endif %}>
+                                {% set keywords = [] %}
+                                {% for keyword in archivierung.getKeywords() %}
+                                    {% set keywords = keywords | merge([keyword.keyword]) %}
+                                {% endfor %}
+                                {{ keywords | join(', ') | highlight(form.freitext.vars.value, form.keywords.vars.value) | raw }}
+                            </td>
+                        {% endif %}
+
+                        {# Ersteller #}
+                        {% if form.benutzer.vars.value is not empty %}
+                            <td{% if pagination.isSorted('benutzer.vorname+benutzer.nachname') %} class="sorted"{% endif %}>
+                                {{ (archivierung.getBenutzer().vorname ~ ' ' ~ archivierung.getBenutzer().nachname) | highlight(form.freitext.vars.value, form.benutzer.vars.value) | raw }}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+
+            {# display navigation #}
+            {{ knp_pagination_render(pagination) }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

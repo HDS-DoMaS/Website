@@ -55,7 +55,7 @@ a:active {
  */
 .btn {
     background-color:#000;
-    border:1px solid #000;
+    border-color:#000;
     border-radius:0px;
     color:#fff;
     font-weight:bold;
@@ -388,7 +388,9 @@ span.twitter-typeahead {
         background: url('../images/background.jpg') top center no-repeat;
     }
 
-    .suche .btn-collapse {
+    .suche .btn-red,
+    .suche .btn-grey {
         float: right;
+        margin-left: 10px;
     }
 }

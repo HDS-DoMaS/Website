@@ -12,3 +12,7 @@ services:
         public: false
         tags:
             - { name: twig.extension }
+    app.zusatz_kategorie_mapper:
+        class: AppBundle\Helper\ZusatzKategorieHelper
+        arguments:
+          doctrine: "@doctrine"
