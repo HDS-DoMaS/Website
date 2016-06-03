@@ -21,7 +21,7 @@ class ArchivierungController extends Controller {
     private $grundPfad;
 
     public function __construct() {
-        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "\\DoMaS\\anhaenge\\";
+        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/DoMaS/anhaenge/";
     }
 
 
@@ -178,7 +178,7 @@ class ArchivierungController extends Controller {
         if($sichtbarkeit === true ||$userId === $adminId || $userId === $profIds || $userId === $erstellerId) {
 
             // PDF returnen:
-            $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "\\" . $anhangId . "\\" . $anhang->getPfad();
+            $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
 
             $mimeType = MimeTypeHelper::findMimeType($pfad);
 
