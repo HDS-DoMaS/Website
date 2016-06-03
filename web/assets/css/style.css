@@ -11,6 +11,11 @@ body {
     color: rgb(255,255,255);
 }
 
+::-moz-selection {
+    background-color: #B73533;
+    color: rgb(255,255,255);
+}
+
 h1{
     font-size:20px;
     font-weight:bold;
@@ -365,9 +370,16 @@ span.twitter-typeahead {
  * Detailview
  */
 
-.detailView h1 + a {
+.detailView h1 + a, .detailView h1 + a + a {
     float: right;
-    margin-top: -56px;;
+    margin-top: -56px;
+    z-index: 100;
+    position: relative;
+
+}
+
+.detailView h1 + a {
+    left: -94px;
 }
 
 .detailView dd {
