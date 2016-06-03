@@ -256,6 +256,13 @@ th.sorted a {
 /**
  * Suche
  */
+.suchcontainer .form-control {
+    border-color: #d83734;
+}
+.suche .suchcontainer .btn-red {
+    margin: 0;
+    float: none;
+}
 .top label {
     color: #fff;
 }
