@@ -24,6 +24,7 @@
 !bin/symfony_requirements
 !/vendor
 /vendor/*
+!/vendor/composer
 !/vendor/knplabs
 
 # Assets and user uploads
