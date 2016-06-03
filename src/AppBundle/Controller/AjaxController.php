@@ -19,9 +19,11 @@ class AjaxController extends Controller {
         $queryBuilder
             ->select('zusaetze.archivZusatzId as id, zusaetze.bezeichnung as value')
             ->from('AppBundle\Entity\ArchivZusatz', 'zusaetze')
-            ->andWhere('zusaetze.bezeichnung LIKE :bezeichnung')
-            ->setParameter('bezeichnung', '%' . $suche . '%')
             ->andWhere('zusaetze.archivZusatzKategorieId = :zusatzKategorieId')
+            ->andWhere('zusaetze.bezeichnung LIKE :bezeichnung
+                OR MATCH (zusaetze.bezeichnung) AGAINST (:match BOOLEAN) > 0.8')
+            ->setParameter('bezeichnung', '%' . $suche . '%')
+            ->setParameter('match', '*' . $suche . '*')
             ->setParameter('zusatzKategorieId', $zusatzMapper->mapToId($kategorie))
             ->orderBy('zusaetze.bezeichnung', 'ASC');
 
@@ -39,7 +41,9 @@ class AjaxController extends Controller {
             ->select('archiv.archivId as id, archiv.' . $feld . ' as value')
             ->from('AppBundle\Entity\Archivierung', 'archiv')
             ->andWhere('archiv.titel LIKE :suche')
+            ->orWhere('MATCH (archiv.titel) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('suche', '%' . $suche . '%')
+            ->setParameter('match', '*' . $suche . '*')
             ->orderBy('archiv.' . $feld, 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -56,7 +60,9 @@ class AjaxController extends Controller {
             ->select('benutzer.benutzerId as id, CONCAT(benutzer.vorname, \' \', benutzer.nachname) as value')
             ->from('AppBundle\Entity\Benutzer', 'benutzer')
             ->andWhere('CONCAT(benutzer.vorname, \' \', benutzer.nachname) LIKE :name')
+            ->orWhere('MATCH (benutzer.vorname, benutzer.nachname) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('name', '%' . $name . '%')
+            ->setParameter('match', '*' . $name . '*')
             ->orderBy('benutzer.vorname, benutzer.nachname', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -73,7 +79,9 @@ class AjaxController extends Controller {
             ->select('fachbereich.fachbereichId as id, fachbereich.bezeichnung as value')
             ->from('AppBundle\Entity\Fachbereich', 'fachbereich')
             ->andWhere('fachbereich.bezeichnung LIKE :bezeichnung')
+            ->orWhere('MATCH (fachbereich.bezeichnung) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
+            ->setParameter('match', '*' . $bezeichnung . '*')
             ->orderBy('fachbereich.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -90,7 +98,9 @@ class AjaxController extends Controller {
             ->select('studiengang.studiengangId as id, studiengang.bezeichnung as value')
             ->from('AppBundle\Entity\Studiengang', 'studiengang')
             ->andWhere('studiengang.bezeichnung LIKE :bezeichnung')
+            ->orWhere('MATCH (studiengang.bezeichnung) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
+            ->setParameter('match', '*' . $bezeichnung . '*')
             ->orderBy('studiengang.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -107,7 +117,9 @@ class AjaxController extends Controller {
             ->select('archivKategorie.archivKategorieId as id, archivKategorie.bezeichnung as value')
             ->from('AppBundle\Entity\ArchivKategorie', 'archivKategorie')
             ->andWhere('archivKategorie.bezeichnung LIKE :bezeichnung')
+            ->orWhere('MATCH (archivKategorie.bezeichnung) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
+            ->setParameter('match', '*' . $bezeichnung . '*')
             ->orderBy('archivKategorie.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -124,7 +136,9 @@ class AjaxController extends Controller {
             ->select('keyword.keywordId as id, keyword.keyword as value')
             ->from('AppBundle\Entity\Keyword', 'keyword')
             ->andWhere('keyword.keyword LIKE :keyword')
+            ->orWhere('MATCH (keyword.keyword) AGAINST (:match BOOLEAN) > 0.8')
             ->setParameter('keyword', '%' . $keyword . '%')
+            ->setParameter('match', '*' . $keyword . '*')
             ->orderBy('keyword.keyword', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);

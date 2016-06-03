@@ -60,7 +60,7 @@ a:active {
  */
 .btn {
     background-color:#000;
-    border-color:#000;
+    border:2px solid #000;
     border-radius:0px;
     color:#fff;
     font-weight:bold;
@@ -109,6 +109,18 @@ a:active {
     border-color:#ddd;
     background-color:#ddd;
     color: #333;
+}
+/*
+ * Inputs
+ */
+.form-control {
+    border-radius: 0;
+    border:2px solid #000;
+    height: 36px;
+}
+.form-control:focus {
+    border-color: #d83734;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6)
 }
 /*
  * Classes
@@ -260,6 +272,9 @@ th.sorted a {
 .btn-collapse .glyphicon-arrow-up {display: inline-block}
 .btn-collapse.collapsed .glyphicon-arrow-up {display: none}
 .btn-collapse.collapsed .glyphicon-arrow-down {display: inline-block}
+.filter {
+    padding:20px 0 14px;
+}
 /**
  * Typeahead
  */
@@ -409,6 +424,12 @@ span.twitter-typeahead {
 /*
  * Media-Queries
  */
+@media(max-width:768px) {
+    .suche .btn-red,
+    .suche .btn-grey {
+        margin-right: 16px;
+    }
+}
 @media(min-width:768px) {
     body.index {
         background: url('../images/background.jpg') top center no-repeat;
@@ -417,6 +438,6 @@ span.twitter-typeahead {
     .suche .btn-red,
     .suche .btn-grey {
         float: right;
-        margin-left: 10px;
+        margin-left: 16px;
     }
 }

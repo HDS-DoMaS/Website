@@ -61,6 +61,7 @@ doctrine:
         dql:
             string_functions:
               MATCH: AppBundle\DQL\MatchAgainstFunction
+              STR_TO_DATE: AppBundle\DQL\StrToDateFunction
 
 # Swiftmailer Configuration
 swiftmailer:

@@ -17,7 +17,7 @@
                         <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="{{ form.freitext.vars.value }}" placeholder="Archivierungen durchsuchen">
                     </div>
                     <div class="col-sm-4 nopadding">
-                        <button type="submit" class="btn" name="form[submittop]">Suchen</button>
+                        <button type="submit" class="btn" name="form[submittop]"><span class="glyphicon glyphicon-search"></span></button>
                     </div>
                 </div>
 
@@ -31,108 +31,110 @@
             </div>
 
             <div class="collapse {{ form.hdncollapse.vars.value }}" id="collapse">
-                <div class="row">
-                    <div class="col-sm-6">
+                <div class="filter">
+                    <div class="row">
+                        <div class="col-sm-6">
 
-                        {# Titel #}
-                        <div class="form-group">
-                            <label for="form_titel" class="col-sm-4 control-label">Titel</label>
-                            <div class="col-sm-8">
-                                <input id="form_titel" name="form[titel]" class="form-control typeahead" data-typehead="archiv-titel" type="text" value="{{ form.titel.vars.value }}">
+                            {# Titel #}
+                            <div class="form-group">
+                                <label for="form_titel" class="col-sm-4 control-label">Titel</label>
+                                <div class="col-sm-8">
+                                    <input id="form_titel" name="form[titel]" class="form-control typeahead" data-typehead="archiv-titel" type="text" value="{{ form.titel.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
-                        {# Autor #}
-                        <div class="form-group">
-                            <label for="form_autor" class="col-sm-4 control-label">Autor</label>
-                            <div class="col-sm-8">
-                                <input id="form_autor" name="form[autor]" class="form-control typeahead" data-typehead="zusatz-autor" type="text" value="{{ form.autor.vars.value }}">
+                            {# Autor #}
+                            <div class="form-group">
+                                <label for="form_autor" class="col-sm-4 control-label">Autor</label>
+                                <div class="col-sm-8">
+                                    <input id="form_autor" name="form[autor]" class="form-control typeahead" data-typehead="zusatz-autor" type="text" value="{{ form.autor.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
-                        {# Fachbereich #}
-                        <div class="form-group">
-                            <label for="form_fachbereich" class="col-sm-4 control-label">Fachbereich</label>
-                            <div class="col-sm-8">
-                                <input id="form_fachbereich" name="form[fachbereich]" class="form-control typeahead" data-typehead="fachbereich" type="text" value="{{ form.fachbereich.vars.value }}">
+                            {# Fachbereich #}
+                            <div class="form-group">
+                                <label for="form_fachbereich" class="col-sm-4 control-label">Fachbereich</label>
+                                <div class="col-sm-8">
+                                    <input id="form_fachbereich" name="form[fachbereich]" class="form-control typeahead" data-typehead="fachbereich" type="text" value="{{ form.fachbereich.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
-                        {# Studiengang #}
-                        <div class="form-group">
-                            <label for="form_studiengang" class="col-sm-4 control-label">Studiengang</label>
-                            <div class="col-sm-8">
-                                <input id="form_studiengang" name="form[studiengang]" class="form-control typeahead" data-typehead="studiengang" type="text" value="{{ form.studiengang.vars.value }}">
+                            {# Studiengang #}
+                            <div class="form-group">
+                                <label for="form_studiengang" class="col-sm-4 control-label">Studiengang</label>
+                                <div class="col-sm-8">
+                                    <input id="form_studiengang" name="form[studiengang]" class="form-control typeahead" data-typehead="studiengang" type="text" value="{{ form.studiengang.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
-                        {# Kategorie #}
-                        <div class="form-group">
-                            <label for="form_kategorie" class="col-sm-4 control-label">Kategorie</label>
-                            <div class="col-sm-8">
-                                <input id="form_kategorie" name="form[kategorie]" class="form-control typeahead" data-typehead="kategorie" type="text" value="{{ form.kategorie.vars.value }}">
+                            {# Kategorie #}
+                            <div class="form-group">
+                                <label for="form_kategorie" class="col-sm-4 control-label">Kategorie</label>
+                                <div class="col-sm-8">
+                                    <input id="form_kategorie" name="form[kategorie]" class="form-control typeahead" data-typehead="kategorie" type="text" value="{{ form.kategorie.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
-                        {# Abgabedatum #}
-                        <div class="form-group">
-                            <label for="form_abgabedatum" class="col-sm-4 control-label">Abgabedatum</label>
-                            <div class="col-sm-8">
-                                <input id="form_abgabedatum" name="form[abgabedatum]" class="form-control" type="date" value="{{ form.abgabedatum.vars.value }}" disabled>
+                            {# Abgabedatum #}
+                            <div class="form-group">
+                                <label for="form_abgabedatum" class="col-sm-4 control-label">Abgabedatum</label>
+                                <div class="col-sm-8">
+                                    <input id="form_abgabedatum" name="form[abgabedatum]" class="form-control datepicker" type="text" value="{{ form.abgabedatum.vars.value }}">
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
+                        <div class="col-sm-6">
+
+                            {# Betreuer #}
+                            <div class="form-group">
+                                <label for="form_betreuer" class="col-sm-4 control-label">Betreuer</label>
+                                <div class="col-sm-8">
+                                    <input id="form_betreuer" name="form[betreuer]" class="form-control typeahead" data-typehead="zusatz-betreuer" type="text" value="{{ form.betreuer.vars.value }}">
+                                </div>
+                            </div>
+
+                            {# Unternehmen #}
+                            <div class="form-group">
+                                <label for="form_unternehmen" class="col-sm-4 control-label">Unternehmen</label>
+                                <div class="col-sm-8">
+                                    <input id="form_unternehmen" name="form[unternehmen]" class="form-control typeahead" data-typehead="zusatz-unternehmen" type="text" value="{{ form.unternehmen.vars.value }}">
+                                </div>
+                            </div>
+
+                            {# Keywords #}
+                            <div class="form-group">
+                                <label for="form_keywords" class="col-sm-4 control-label">Keywords</label>
+                                <div class="col-sm-8">
+                                    <input id="form_keywords" name="form[keywords]" class="form-control typeahead" data-typehead="keywords" type="text" value="{{ form.keywords.vars.value }}">
+                                </div>
+                            </div>
+
+
+                            {# Ersteller #}
+                            <div class="form-group">
+                                <label for="form_benutzer" class="col-sm-4 control-label">Ersteller</label>
+                                <div class="col-sm-8">
+                                    <input id="form_benutzer" name="form[benutzer]" class="form-control typeahead" data-typehead="benutzer" type="text" value="{{ form.benutzer.vars.value }}">
+                                </div>
+                            </div>
+
+                            {# Erstelldatum #}
+                            <div class="form-group">
+                                <label for="form_erstelldatum" class="col-sm-4 control-label">Erstelldatum</label>
+                                <div class="col-sm-8">
+                                    <input id="form_erstelldatum" name="form[erstelldatum]" class="form-control datepicker" type="text" value="{{ form.erstelldatum.vars.value }}">
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div class="col-sm-6">
 
-                        {# Betreuer #}
-                        <div class="form-group">
-                            <label for="form_betreuer" class="col-sm-4 control-label">Betreuer</label>
-                            <div class="col-sm-8">
-                                <input id="form_betreuer" name="form[betreuer]" class="form-control typeahead" data-typehead="zusatz-betreuer" type="text" value="{{ form.betreuer.vars.value }}">
-                            </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-red" name="form[submit]">Archivierungen durchsuchen</button>
+                            <button type="reset" class="btn btn-grey" id="reset">Formular leeren</button>
                         </div>
-
-                        {# Unternehmen #}
-                        <div class="form-group">
-                            <label for="form_unternehmen" class="col-sm-4 control-label">Unternehmen</label>
-                            <div class="col-sm-8">
-                                <input id="form_unternehmen" name="form[unternehmen]" class="form-control typeahead" data-typehead="zusatz-unternehmen" type="text" value="{{ form.unternehmen.vars.value }}">
-                            </div>
-                        </div>
-
-                        {# Keywords #}
-                        <div class="form-group">
-                            <label for="form_keywords" class="col-sm-4 control-label">Keywords</label>
-                            <div class="col-sm-8">
-                                <input id="form_keywords" name="form[keywords]" class="form-control typeahead" data-typehead="keywords" type="text" value="{{ form.keywords.vars.value }}">
-                            </div>
-                        </div>
-
-
-                        {# Ersteller #}
-                        <div class="form-group">
-                            <label for="form_benutzer" class="col-sm-4 control-label">Ersteller</label>
-                            <div class="col-sm-8">
-                                <input id="form_benutzer" name="form[benutzer]" class="form-control typeahead" data-typehead="benutzer" type="text" value="{{ form.benutzer.vars.value }}">
-                            </div>
-                        </div>
-
-                        {# Erstelldatum #}
-                        <div class="form-group">
-                            <label for="form_abgabedatum" class="col-sm-4 control-label">Erstelldatum</label>
-                            <div class="col-sm-8">
-                                <input id="form_abgabedatum" name="form[abgabedatum]" class="form-control" type="date" value="{{ form.abgabedatum.vars.value }}" disabled>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-red" name="form[submit]">Archivierungen durchsuchen</button>
-                        <button type="reset" class="btn btn-grey" id="reset">Zurücksetzen</button>
                     </div>
                 </div>
             </div>
@@ -208,6 +210,13 @@
                             {{ knp_pagination_sortable(pagination, 'Ersteller', ['benutzer.vorname', 'benutzer.nachname']) }}
                         </th>
                     {% endif %}
+
+                    {# Erstelldatum #}
+                    {% if form.erstelldatum.vars.value is not empty %}
+                        <th{% if pagination.isSorted('archiv.erstelldatum') %} class="sorted {{ pagination.getDirection() }}"{% endif %}>
+                            {{ knp_pagination_sortable(pagination, 'Erstellung', 'archiv.erstelldatum') }}
+                        </th>
+                    {% endif %}
                 </tr>
 
                 {# table body #}
@@ -235,7 +244,11 @@
                             {{ archivierung.getKategorie().bezeichnung | highlight(form.freitext.vars.value, form.kategorie.vars.value) | raw }}
                         </td>
                         <td{% if pagination.isSorted('archiv.abgabedatum') %} class="sorted"{% endif %}>
-                            {{ archivierung.abgabedatum | date('Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                            {% if form.abgabedatum.vars.value is empty %}
+                                {{ archivierung.abgabedatum | date('Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                            {%  else %}
+                                {{ archivierung.abgabedatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                            {%  endif %}
                         </td>
 
                         {# Betreuer #}
@@ -278,6 +291,13 @@
                         {% if form.benutzer.vars.value is not empty %}
                             <td{% if pagination.isSorted('benutzer.vorname+benutzer.nachname') %} class="sorted"{% endif %}>
                                 {{ (archivierung.getBenutzer().vorname ~ ' ' ~ archivierung.getBenutzer().nachname) | highlight(form.freitext.vars.value, form.benutzer.vars.value) | raw }}
+                            </td>
+                        {% endif %}
+
+                        {# Erstelldatum #}
+                        {% if form.erstelldatum.vars.value is not empty %}
+                            <td{% if pagination.isSorted('archiv.erstelldatum') %} class="sorted"{% endif %}>
+                                {{ archivierung.erstelldatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.erstelldatum.vars.value) | raw }}
                             </td>
                         {% endif %}
                     </tr>

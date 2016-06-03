@@ -49,6 +49,50 @@ $(function() {
             }
         });
 
+        // Datepicker binden
+        $('.datepicker').daterangepicker({
+            'showDropdowns': true,
+            'autoUpdateInput': false,
+            'autoApply': true,
+            'locale': {
+                'format': 'DD.MM.YYYY',
+                "separator": " - ",
+                "applyLabel": "Übernehmen",
+                "cancelLabel": "Abbrechen",
+                "fromLabel": "Von",
+                "toLabel": "Bis",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "So",
+                    "Mo",
+                    "Di",
+                    "Mi",
+                    "Do",
+                    "Fr",
+                    "Sa"
+                ],
+                "monthNames": [
+                    "Januar",
+                    "Februar",
+                    "März",
+                    "April",
+                    "Mai",
+                    "Juni",
+                    "Juli",
+                    "August",
+                    "September",
+                    "Oktober",
+                    "November",
+                    "Dezember"
+                ],
+                "firstDay": 1
+            }
+        }).on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('DD.MM.YYYY') + ' bis ' + picker.endDate.format('DD.MM.YYYY'));
+        }).on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
     } // if($('body.suche'))
 
 });
