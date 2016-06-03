@@ -365,18 +365,32 @@ span.twitter-typeahead {
  * Detailview
  */
 
+.detailView h1 + a {
+    float: right;
+    margin-top: -56px;;
+}
 
 .detailView dd {
     margin-bottom: 8px;
 }
 
-.detailView dl {
-    margin-bottom: 40px;
+.anhang-container {
+    padding:20px;
+    background-color:#f5f5f5;
+}
+
+.detailView .anhang-container dt {
+    float: none;
+    width: none;
+    overflow: none;
+    clear: both;
+    text-align: left;
+    margin-bottom:10px
 }
 
 @media (min-width: 768px){
-    .detailView h1{
-        margin-left:180px;
+    .detailView .anhang-container dd {
+        margin-left: 0px;
     }
 }
 
