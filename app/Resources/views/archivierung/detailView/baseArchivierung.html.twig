@@ -51,6 +51,7 @@
             {% endif %}
         </dd>
 
+
         <dt>Beschreibung</dt>
         <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
 
@@ -76,6 +77,7 @@
 
                     <dd>
                         <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
+                            <span class="glyphicon glyphicon-paperclip"></span>
 
                             {{ anhang.getDateiKategorie().getBezeichnung  }}
                             {% if anhang.getVersionsnummer() is not null %}
@@ -90,7 +92,7 @@
 
                 <dt>Referenzen in DoMas</dt>
                 {% for referenz in archivierung.getReferenzen() %}
-                    <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"> {{ referenz.getTitel() }}</a></dd>
+                    <dd><<a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
                 {% endfor %}
                 {% if archivierung.getReferenzen()|length <= 0 %}
                     <dd></dd>
