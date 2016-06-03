@@ -6,6 +6,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Archivierung;
+use AppBundle\Entity\ArchivAnhang;
+use AppBundle\Helper\MimeTypeHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -15,6 +17,13 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 
 class ArchivierungController extends Controller {
+
+    private $grundPfad;
+
+    public function __construct() {
+        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "\\DoMaS\\anhaenge\\";
+    }
+
 
     /**
      * @Route("/archivierung/neu",
@@ -142,42 +151,65 @@ class ArchivierungController extends Controller {
      * )
      * @param $anhangId
      * @return \Symfony\Component\HttpFoundation\Response
+     * öffnen eines Anhanges einer Archivierung mit vorheriger Authentifizierung
      */
     public function detailViewFileAction($anhangId) {
 
-        // Provisiorisch hardgecodet:
-        $userId = 1;
-        $adminId = 1;
-        $profId = 3;
+        // TODO UserId von Shibboleth bekommen
 
         $anhang = $this->getAnhang($anhangId);
-        $erstellerId = $anhang->getArchivierung()->getBenutzerId();
+
+        $archivierung = $anhang->getArchivierung();
+        $erstellerId = $archivierung->getBenutzerId();
+
+        $userId = 1;    //Test
+        $adminId = 666;
+        $profIds = [7,8,9];
+
+
+        if($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
+            $sichtbarkeit = 0;
+        }
+        else{
+            $sichtbarkeit = $archivierung->getSichtbarkeit();
+        }
 
         // checken ob Zugriff auf Path erlaubt
-        if($userId === $adminId || $userId === $profId || $userId === $erstellerId) {
+        if($sichtbarkeit === true ||$userId === $adminId || $userId === $profIds || $userId === $erstellerId) {
 
-            // PDF returnen
-            $pfad = "/anhaenge/" . $anhangId . "/" . $anhang->getPfad();
-            // TEST
-            $pfad = "DoMaS/anhaenge/TestPdf.pdf";   ////////////////////////////////////////////////////// HÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+            // PDF returnen:
+            $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "\\" . $anhangId . "\\" . $anhang->getPfad();
+
+            $mimeType = MimeTypeHelper::findMimeType($pfad);
 
             $response = new BinaryFileResponse($pfad);
             $response->trustXSendfileTypeHeader();
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $pfad);
+            $response->headers->set('Content-Type', $mimeType);
+
+            global $dateiname;
+            $dateiname = $archivierung->getTitel() . " - " . $anhang->getDateiKategorie()->getBezeichnung();
+
+            if($anhang->getVersionsnummer()) {
+                $dateiname = $dateiname . " v" . $anhang->getVersionsnummer();
+            }
+
+            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);
+
+            $dateiname = null;
             return $response;
         }
 
-        else{ // Nicht Berechtigt
+        else{ // Nicht authorisierter Zugriff
 
             throw $this->createAccessDeniedException(
-                'Sie haben keine Zugriffsberechtigung auf diesen Anhang!'
+                'SIE HABEN KEINE ZUGRIFFSBERECHTIGUNG FÜR DIESEN ANHANG!'
             );
         }
     }
 
 
     private function getAnhang($anhangId) {
-        $archivierung = $this->getDoctrine()
+        $anhang = $this->getDoctrine()
             ->getRepository('AppBundle:ArchivAnhang')
             ->find($anhangId);
 
@@ -188,7 +220,7 @@ class ArchivierungController extends Controller {
             );
         }
 
-        return $archivierung;
+        return $anhang;
     }
 
     private function getArchivierung($archivierungId) {
@@ -257,5 +289,7 @@ class ArchivierungController extends Controller {
     }
 
 
+
+    
 
 }

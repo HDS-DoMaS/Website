@@ -75,7 +75,7 @@
                 {% for anhang in archivierung.getAnhaenge() %}
 
                     <dd>
-                        <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}">
+                        <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
 
                             {{ anhang.getDateiKategorie().getBezeichnung  }}
                             {% if anhang.getVersionsnummer() is not null %}
