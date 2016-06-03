@@ -67,13 +67,13 @@ class ArchivierungController extends Controller {
 
 
     /**
-     * @Route("/archivierung/bearbeiten/{archivierungId}",
+     * @Route("/archivierung/bearbeiten/{archivId}",
      *     name="_editArchivierung",
      *     requirements={"archivId": "\d+"}
      * )
      */
-    public function editArchivierungAction(Request $request, $archivierungId) {
-        $archivierung = $this->getArchivierung($archivierungId);
+    public function editArchivierungAction(Request $request, $archivId) {
+        $archivierung = $this->getArchivierung($archivId);
 
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
@@ -128,14 +128,6 @@ class ArchivierungController extends Controller {
             );
         }
 
-        elseif(($kategorie == "Gutachten")) {
-
-            return $this->render(
-                'archivierung/detailView/gutachten.html.twig',
-                array('archivierung' => $archivierung)
-            );
-        }
-
         else{
             return $this->render(
                 'archivierung/detailView/arbeit.html.twig',
@@ -147,7 +139,7 @@ class ArchivierungController extends Controller {
     /**
      * @Route("/archivierung/detail/anhang/{anhangId}",
      *     name="_detailViewFile",
-     *     requirements={"archivId": "\d+"}
+     *     requirements={"anhangId": "\d+"}
      * )
      * @param $anhangId
      * @return \Symfony\Component\HttpFoundation\Response
@@ -187,11 +179,7 @@ class ArchivierungController extends Controller {
             $response->headers->set('Content-Type', $mimeType);
 
             global $dateiname;
-            $dateiname = $archivierung->getTitel() . " - " . $anhang->getDateiKategorie()->getBezeichnung();
-
-            if($anhang->getVersionsnummer()) {
-                $dateiname = $dateiname . " v" . $anhang->getVersionsnummer();
-            }
+            $dateiname = $anhang->getPfad();
 
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);
 
@@ -223,15 +211,15 @@ class ArchivierungController extends Controller {
         return $anhang;
     }
 
-    private function getArchivierung($archivierungId) {
+    private function getArchivierung($archivId) {
         $archivierung = $this->getDoctrine()
             ->getRepository('AppBundle:Archivierung')
-            ->find($archivierungId);
+            ->find($archivId);
 
         // Keine Archivierung gefunden
         if (!$archivierung) {
             throw $this->createNotFoundException(
-                'Keine Archivierung mit der id ' . $archivierungId . ' gefunden!'
+                'Keine Archivierung mit der id ' . $archivId . ' gefunden!'
             );
         }
 

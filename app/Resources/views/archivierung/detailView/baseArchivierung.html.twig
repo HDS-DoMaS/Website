@@ -21,11 +21,10 @@
     {% endif %}
 
 
-{#
     <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
     </a>
-
+{#
     <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
@@ -79,7 +78,7 @@
                             <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
                                 <span class="glyphicon glyphicon-paperclip"></span>
 
-                                {{ anhang.getDateiKategorie().getBezeichnung  }}
+                                {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
                                 {% if anhang.getVersionsnummer() is not null %}
                                         {{ " - Version: " ~ anhang.getVersionsnummer() }}
                                 {% endif %}
