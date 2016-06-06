@@ -156,7 +156,7 @@ class ArchivierungController extends Controller {
 
         $userId = 1;    //Test
         $adminId = 666;
-        $profIds = [7,8,9];
+        $profIds = [7,8,9]; //Test
 
 
         if($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
@@ -167,7 +167,7 @@ class ArchivierungController extends Controller {
         }
 
         // checken ob Zugriff auf Path erlaubt
-        if($sichtbarkeit === true ||$userId === $adminId || $userId === $profIds || $userId === $erstellerId) {
+        if($sichtbarkeit === true ||$userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
 
             // PDF returnen:
             $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();

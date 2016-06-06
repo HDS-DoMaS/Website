@@ -2,6 +2,12 @@
 
 {% block bodyclass %}detailView{% endblock %}
 
+{% block top %}
+
+    {#TODO Quicksuche einbauen#}
+
+{% endblock %}
+
 {% block body %}
 
     {% for flash_message in app.session.flashBag.get('success') %}
@@ -13,13 +19,6 @@
 
 
     <h1>{{ archivierung.getTitel() }}</h1>
-
-    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
-    {% if archivierung.getSichtbarkeit() == 0 %}
-        <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
-        <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
-    {% endif %}
-
 
     <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
@@ -50,7 +49,6 @@
                     {% endif %}
                 </dd>
 
-
                 <dt>Beschreibung</dt>
                 <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
 
@@ -66,54 +64,75 @@
             </dl>
         </div>
 
-        <div class="col-md-5">
-            <dl class="dl-horizontal anhang-container">
-                {% if archivierung.getSichtbarkeit() == 1 %}
-                {# TODO oder wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
 
-                    <dt>Datei-Anhänge</dt>
-                    {% for anhang in archivierung.getAnhaenge() %}
+        {% set hasAnhaenge = (archivierung.getAnhaenge() |length > 0) %}
+        {% set hasReferenzen = (archivierung.getReferenzen() |length > 0) %}
+        {% set hasKeywords = (archivierung.getKeywords() |length > 0) %}
 
-                        <dd>
-                            <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
-                                <span class="glyphicon glyphicon-paperclip"></span>
+        {% if hasAnhaenge or hasReferenzen or hasKeywords %}
+            <div class="col-md-5">
 
-                                {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
-                                {% if anhang.getVersionsnummer() is not null %}
-                                        {{ " - Version: " ~ anhang.getVersionsnummer() }}
-                                {% endif %}
-                            </a>
-                        </dd>
-                    {% endfor %}
-                    {% if archivierung.getAnhaenge()|length <= 0 %}
-                        <dd></dd>
+
+
+                <dl class="dl-horizontal anhang-container">
+
+                    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
+                    {% if archivierung.getSichtbarkeit() == 0 %}
+                        <section class="nichtSichtbarMsg">
+                            <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
+                            <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
+                        </section>
                     {% endif %}
 
-                    <dt>Referenzen in DoMas</dt>
-                    {% for referenz in archivierung.getReferenzen() %}
-                        <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
-                    {% endfor %}
-                    {% if archivierung.getReferenzen()|length <= 0 %}
-                        <dd></dd>
-                    {% endif %}
+                    {% if archivierung.getSichtbarkeit() == 1 %}
+                    {# TODO oder wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
 
-                {% endif %}
+                        {% if hasAnhaenge %}
+                            <dt>Datei-Anhänge</dt>
 
-                <dt>Keywords</dt>
-                <dd>
-                    {% set isFirstOne = true %}
-                    {% for keyword in archivierung.getKeywords() %}
-                        {% if isFirstOne == false %}
-                            {{ ", " }}
+                            {% for anhang in archivierung.getAnhaenge() %}
+                                <dd>
+                                    <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
+                                        <span class="glyphicon glyphicon-paperclip"></span>
+                                        {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
+                                        {% if anhang.getVersionsnummer() is not null %}
+                                                {{ " - Version: " ~ anhang.getVersionsnummer() }}
+                                        {% endif %}
+                                    </a>
+                                </dd>
+                            {% endfor %}
                         {% endif %}
-                        {{ keyword.getKeyword() }}
-                        {% set isFirstOne = false %}
-                    {% endfor %}
-                </dd>
-            </dl>
-        </div>
+
+                        {% if hasReferenzen %}
+                            <dt>Referenzen in DoMas</dt>
+
+                            {% for referenz in archivierung.getReferenzen() %}
+                                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
+                            {% endfor %}
+                        {% endif %}
+
+                    {% endif %}
+
+                    {% if hasKeywords %}
+                        <dt>Keywords</dt>
+                        <dd>
+                            {% set isFirstOne = true %}
+                            {% for keyword in archivierung.getKeywords() %}
+                                {% if isFirstOne == false %}
+                                    {{ ", " }}
+                                {% endif %}
+                                {{ keyword.getKeyword() }}
+                                {% set isFirstOne = false %}
+                            {% endfor %}
+                        </dd>
+                    {% endif %}
+                </dl>
+            </div>
+        {% endif %}
+
     </div>
 
+    {#TODO Bugs fixen#}
     {% if app.request.headers.get('referer') is null %}
         <a href="{{ path('_default') }}" class="btn btn-default">
             zurück
