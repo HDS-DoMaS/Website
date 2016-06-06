@@ -10,8 +10,11 @@ use AppBundle\Entity\ArchivAnhang;
 use AppBundle\Helper\MimeTypeHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
@@ -228,42 +231,29 @@ class ArchivierungController extends Controller {
 
     private function getArchivierungForm($archivierung) {
         // Erzeugt ein Formular für das Objekt Archivierung
-        $form = $this->createFormBuilder($archivierung)
+        return $this->createFormBuilder($archivierung)
+            ->add('archivId')
             ->add('titel', TextType::class)
-            ->add('beschreibung', TextType::class)
+            ->add('abgabedatum', DateType::class)
+            ->add('titel', TextType::class)
+            ->add('titel', TextType::class)
+            ->add('titel', TextType::class)
+            ->add('titel', TextType::class)
+            ->add('beschreibung', TextareaType::class)
             ->add('fachbereich', EntityType::class, array(
-                // query choices from this entity
-                'class' => 'AppBundle:Fachbereich',
-                // use the User.username property as the visible option string
-                'choice_label' => 'bezeichnung',
-                'placeholder' => 'Bitte wählen',
-                // used to render a select box, check boxes or radios
-                'multiple' => false,
-                'expanded' => false,
+                'class' => 'AppBundle:fachbereich',
+                'choice_label' => 'bezeichnung'
             ))
             ->add('studiengang', EntityType::class, array(
-                // query choices from this entity
                 'class' => 'AppBundle:studiengang',
-                // use the User.username property as the visible option string
-                'choice_label' => 'bezeichnung',
-                'placeholder' => 'Bitte wählen',
-                // used to render a select box, check boxes or radios
-                'multiple' => false,
-                'expanded' => false,
+                'choice_label' => 'bezeichnung'
             ))
             ->add('kategorie', EntityType::class, array(
-                // query choices from this entity
                 'class' => 'AppBundle:ArchivKategorie',
-                // use the User.username property as the visible option string
-                'choice_label' => 'bezeichnung',
-                'placeholder' => 'Bitte wählen',
-                // used to render a select box, check boxes or radios
-                'multiple' => false,
-                'expanded' => false,
+                'choice_label' => 'bezeichnung'
             ))
             ->add('speichern', SubmitType::class)
             ->getForm();
-        return $form;
     }
 
     private function saveArchivierung($archivierung) {
@@ -275,9 +265,4 @@ class ArchivierungController extends Controller {
         // actually executes the queries (i.e. the INSERT query)
         $entityManager->flush();
     }
-
-
-
-    
-
 }
