@@ -3,3 +3,11 @@
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block h1 %}Archivierung bearbeiten{% endblock %}
+{% block archivId %}
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="form_archivId">Archiv-ID</label>
+        <div class="col-sm-10">
+            {{ form.archivId.vars.value }}
+        </div>
+    </div>
+{% endblock %}
