@@ -4,7 +4,7 @@
 
 {% block top %}
 
-    {#TODO Quicksuche einbauen#}
+    {#TODO DAVE Quicksuche einbauen#}
 
 {% endblock %}
 
@@ -133,6 +133,22 @@
     </div>
 
     {#TODO Bugs fixen#}
+    {#
+    wenn neu auf seite: referer als knopf, und referer auch spreichern für aktuelle seite
+    wenn seitenaufruf und path bereits gesetzt: checken ob referer = target. wenn ja redirect auf comingFrom. else redirect auf Home.
+    bei zurück wenn es eintrag gab, eintrag löschen.
+    wenn klick auf referenz: zu comingFrom noch ein target = referer hinzufügen in tabelle.
+    #}
+    {#
+    Lösung 2: HISTORY-LIST (session)
+    wenn aufruf und referer != detailview oder suchseite, liste leeren
+    wenn aufruf und referer == suchseite, liste leeren und suchseite an liste anhängen
+    wenn aufruf und referer == detailview, referer in liste eintragen und dann seite laden
+    wenn zurück und liste leer, redirect auf leere suchseite
+    wenn zurück und liste hat einträge, redirect auf letzten eintrag. diesen dann löschen
+    #}
+
+
     {% if app.request.headers.get('referer') is null %}
         <a href="{{ path('_default') }}" class="btn btn-default">
             zurück
