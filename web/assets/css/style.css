@@ -283,8 +283,6 @@ th.sorted a {
 }
 .suche .suchcontainer .btn-red {
     margin: 0;
-    float: none;
-    border: 3px solid #d83734;
     float: left;
     margin-right: 10px;
 }
