@@ -7,9 +7,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Archivierung;
 use AppBundle\Entity\ArchivAnhang;
+use AppBundle\Entity\ArchivZusatz;
 use AppBundle\Helper\MimeTypeHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -17,6 +19,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Doctrine\ORM\EntityRepository;
 
 
 class ArchivierungController extends Controller {
@@ -278,15 +281,38 @@ class ArchivierungController extends Controller {
     }
 
     private function getArchivierungForm($archivierung) {
+        $zusatzMapper = $this->get('app.zusatz_kategorie_mapper');
+
+        $erZusatz = $this->getDoctrine()
+            ->getRepository('AppBundle:ArchivZusatz')
+            ->createQueryBuilder('zusatz')
+            ->join('zusatz.archivierungen', 'archivierung') // JOIN Fachbereich
+            ->andWhere('archivierung.archivId = :archivId')
+            ->setParameter('archivId', $archivierung->getArchivId())
+            ->orderBy('zusatz.bezeichnung', 'ASC');
+
         // Erzeugt ein Formular für das Objekt Archivierung
         return $this->createFormBuilder($archivierung)
             ->add('archivId')
             ->add('titel', TextType::class)
+            ->add('zusaetze', EntityType::class, array(
+                'class' => 'AppBundle:ArchivZusatz',
+                'choice_label' => 'bezeichnung'
+            ))
             ->add('abgabedatum', DateType::class, array(
                 'widget' => 'single_text',
                 'format' => 'dd.MM.yyyy'
             ))
+            ->add('erstelldatum', DateType::class, array(
+                'widget' => 'single_text',
+                'format' => 'dd.MM.yyyy'
+            ))
             ->add('beschreibung', TextareaType::class)
+            ->add('zusaetze', EntityType::class, array(
+                'class' => 'AppBundle:ArchivZusatz',
+                'query_builder' => $erZusatz,
+                'choice_label' => 'bezeichnung',
+            ))
             ->add('fachbereich', EntityType::class, array(
                 'class' => 'AppBundle:fachbereich',
                 'choice_label' => 'bezeichnung'
@@ -298,6 +324,9 @@ class ArchivierungController extends Controller {
             ->add('kategorie', EntityType::class, array(
                 'class' => 'AppBundle:ArchivKategorie',
                 'choice_label' => 'bezeichnung'
+            ))
+            ->add('benutzerId', HiddenType::class, array(
+                'data' => '1'
             ))
             ->add('speichern', SubmitType::class)
             ->getForm();
