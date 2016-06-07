@@ -129,28 +129,23 @@ class ArchivierungController extends Controller {
         $biggestIndex = sizeof($historyList)-1;
 
 
-
-
-        $logger = $this->get('logger');
-        if(sizeof($historyList)>0){
-            foreach($historyList as &$elem) {
-                $logger->error($elem);
-            }
-        }
-
-
-
+        // wenn es keine history gibt, zurueck zur suche springen
         if($historyList == null || $biggestIndex < 0 ) {
             $return = $this->redirect($this->generateUrl('_suche'));
         }
+        // ansonsten redirect zum letzten eintrag
         else{
             $url = $historyList[$biggestIndex];
             $urlControllerName = $this->URLToControllerName($url, $request);
 
-            if($urlControllerName === "_detailView" && strpos($urlControllerName, '/zurueck') !== false) {
+
+            // wenn es sich um eine detailView handelt, dieser mitgeben dass sie nicht zum ersten mal aufgerufen wird.
+            // dadurch wird ihr referer nicht erneut in die history eingetragen und es entsteht keine schleife.
+            if($urlControllerName === "_detailView" && strpos($url, '/zurueck') === false) {
                 $url = $url . '/zurueck';
             }
 
+            // umleitung auf den jüngsten eintrag der history und anschließendes entfernen des eintrags
             $return = $this->redirect($url);
             array_splice($historyList, $biggestIndex, 1);
             $session->set("historyList", $historyList);
@@ -163,75 +158,66 @@ class ArchivierungController extends Controller {
     /**
      * @Route("/archivierung/detail/{archivId}/{zurueckButton}",
      *     name="_detailView",
-     *     defaults={"zurueckButton": ""},
-     *     requirements={"archivId": "\d+"}
+     *     defaults={"zurueckButton": "error"},
+     *     requirements={"archivId": "\d+", "zurueckButton" : "[z][u][r][u][e][c][k]"}
      * )
      * @param integer $archivId
      * @param string $zurueckButton
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function detailViewAction($archivId, Request $request, $zurueckButton = "") {
+    public function detailViewAction($archivId, Request $request, $zurueckButton = "error") {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
+        //LOGIK für den zurück-knopf:
         // session hohlen und gucken ob schon history liste gibt
         $session = $request->getSession();
         $historyList = $session->get("historyList", array());
 
 
-
-
-
-
-        $logger = $this->get('logger');
-        $logger->error($zurueckButton);
-        $logger->error($zurueckButton !== "zurueck");
-
-        if(sizeof($historyList)>0){
-            foreach($historyList as &$elem) {
-                $logger->error($elem);
-            }
-        }
-
-
-
-
-
         // referer pathinfo auslesen
         $referer = $request->headers->get('referer');
         if($referer != null) {
-            $refererFirstPart = explode('?', $referer)[0];
-            $refererMiddlePart = explode($request->getBaseURL(), $refererFirstPart)[1];
-
-            $fullRoute = $this->get('router')->match($refererMiddlePart);
-            $refererControllerPfad = $fullRoute['_controller'];
-            $refererControllerFunction = explode("::", $refererControllerPfad)[1];
-            $refererControllerId = "_" . explode("Action", $refererControllerFunction)[0];
+            $refererControllerId = $this->URLToControllerName($referer, $request);
         }
         else{
             $refererControllerId = false;
         }
 
+        // je nach referer entscheiden was mit der history für den zurückbutton passiert..
 
-
-
-        // je nach referer entscheiden was mit history für den zurückbutton passiert
+        //wenn es sich im eine detailView handelt, an die history anhängen.
         if($refererControllerId === "_detailView") {
 
+            //ausser befindet sich sowie grade in einem zurück-request.
             if($zurueckButton !== "zurueck") {
-                array_push($historyList, $referer);
+
+                $biggestIndex = sizeof($historyList)-1;
+
+                //checken ob man nicht die seite gerade nur refresht
+                if ($biggestIndex < 0 || $referer != $historyList[$biggestIndex]) {
+                    array_push($historyList, $referer);
+                }
             }
+            else{
+                // Mach nichts.
+            }
+
         }
+        // wenn man von der suchseite kommt hat, neue history erstellen
         elseif($refererControllerId === "_suche") {
             $historyList = array();
             array_push($historyList, $referer);
         }
+        // wenn es keinen referer gibt, gibt es auch keine history
         else{
             $historyList = array();
         }
 
-        $session->set("historyList", $historyList);
+        $session->set("historyList", $historyList); // save
 
+
+        // RENDERN der View:
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
         if($kategorie == "Anleitung") {
@@ -248,6 +234,7 @@ class ArchivierungController extends Controller {
             );
         }
     }
+
 
     /**
      * @Route("/archivierung/detail/anhang/{anhangId}",
@@ -285,13 +272,14 @@ class ArchivierungController extends Controller {
             // PDF returnen:
             $pfad = $this->anhaengePfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
 
+            // den passenden mimeType zur file extension finden
             $mimeType = MimeTypeHelper::findMimeType($pfad);
 
             $response = new BinaryFileResponse($pfad);
             $response->trustXSendfileTypeHeader();
             $response->headers->set('Content-Type', $mimeType);
 
-            global $dateiname;
+
             $dateiname = $anhang->getPfad();
 
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);
@@ -307,7 +295,7 @@ class ArchivierungController extends Controller {
     }
 
 
-
+    // aus einer URL die passende ControllerFunktion finden
     private function URLToControllerName($url, $request) {
         $urlControllerName = false;   //fehlerfall
 
