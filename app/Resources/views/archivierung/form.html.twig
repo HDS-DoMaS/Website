@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="form_abgabedatum">Abgabedatum</label>
                     <div class="col-sm-10">
-                       Hier Abgabedatum
+                        <input id="form_abgabedatum" class="form-control" type="text" value="{{ form.abgabedatum.vars.value }}" required="required" name="form[abgabedatum]">
                     </div>
                 </div>
                 <div class="form-group">
@@ -103,9 +103,7 @@
                 {{ form_widget(form._token) }}
             </div>
         </form>
-        {{ form_start(form) }}
-        {{ form_widget(form) }}
-        {{ form_end(form) }}
+
         {% if app.request.headers.get('referer') is null %}
             <a href="{{ path('_default') }}" class="btn btn-default">
                 zurück

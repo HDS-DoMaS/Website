@@ -234,11 +234,10 @@ class ArchivierungController extends Controller {
         return $this->createFormBuilder($archivierung)
             ->add('archivId')
             ->add('titel', TextType::class)
-            ->add('abgabedatum', DateType::class)
-            ->add('titel', TextType::class)
-            ->add('titel', TextType::class)
-            ->add('titel', TextType::class)
-            ->add('titel', TextType::class)
+            ->add('abgabedatum', DateType::class, array(
+                'widget' => 'single_text',
+                'format' => 'dd.MM.yyyy'
+            ))
             ->add('beschreibung', TextareaType::class)
             ->add('fachbereich', EntityType::class, array(
                 'class' => 'AppBundle:fachbereich',
