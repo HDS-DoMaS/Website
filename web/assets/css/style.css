@@ -217,7 +217,7 @@ th.sorted a {
  * Top
  */
 .top {
-    padding: 0;
+    padding: 10px 0;
     background: #000;
 }
 /*
@@ -256,7 +256,11 @@ th.sorted a {
 /**
  * Suche
  */
-.suchcontainer .form-control {
+.suche .form-control {
+    border-color: #fff;
+}
+.suchcontainer .form-control,
+.suche .form-control:focus {
     border-color: #d83734;
 }
 .suche .suchcontainer .btn-red {
@@ -280,7 +284,7 @@ th.sorted a {
 .btn-collapse.collapsed .glyphicon-arrow-up {display: none}
 .btn-collapse.collapsed .glyphicon-arrow-down {display: inline-block}
 .filter {
-    padding:20px 0 14px;
+    padding:20px 0 0;
 }
 /**
  * Typeahead
