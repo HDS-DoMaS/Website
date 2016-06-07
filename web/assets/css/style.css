@@ -88,6 +88,11 @@ a .glyphicon{
     border-color:#db4542;
     background-color:#db4542;
 }
+.index .hover {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6);
+    border-color:#d83734;
+    background-color:#d83734;
+}
 .btn-red:active {
     border-color:#dd5350;
     background-color:#dd5350;
@@ -254,7 +259,7 @@ th.sorted a {
  */
 .index h1 {
     font-size: 84px;
-    margin: 90px auto 0;
+    margin: 70px auto 0;
     text-align: center;
     position:static;
     padding-left:0;
@@ -273,7 +278,21 @@ th.sorted a {
 }
 .index .transparent {
     padding: 65px 30px 0;
-    height: 345px;
+    height: 320px;
+}
+.index .form-control:hover,
+.index .form-control:focus {
+    border-color: #d83734;
+    box-shadow: none;
+}
+.index .hover .form-control {
+    border-color: #d83734;
+    box-shadow: none;
+}
+.index .hover .btn {
+    border-color: #d83734;
+    background-color: #d83734;
+    box-shadow: none;
 }
 /**
  * Suche
@@ -324,7 +343,7 @@ a.hompage {
 }
 
 #form_freitext {
-    width: calc(100% - 60px);
+    width: calc(100% - 42px);
     float:left;
     margin-bottom:10px;
 }
@@ -344,6 +363,12 @@ a.hompage {
         width: 100%;
         float:none;
         margin-bottom: 0px;
+    }
+
+    .index #form_freitext {
+        width: calc(100% - 42px);
+        float:left;
+        margin-bottom:10px;
     }
 }
 

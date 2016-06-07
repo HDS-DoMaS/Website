@@ -49,6 +49,7 @@ $(function() {
                     },
                     {
                         display: 'value',
+                        limit: 8,
                         source: getBloodHound('ajax/' + $(this).data('typehead').replace('-', '/'))
                     }
                 );
@@ -60,6 +61,13 @@ $(function() {
 
 
     } // if($('body.suche'))
+
+    // Suche
+    $('#form_freitext').focusin(function() {
+        $(this).parent().addClass('hover');
+    }).blur(function() {
+        $(this).parent().removeClass('hover');
+    });
 
     // Datepicker Options & Lokalisation
     var datepickerOptions = {

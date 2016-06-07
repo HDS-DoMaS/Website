@@ -97,7 +97,9 @@ class SuchController extends Controller {
      * @return \Symfony\Component\Form\Form
      */
     private function getForm($data) {
-        return $this->createFormBuilder($data)
+        return $this->createFormBuilder($data,
+                array('csrf_protection' => false)
+            )
             ->setMethod('GET')
             ->add('freitext', TextType::class)
             ->add('titel', TextType::class)
