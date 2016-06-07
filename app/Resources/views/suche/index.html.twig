@@ -152,12 +152,12 @@
         {% if showTo > pagination.getTotalItemCount() %}
             {% set showTo = pagination.getTotalItemCount() %}
         {% endif %}
-        <h2>
+        <h1>
             {{ pagination.getTotalItemCount }} Archivierung{% if pagination.getTotalItemCount != 1 %}en{% endif %}
             {% if pagination.getTotalItemCount > 0 %}
                 <small>Zeige {{ showFrom }} bis {{ showTo }} </small>
             {% endif %}
-        </h2>
+        </h1>
 
         {% if pagination.getTotalItemCount > 0 %}
             <table class="table table-striped table-bordered table-condensed table-hover table-responsive">

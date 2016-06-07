@@ -36,6 +36,11 @@ h1:before{
     background:#d83734;
 }
 
+h1 small {
+    padding-left: 8px;
+    font-size: 16px;
+}
+
 a {
     color: #d83734;
 }
