@@ -167,7 +167,7 @@ th a {
 th a:hover,
 th a:focus,
 th a:active {
-    color: #ccc;
+    color: #f55552;
 }
 th.sorted {
     background: #d83734;
@@ -176,7 +176,28 @@ td.sorted {
     background-color: #f1f1f1;
 }
 th.sorted a {
+    position: relative;
     color: #fff;
+    z-index: 2;
+}
+th.sorted {
+    padding-bottom: 4px !important;
+}
+th:before {
+    margin-top: -1px;
+    font-size: 16px;
+    float: right;
+    font-family: 'Glyphicons Halflings';
+    font-weight: normal;
+    z-index: 1;
+}
+th.asc:hover:before,
+th.desc:before {
+    content:"\e152";
+}
+th.desc:hover:before,
+th.asc:before {
+    content:"\e151";
 }
 .highlight {
     color: #d83734;
@@ -326,7 +347,6 @@ th.sorted a {
 .filter {
     padding:20px 0 14px;
 }
-
 /*
  * Top
  */
@@ -367,7 +387,7 @@ a.hompage {
     #form_freitext {
         width: 100%;
         float:none;
-        margin-bottom: 0px;
+        margin-bottom: 0;
     }
 
     .index #form_freitext {
@@ -534,7 +554,7 @@ span.twitter-typeahead {
 @media(max-width:768px) {
     .suche .btn-red,
     .suche .btn-grey {
-        margin-right: 0px;
+        margin-right: 0;
     }
 
     .suchbutton {
