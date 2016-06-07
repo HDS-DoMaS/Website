@@ -141,11 +141,11 @@ class ArchivierungController extends Controller {
 
 
         if($refererControllerId === "_detailView") {
-            $historyList->add($referer);
+            //$historyList->add($referer);
         }
         elseif($refererControllerId === "_suche") {
-            $historyList = array();
-            $historyList->add($referer);
+            //$historyList = array();
+            //$historyList->add($referer);
         }
         else{
             $historyList = array();
