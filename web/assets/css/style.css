@@ -476,7 +476,7 @@ span.twitter-typeahead {
 }
 @media(min-width:768px) {
     body.index {
-        background: url('../images/background.jpg') bottom center no-repeat;
+        background: url('../images/background.jpg') 100% center no-repeat;
         -moz-background-size: cover;
         -webkit-background-size: cover;
         background-size: cover;
