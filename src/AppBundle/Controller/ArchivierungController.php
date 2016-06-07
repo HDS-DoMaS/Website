@@ -22,9 +22,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ArchivierungController extends Controller {
 
     private $grundPfad;
+    private $anhaengePfad;
 
     public function __construct() {
-        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/DoMaS/anhaenge/";
+        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/DoMaS/";
+        $this->anhaengePfad = $this->grundPfad . "anhaenge/";
     }
 
 
@@ -118,9 +120,44 @@ class ArchivierungController extends Controller {
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function detailViewAction($archivId) {
+    public function detailViewAction($archivId, Request $request) {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
+
+        // session hohlen und gucken ob schon history liste gibt
+        $session = $request->getSession();
+        $historyList = $session->get('historyList', array());
+
+        // referer pathinfo auslesen
+        $referer = $request->headers->get('referer');
+        $refererFirstPart = explode('?', $referer)[0];
+        $refererMiddlePart = explode($request->getBaseURL(), $refererFirstPart)[1];
+
+        // je nach referer entscheiden was mit history passiert
+        $fullRoute = $this->get('router')->match($refererMiddlePart);
+        $refererControllerPfad = $fullRoute['_controller'];
+        $refererControllerFunction = explode("::", $refererControllerPfad)[1];
+        $refererControllerId = "_" . explode("Action", $refererControllerFunction)[0];
+
+
+        if($refererControllerId === "_detailView") {
+            $historyList->add($referer);
+        }
+        elseif($refererControllerId === "_suche") {
+            $historyList = array();
+            $historyList->add($referer);
+        }
+        else{
+            $historyList = array();
+        }
+
+
+
+
+        $logger = $this->get('logger');
+        $logger->error($refererControllerId);
+
+
 
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
@@ -148,7 +185,8 @@ class ArchivierungController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      * öffnen eines Anhanges einer Archivierung mit vorheriger Authentifizierung
      */
-    public function detailViewFileAction($anhangId) {
+    public function detailViewFileAction($anhangId)
+    {
 
         // TODO UserId von Shibboleth bekommen
 
@@ -159,18 +197,17 @@ class ArchivierungController extends Controller {
 
         $userId = 1;    //Test
         $adminId = 666;
-        $profIds = [7,8,9]; //Test
+        $profIds = [7, 8, 9]; //Test
 
 
-        if($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
+        if ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
             $sichtbarkeit = 0;
-        }
-        else{
+        } else {
             $sichtbarkeit = $archivierung->getSichtbarkeit();
         }
 
         // checken ob Zugriff auf Path erlaubt
-        if($sichtbarkeit === true ||$userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
+        if ($sichtbarkeit === true || $userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
 
             // PDF returnen:
             $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
@@ -188,15 +225,26 @@ class ArchivierungController extends Controller {
 
             $dateiname = null;
             return $response;
-        }
-
-        else{ // Nicht authorisierter Zugriff
+        } else { // Nicht authorisierter Zugriff
 
             throw $this->createAccessDeniedException(
                 'SIE HABEN KEINE ZUGRIFFSBERECHTIGUNG FÜR DIESEN ANHANG!'
             );
         }
     }
+
+
+        /**
+         * @Route("/archivierung/detail/zurueck",
+         *     name="_detailViewBack"
+         * )
+         * @return \Symfony\Component\HttpFoundation\Response
+         * drücken des Zurückknopfes in der Detailview
+         */
+        public function detailViewBackAction($anhangId) {
+
+            //TODO siehe twig
+        }
 
 
     private function getAnhang($anhangId) {
