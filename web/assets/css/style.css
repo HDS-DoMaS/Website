@@ -565,6 +565,10 @@ span.twitter-typeahead {
         margin-right: 0;
     }
 
+    .suche .hidden {
+        display: inline-block !important;
+    }
+
     .suchbutton {
         margin-top: -1px;
     }

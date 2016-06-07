@@ -2,6 +2,8 @@
 
 {% block bodyclass %}suche{% endblock %}
 
+{% block title %}DoMaS | Suche{% endblock %}
+
 {% block top %}
     <div class="top container-fluid">
         <form method="get" name="form" id="form" class="container form-horizontal">
@@ -17,7 +19,10 @@
                         <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="{{ form.freitext.vars.value }}" placeholder="Archivierungen durchsuchen">
                     </div>
                     <div class="col-sm-4 nopadding suchbutton">
-                        <button type="submit" class="btn btn-red" name="form[submittop]"><span class="glyphicon glyphicon-search"></span></button>
+                        <button type="submit" class="btn btn-red" name="form[submittop]">
+                            <span class="glyphicon glyphicon-search"></span>
+                            <span class="hidden">Suchen</span>
+                        </button>
                     </div>
                 </div>
 
