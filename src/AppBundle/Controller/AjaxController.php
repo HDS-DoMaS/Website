@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AjaxController extends Controller {
     /**
      * @Route("/ajax/zusatz/{kategorie}/{suche}")
-     * @Route("/ajax/zusatz/{kategorie}")
+     * @Route("/ajax/zusatz/{kategorie}/")
      */
     public function requestZusatzAction($kategorie, $suche = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -32,7 +32,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/archiv/{feld}/{suche}")
-     * @Route("/ajax/archiv/{feld}")
+     * @Route("/ajax/archiv/{feld}/")
      */
     public function requestArchivTitelAction($feld, $suche = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -51,7 +51,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/benutzer/{name}")
-     * @Route("/ajax/benutzer")
+     * @Route("/ajax/benutzer/")
      */
     public function requestBenutzerAction($name = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -70,7 +70,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/fachbereich/{bezeichnung}")
-     * @Route("/ajax/fachbereich")
+     * @Route("/ajax/fachbereich/")
      */
     public function requestFachbereichAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -89,7 +89,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/studiengang/{bezeichnung}")
-     * @Route("/ajax/studiengang")
+     * @Route("/ajax/studiengang/")
      */
     public function requestStudiengangAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -108,7 +108,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/kategorie/{bezeichnung}")
-     * @Route("/ajax/kategorie")
+     * @Route("/ajax/kategorie/")
      */
     public function requestKategorieAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -127,7 +127,7 @@ class AjaxController extends Controller {
 
     /**
      * @Route("/ajax/keywords/{keyword}")
-     * @Route("/ajax/keywords")
+     * @Route("/ajax/keywords/")
      */
     public function requestKeywordsAction($keyword = null) {
         $queryBuilder = $this->getQueryBuilder();

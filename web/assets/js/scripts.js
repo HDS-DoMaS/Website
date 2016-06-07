@@ -22,6 +22,8 @@ $(function() {
 
         // Bloodhound Datasource mit dynamischer URL
         function getBloodHound(url) {
+            url += '/';
+
             return new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -30,7 +32,7 @@ $(function() {
                     ttl: 600000 // 10 Minuten
                 },
                 remote: {
-                    url: url + '/%QUERY',
+                    url: url + '%QUERY',
                     wildcard: '%QUERY'
                 }
             });
@@ -40,13 +42,19 @@ $(function() {
         $('.typeahead').each(function () {
             if($(this).attr('data-typehead').length > 0) {
                 $(this).typeahead(
-                    {highlight: true},
+                    {
+                        highlight: true,
+                        hint: true,
+                        minLength: 0
+                    },
                     {
                         display: 'value',
                         source: getBloodHound('ajax/' + $(this).data('typehead').replace('-', '/'))
                     }
                 );
             }
+        }).on('focus', function () {
+            $(this).typeahead('open');
         });
 
 
