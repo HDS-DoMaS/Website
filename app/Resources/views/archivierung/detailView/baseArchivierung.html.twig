@@ -144,15 +144,10 @@
     #}
 
 
-    {% if app.request.headers.get('referer') is null %}
-        <a href="{{ path('_default') }}" class="btn btn-default">
-            zurück
-        </a>
-    {% else %}
-        <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default">
-            zurück
-        </a>
-    {% endif %}
+    <a href="{{ path('_detailViewBack') }}" class="btn btn-default">
+        zurück
+    </a>
+
 
 
 

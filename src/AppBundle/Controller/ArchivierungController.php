@@ -116,51 +116,121 @@ class ArchivierungController extends Controller {
 
 
     /**
-     * @Route("/archivierung/detail/{archivId}",
-     *     name="_detailView",
-     *     requirements={"archivId": "\d+"}
+     * @Route("/archivierung/detail/zurueck",
+     *     name="_detailViewBack"
      * )
-     * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
+     * drücken des Zurückknopfes in der Detailview
      */
-    public function detailViewAction($archivId, Request $request) {
-        // Archivierung aus DB auslesen
-        $archivierung = $this->getArchivierung($archivId);
+    public function detailViewBackAction(Request $request) {
 
-        // session hohlen und gucken ob schon history liste gibt
         $session = $request->getSession();
-        $historyList = $session->get('historyList', array());
-
-        // referer pathinfo auslesen
-        $referer = $request->headers->get('referer');
-        $refererFirstPart = explode('?', $referer)[0];
-        $refererMiddlePart = explode($request->getBaseURL(), $refererFirstPart)[1];
-
-        // je nach referer entscheiden was mit history passiert
-        $fullRoute = $this->get('router')->match($refererMiddlePart);
-        $refererControllerPfad = $fullRoute['_controller'];
-        $refererControllerFunction = explode("::", $refererControllerPfad)[1];
-        $refererControllerId = "_" . explode("Action", $refererControllerFunction)[0];
-
-
-        if($refererControllerId === "_detailView") {
-            //$historyList->add($referer);
-        }
-        elseif($refererControllerId === "_suche") {
-            //$historyList = array();
-            //$historyList->add($referer);
-        }
-        else{
-            $historyList = array();
-        }
+        $historyList = $session->get("historyList", array());
+        $biggestIndex = sizeof($historyList)-1;
 
 
 
 
         $logger = $this->get('logger');
-        $logger->error($refererControllerId);
+        if(sizeof($historyList)>0){
+            foreach($historyList as &$elem) {
+                $logger->error($elem);
+            }
+        }
 
 
+
+        if($historyList == null || $biggestIndex < 0 ) {
+            $return = $this->redirect($this->generateUrl('_suche'));
+        }
+        else{
+            $url = $historyList[$biggestIndex];
+            $urlControllerName = $this->URLToControllerName($url, $request);
+
+            if($urlControllerName === "_detailView" && strpos($urlControllerName, '/zurueck') !== false) {
+                $url = $url . '/zurueck';
+            }
+
+            $return = $this->redirect($url);
+            array_splice($historyList, $biggestIndex, 1);
+            $session->set("historyList", $historyList);
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * @Route("/archivierung/detail/{archivId}/{zurueckButton}",
+     *     name="_detailView",
+     *     defaults={"zurueckButton": ""},
+     *     requirements={"archivId": "\d+"}
+     * )
+     * @param integer $archivId
+     * @param string $zurueckButton
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function detailViewAction($archivId, Request $request, $zurueckButton = "") {
+        // Archivierung aus DB auslesen
+        $archivierung = $this->getArchivierung($archivId);
+
+        // session hohlen und gucken ob schon history liste gibt
+        $session = $request->getSession();
+        $historyList = $session->get("historyList", array());
+
+
+
+
+
+
+        $logger = $this->get('logger');
+        $logger->error($zurueckButton);
+        $logger->error($zurueckButton !== "zurueck");
+
+        if(sizeof($historyList)>0){
+            foreach($historyList as &$elem) {
+                $logger->error($elem);
+            }
+        }
+
+
+
+
+
+        // referer pathinfo auslesen
+        $referer = $request->headers->get('referer');
+        if($referer != null) {
+            $refererFirstPart = explode('?', $referer)[0];
+            $refererMiddlePart = explode($request->getBaseURL(), $refererFirstPart)[1];
+
+            $fullRoute = $this->get('router')->match($refererMiddlePart);
+            $refererControllerPfad = $fullRoute['_controller'];
+            $refererControllerFunction = explode("::", $refererControllerPfad)[1];
+            $refererControllerId = "_" . explode("Action", $refererControllerFunction)[0];
+        }
+        else{
+            $refererControllerId = false;
+        }
+
+
+
+
+        // je nach referer entscheiden was mit history für den zurückbutton passiert
+        if($refererControllerId === "_detailView") {
+
+            if($zurueckButton !== "zurueck") {
+                array_push($historyList, $referer);
+            }
+        }
+        elseif($refererControllerId === "_suche") {
+            $historyList = array();
+            array_push($historyList, $referer);
+        }
+        else{
+            $historyList = array();
+        }
+
+        $session->set("historyList", $historyList);
 
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
@@ -213,7 +283,7 @@ class ArchivierungController extends Controller {
         if ($sichtbarkeit === true || $userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
 
             // PDF returnen:
-            $pfad = $this->grundPfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
+            $pfad = $this->anhaengePfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
 
             $mimeType = MimeTypeHelper::findMimeType($pfad);
 
@@ -237,17 +307,22 @@ class ArchivierungController extends Controller {
     }
 
 
-        /**
-         * @Route("/archivierung/detail/zurueck",
-         *     name="_detailViewBack"
-         * )
-         * @return \Symfony\Component\HttpFoundation\Response
-         * drücken des Zurückknopfes in der Detailview
-         */
-        public function detailViewBackAction($anhangId) {
 
-            //TODO siehe twig
+    private function URLToControllerName($url, $request) {
+        $urlControllerName = false;   //fehlerfall
+
+        if($url != null) {
+            $urlFirstPart = explode('?', $url)[0];
+            $urlMiddlePart = explode($request->getBaseURL(), $urlFirstPart)[1];
+
+            $fullRoute = $this->get('router')->match($urlMiddlePart);
+            $urlControllerPfad = $fullRoute['_controller'];
+            $urlControllerFunction = explode("::", $urlControllerPfad)[1];
+            $urlControllerName = "_" . explode("Action", $urlControllerFunction)[0];
         }
+
+        return $urlControllerName;
+    }
 
 
     private function getAnhang($anhangId) {
