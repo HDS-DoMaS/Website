@@ -9,11 +9,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-/*
- * TODO: Datum Felder durchsuchen
- * TODO: Such Indizes setzen
- * TODO: Style..
- */
 class SuchController extends Controller {
     private $pageSize = 10;
 
@@ -120,6 +115,10 @@ class SuchController extends Controller {
             ->getForm();
     }
 
+    /**
+     * Setzt das WHERE Statement der Query
+     * @param $data
+     */
     private function handleWhereStatement($data) {
         // WHERE Freitext
         if(strlen($data['freitext']) > 0) {
@@ -223,6 +222,12 @@ class SuchController extends Controller {
         }
     }
 
+    /**
+     * Setzt das WHERE Statement für normale Felder
+     * @param $field
+     * @param $var
+     * @param $search
+     */
     private function setWhere($field, $var, $search) {
         // Bei ' ' splitten und suchen
         $search_array = explode(' ', $search);
@@ -236,6 +241,11 @@ class SuchController extends Controller {
         }
     }
 
+    /**
+     * Setzt das WHERE Statement für Zusatz-Felder
+     * @param $var
+     * @param $search
+     */
     private function setWhereZusatz($var, $search) {
         // Bei ' ' plitten und suchen
         $search_array = explode(' ', $search);
@@ -257,6 +267,12 @@ class SuchController extends Controller {
         $this->_queryBuilder->setParameter($var . '_id', $this->_zusatzMapper->mapToId($var));
     }
 
+    /**
+     * Setzt das WHERE Statement für Datums Felder
+     * @param $field
+     * @param $var
+     * @param $search
+     */
     private function setWhereDate($field, $var, $search) {
         $seperator = strpos($search, 'bis');
 
@@ -280,6 +296,11 @@ class SuchController extends Controller {
         }
     }
 
+    /**
+     * Prüft, ob es sich bei dem Parameter um ein gültiges Datum handelt
+     * @param $datesting
+     * @return bool
+     */
     private function isValidDate($datesting) {
         $date = date_parse($datesting);
         return $date["error_count"] == 0 && checkdate($date["month"], $date["day"], $date["year"]);
