@@ -2,7 +2,7 @@
  * Main
  */
 body {
-    font-family: 'Lato', ​Arial, sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
     background: #fff;
 }
 
@@ -22,7 +22,7 @@ h1{
     position:relative;
     padding-left:14px;
     margin-bottom:30px;
-    margin-top:0px;
+    margin-top:0;
     color: #d83734;
 }
 
@@ -31,7 +31,7 @@ h1:before{
     position:absolute;
     width:4px;
     height:28px;
-    left:0px;
+    left:0;
     top:-4px;
     background:#d83734;
 }
@@ -51,7 +51,7 @@ a:active {
     text-decoration: none;
 }
 
-.glyphicon{
+a .glyphicon{
     margin-right: 6px;
 }
 
@@ -61,7 +61,7 @@ a:active {
 .btn {
     background-color:#000;
     border:2px solid #000;
-    border-radius:0px;
+    border-radius:0;
     color:#fff;
     font-weight:bold;
 }
@@ -176,6 +176,8 @@ th.sorted a {
  * Paging
  */
 .pagination {
+    font-size: 17px;
+    font-weight: bold;
     display: block;
     position: relative;
     text-align: center;
@@ -183,10 +185,38 @@ th.sorted a {
     border-left: 0;
     border-right: 0;
     border-radius: 0;
+    padding: 4px 0;
 }
 .pagination a {
-    font-size: 16px;
-    line-height: 2;
+    font-size: 17px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 8px;
+    background: #f2f2f2;
+    color: #000;
+}
+.pagination a:hover,
+.pagination a:focus {
+    color: #d83734;
+    text-decoration: none;
+}
+.pagination .current {
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 8px;
+    background: #d83734;
+    color: #fff;
+}
+.pagination .disabled {
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 4px;
+    color: #000;
+    cursor: auto;
+}
+.pagination .disabled span:hover {
+    cursor: auto;
 }
 .pagination .first {
     position: absolute;
@@ -202,9 +232,8 @@ th.sorted a {
 .header {
     background: #333;
     color: #ccc;
-    padding: 0;
+    padding: 0 0 2px;
     line-height: 2;
-    padding-bottom: 2px;
 }
 .header a {
     color: #ccc;
@@ -213,13 +242,7 @@ th.sorted a {
 .header a:hover {
     color: #fff;
 }
-/*
- * Top
- */
-.top {
-    padding: 0;
-    background: #000;
-}
+
 /*
  * Top
  */
@@ -234,8 +257,7 @@ th.sorted a {
     margin: 90px auto 0;
     text-align: center;
     position:static;
-    padding-left:0px;
-    margin-bottom:0px;
+    padding-left:0;
 }
 .index h1:before{
     display: none;
@@ -261,10 +283,8 @@ th.sorted a {
 }
 .suche .suchcontainer .btn-red {
     margin: 0;
-    float: none;
-}
-.top label {
-    color: #fff;
+    float: left;
+    margin-right: 10px;
 }
 .table-hover > tbody > tr:hover,
 .table-hover > tbody > tr:hover td {
@@ -282,6 +302,53 @@ th.sorted a {
 .filter {
     padding:20px 0 14px;
 }
+
+/*
+ * Top
+ */
+
+a.hompage {
+    font-size:2em;
+    line-height: 40px;
+    font-weight: bold;
+}
+
+.top {
+    padding: 10px 0;
+    /* Permalink - use to edit and share this gradient: http:7/colorzilla.com/gradient-editor/#000000+19,cccccc+19 */
+    background: #000000; /* Old browsers */
+    background: -moz-linear-gradient(top,  #000000 140px, #f1f1f1 140px); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top,  #000000 140px,#f1f1f1 140px); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom,  #000000 140px,#f1f1f1 140px); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+}
+
+#form_freitext {
+    width: calc(100% - 60px);
+    float:left;
+    margin-bottom:10px;
+}
+
+@media (min-width: 768px){
+    .top {
+        padding: 10px 0 6px 0;
+        /* Permalink - use to edit and share this gradient: http:7/colorzilla.com/gradient-editor/#000000+19,cccccc+19 */
+        background: #000000; /* Old browsers */
+        background: -moz-linear-gradient(top,  #000000 55px, #f1f1f1 55px); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  #000000 55px,#f1f1f1 55px); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  #000000 55px,#f1f1f1 55px); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+    }
+
+    #form_freitext {
+        width: 100%;
+        float:none;
+        margin-bottom: 0px;
+    }
+}
+
+
+
 /**
  * Typeahead
  */
@@ -296,13 +363,12 @@ span.twitter-typeahead .tt-dropdown-menu {
     width: 100%;
     min-width: 160px;
     padding: 5px 0;
-    margin: 2px 0 0;
     list-style: none;
     font-size: 14px;
     text-align: left;
     background-color: #ffffff;
-    border: 1px solid #cccccc;
-    border: 1px solid rgba(0, 0, 0, 0.15);
+    border: 2px solid #d83734;
+    border-top: none;
     border-radius: 0;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -415,8 +481,8 @@ span.twitter-typeahead {
 
 .detailView .anhang-container dt {
     float: none;
-    width: none;
-    overflow: none;
+    width: auto;
+    overflow: initial;
     clear: both;
     text-align: left;
     margin-bottom:10px
@@ -424,7 +490,7 @@ span.twitter-typeahead {
 
 @media (min-width: 768px){
     .detailView .anhang-container dd {
-        margin-left: 0px;
+        margin-left: 0;
     }
 }
 
@@ -438,12 +504,20 @@ span.twitter-typeahead {
 @media(max-width:768px) {
     .suche .btn-red,
     .suche .btn-grey {
-        margin-right: 16px;
+        margin-right: 0px;
+    }
+
+    .suchbutton {
+        margin-top: -1px;
     }
 }
 @media(min-width:768px) {
     body.index {
-        background: url('../images/background.jpg') top center no-repeat;
+        background: url('../images/background.jpg') 100% center no-repeat;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+        height: 100vh;
     }
 
     .suche .btn-red,
