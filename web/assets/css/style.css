@@ -502,6 +502,10 @@ span.twitter-typeahead {
     .suche .btn-grey {
         margin-right: 0px;
     }
+
+    .suchbutton {
+        margin-top: -1px;
+    }
 }
 @media(min-width:768px) {
     body.index {
