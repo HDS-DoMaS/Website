@@ -191,12 +191,16 @@ th:before {
     font-weight: normal;
     z-index: 1;
 }
+th.ASC:hover:before,
 th.asc:hover:before,
-th.desc:before {
+th.DESC:before,
+th.desc:before{
     content:"\e152";
 }
+th.DESC:hover:before,
 th.desc:hover:before,
-th.asc:before {
+th.ASC:before,
+th.asc:before{
     content:"\e151";
 }
 .highlight {
