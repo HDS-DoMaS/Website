@@ -2,7 +2,7 @@
  * Main
  */
 body {
-    font-family: 'Lato', â€‹Arial, sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
     background: #fff;
 }
 
@@ -176,6 +176,8 @@ th.sorted a {
  * Paging
  */
 .pagination {
+    font-size: 17px;
+    font-weight: bold;
     display: block;
     position: relative;
     text-align: center;
@@ -183,10 +185,38 @@ th.sorted a {
     border-left: 0;
     border-right: 0;
     border-radius: 0;
+    padding: 4px 0;
 }
 .pagination a {
-    font-size: 16px;
-    line-height: 2;
+    font-size: 17px;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 8px;
+    background: #f2f2f2;
+    color: #000;
+}
+.pagination a:hover,
+.pagination a:focus {
+    color: #d83734;
+    text-decoration: none;
+}
+.pagination .current {
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 8px;
+    background: #d83734;
+    color: #fff;
+}
+.pagination .disabled {
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0 4px;
+    color: #000;
+    cursor: auto;
+}
+.pagination .disabled span:hover {
+    cursor: auto;
 }
 .pagination .first {
     position: absolute;
@@ -339,7 +369,8 @@ span.twitter-typeahead .tt-dropdown-menu {
     font-size: 14px;
     text-align: left;
     background-color: #ffffff;
-    border: none;
+    border: 2px solid #d83734;
+    border-top: none;
     border-radius: 0;
     -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
