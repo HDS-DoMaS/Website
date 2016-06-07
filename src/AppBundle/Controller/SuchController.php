@@ -215,7 +215,7 @@ class SuchController extends Controller {
                         benutzer.nachname,
                         zusaetze.bezeichnung,
                         keywords.keyword
-                    ) AGAINST (:freitext_match_' . $i . ' BOOLEAN) > 0.8
+                    ) AGAINST (:freitext_match_' . $i . ' BOOLEAN) > 1
                 ')
                 ->setParameter('freitext_' . $i, '%' . $search_array[$i] . '%')
                 ->setParameter('freitext_match_' . $i, '*' . $search_array[$i] . '*');
@@ -235,7 +235,7 @@ class SuchController extends Controller {
         for ($i = 0; $i < count($search_array); $i++) {
             $this->_queryBuilder
                 ->andWhere($field .' LIKE :' . $var . '_' . $i . '
-                OR MATCH (' . $field . ') AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 0.8')
+                OR MATCH (' . $field . ') AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 1')
                 ->setParameter($var . '_' . $i, '%' . $search_array[$i] . '%')
                 ->setParameter($var . '_match_' . $i, '*' . $search . '*');;
         }
@@ -256,7 +256,7 @@ class SuchController extends Controller {
                 ->andWhere('zusaetze.archivZusatzKategorieId = :' . $var . '_id 
                     AND (
                         zusaetze.bezeichnung LIKE :' . $var . '_' . $i . '
-                        OR MATCH (zusaetze.bezeichnung) AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 0.8
+                        OR MATCH (zusaetze.bezeichnung) AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 1
                     )
                     ')
                 ->setParameter($var . '_' . $i, '%' . $search . '%')
