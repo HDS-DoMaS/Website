@@ -131,7 +131,7 @@ class ArchivierungController extends Controller {
 
         // wenn es keine history gibt, zurueck zur suche springen
         if($historyList == null || $biggestIndex < 0 ) {
-            $return = $this->redirect($this->generateUrl('_suche'));
+            $return = $this->redirect($this->generateUrl('_default'));
         }
         // ansonsten redirect zum letzten eintrag
         else{
