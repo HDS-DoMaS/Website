@@ -157,10 +157,12 @@ a .glyphicon{
  */
 table {}
 th {
+    padding: 0 !important;
     background: #000;
     color:#fff;
 }
 th a {
+    padding: 5px 4px;
     display: block;
     color: #fff;
 }
@@ -180,12 +182,7 @@ td.sorted .highlight {
     color: #db4542;
 }
 th.sorted a {
-    position: relative;
     color: #fff;
-    z-index: 2;
-}
-th.sorted {
-    padding-bottom: 4px !important;
 }
 th a:before {
     content:"\e151";
