@@ -187,25 +187,30 @@ th.sorted a {
 th.sorted {
     padding-bottom: 4px !important;
 }
-th:before {
+th a:before {
+    content:"\e151";
     margin-top: -1px;
     font-size: 16px;
     float: right;
     font-family: 'Glyphicons Halflings';
     font-weight: normal;
     z-index: 1;
+    visibility: hidden;
 }
-th.ASC:hover:before,
-th.asc:hover:before,
-th.DESC:before,
-th.desc:before{
-    content:"\e152";
+th a:hover:before,
+th.DESC a:hover:before,
+th.desc a:hover:before,
+th.ASC a:before,
+th.asc a:before{
+    content:"\e155";
+    visibility: visible;
 }
-th.DESC:hover:before,
-th.desc:hover:before,
-th.ASC:before,
-th.asc:before{
-    content:"\e151";
+th.ASC a:hover:before,
+th.asc a:hover:before,
+th.DESC a:before,
+th.desc a:before{
+    content:"\e156";
+    visibility: visible;
 }
 .highlight {
     color: #d83734;
@@ -563,6 +568,18 @@ span.twitter-typeahead {
     .suche .btn-red,
     .suche .btn-grey {
         margin-right: 0;
+
+    }
+
+    .suche .btn-red,
+    .suche .btn-grey,
+    #form_freitext {
+        position: relative;
+        z-index: 10;
+    }
+
+    .suche #form_freitext {
+        width: 100%;
     }
 
     .suche .hidden {
@@ -573,6 +590,7 @@ span.twitter-typeahead {
         margin-top: -1px;
     }
 }
+
 @media(min-width:768px) {
     body.index {
         background: url('../images/background.jpg') 100% center no-repeat;
