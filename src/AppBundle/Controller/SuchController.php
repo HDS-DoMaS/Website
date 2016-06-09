@@ -153,7 +153,7 @@ class SuchController extends Controller {
 
         // WHERE Benutzer
         if(strlen($data['benutzer']) > 0) {
-            $this->setWhere('CONCAT(benutzer.vorname, \' \', benutzer.nachname)', 'benutzer', $data['benutzer']);
+            $this->setWhereBnutzer($data['benutzer']);
         }
 
         // WHERE Betreuer
@@ -197,6 +197,7 @@ class SuchController extends Controller {
                         archiv.titel LIKE :freitext_' . $i . ' 
                         OR archiv.beschreibung LIKE :freitext_' . $i . '
                         OR archiv.abgabedatum LIKE :freitext_' . $i . '
+                        OR archiv.erstelldatum LIKE :freitext_' . $i . '
                         OR archiv.anmerkung LIKE :freitext_' . $i . '
                         OR fachbereich.bezeichnung LIKE :freitext_' . $i . '
                         OR studiengang.bezeichnung LIKE :freitext_' . $i . '
@@ -239,6 +240,23 @@ class SuchController extends Controller {
                 OR MATCH (' . $field . ') AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 1')
                 ->setParameter($var . '_' . $i, '%' . $search_array[$i] . '%')
                 ->setParameter($var . '_match_' . $i, '*' . $search . '*');;
+        }
+    }
+
+    /**
+     * Extra Funkction für das Benutzer WHERE Statement, da Vorname und Nachname 2 Felder sind
+     * @param $search
+     */
+    private function setWhereBnutzer($search) {
+        // Bei ' ' splitten und suchen
+        $search_array = explode(' ', $search);
+
+        for ($i = 0; $i < count($search_array); $i++) {
+            $this->_queryBuilder
+                ->andWhere('CONCAT(benutzer.vorname, \' \', benutzer.nachname) LIKE :benutzer_' . $i . '
+                OR MATCH (benutzer.vorname, benutzer.nachname) AGAINST (:benutzer_match_' . $i . ' BOOLEAN) > 1')
+                ->setParameter('benutzer_' . $i, '%' . $search_array[$i] . '%')
+                ->setParameter('benutzer_match_' . $i, '*' . $search . '*');;
         }
     }
 
