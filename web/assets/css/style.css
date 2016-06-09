@@ -162,9 +162,10 @@ th {
     color:#fff;
 }
 th a {
-    padding: 5px 4px;
+    padding: 4px 5px;
     display: block;
     color: #fff;
+    white-space: nowrap;
 }
 th a:hover,
 th a:focus,

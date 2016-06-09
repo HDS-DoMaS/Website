@@ -16,3 +16,11 @@ services:
         class: AppBundle\Helper\ZusatzKategorieHelper
         arguments:
           doctrine: "@doctrine"
+    app.cache.clear:
+        class: Symfony\Bundle\FrameworkBundle\Command\CacheClearCommand
+        calls:
+            - [setContainer, ["@service_container"] ]
+    app.cache.warmup:
+            class: Symfony\Bundle\FrameworkBundle\Command\CacheWarmupCommand
+            calls:
+                - [setContainer, ["@service_container"] ]
