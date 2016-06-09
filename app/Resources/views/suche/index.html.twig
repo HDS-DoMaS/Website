@@ -248,16 +248,19 @@
                                 {{ archivierung.getKategorie().bezeichnung | highlight(form.freitext.vars.value, form.kategorie.vars.value) | raw }}
                             </td>
                             <td{% if pagination.isSorted('archiv.abgabedatum') %} class="sorted"{% endif %}>
-                                {% if form.abgabedatum.vars.value is empty %}
-                                    {{ archivierung.abgabedatum | date('Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
-                                {%  else %}
-                                    {{ archivierung.abgabedatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                                {% if archivierung.abgabedatum is not null %}
+                                    {% if form.abgabedatum.vars.value is empty %}
+                                        {{ archivierung.abgabedatum | date('Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                                    {%  else %}
+                                        {{ archivierung.abgabedatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.abgabedatum.vars.value) | raw }}
+                                    {%  endif %}
                                 {%  endif %}
                             </td>
 
                             {# Betreuer #}
                             {% if form.betreuer.vars.value is not empty %}
-                                <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.titel') %} class="sorted"{% endif %}>                                {% set betreuer = [] %}
+                                <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.titel') %} class="sorted"{% endif %}>
+                                    {% set betreuer = [] %}
                                     {% for zusatz in archivierung.getZusaetze() %}
                                         {% if zusatz.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
                                             {% set betreuer = betreuer | merge([zusatz.bezeichnung]) %}
@@ -301,7 +304,9 @@
                             {# Erstelldatum #}
                             {% if form.erstelldatum.vars.value is not empty %}
                                 <td{% if pagination.isSorted('archiv.erstelldatum') %} class="sorted"{% endif %}>
-                                    {{ archivierung.erstelldatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.erstelldatum.vars.value) | raw }}
+                                    {% if archivierung.erstelldatum is not null %}
+                                        {{ archivierung.erstelldatum | date('d.m.Y') | highlight(form.freitext.vars.value, form.erstelldatum.vars.value) | raw }}
+                                    {% endif %}
                                 </td>
                             {% endif %}
                         </tr>

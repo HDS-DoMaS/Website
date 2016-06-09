@@ -49,7 +49,8 @@ class SuchController extends Controller {
                 $data = $form->getData();
 
                 // SELECT Statment
-                $this->_queryBuilder->select('archiv')
+                $this->_queryBuilder
+                    ->select('archiv')
                     ->from('AppBundle\Entity\Archivierung', 'archiv') // Archivierung
                     ->leftJoin('archiv.fachbereich', 'fachbereich') // JOIN Fachbereich
                     ->leftJoin('archiv.studiengang', 'studiengang') // JOIN Studiengang
@@ -250,13 +251,15 @@ class SuchController extends Controller {
         // Bei ' ' plitten und suchen
         $search_array = explode(' ', $search);
 
-        for ($i = 0; $i < count($search_array); $i++) {
+        $this->_queryBuilder
+            ->innerJoin('archiv.zusaetze', 'zusaetze_' . $var); // JOIN Zusaetze
 
+        for ($i = 0; $i < count($search_array); $i++) {
             $this->_queryBuilder
-                ->andWhere('zusaetze.archivZusatzKategorieId = :' . $var . '_id 
+                ->andWhere('zusaetze_' . $var. '.archivZusatzKategorieId = :' . $var . '_id 
                     AND (
-                        zusaetze.bezeichnung LIKE :' . $var . '_' . $i . '
-                        OR MATCH (zusaetze.bezeichnung) AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 1
+                        zusaetze_' . $var. '.bezeichnung LIKE :' . $var . '_' . $i . '
+                        OR MATCH (zusaetze_' . $var. '.bezeichnung) AGAINST (:' . $var . '_match_' . $i . ' BOOLEAN) > 1
                     )
                     ')
                 ->setParameter($var . '_' . $i, '%' . $search . '%')
