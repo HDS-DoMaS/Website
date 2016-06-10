@@ -76,12 +76,14 @@
                     {% if archivierung.getSichtbarkeit() == 0 %}
                         <section class="nichtSichtbarMsg">
                             <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
-                            <div class="giftschrankMessage2">Für Einsicht bitte den angegebenen Betreuer kontaktieren</div>
+                            <div class="giftschrankMessage2">
+                                {% block nichtSichtbarMssg %}Für Einsicht bitte den angegebenen Ersteller kontaktieren{% endblock %}
+                            </div>
                         </section>
                     {% endif %}
 
                     {% if archivierung.getSichtbarkeit() == 1 %}
-                    {# TODO Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
+                    {# TODO ELSE: Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
 
                         {% if hasAnhaenge %}
                             <dt>Datei-Anhänge</dt>
