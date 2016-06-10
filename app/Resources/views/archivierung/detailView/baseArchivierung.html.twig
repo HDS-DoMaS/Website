@@ -70,11 +70,9 @@
         {% if hasAnhaenge or hasReferenzen or hasKeywords %}
             <div class="col-md-5">
 
-
-
                 <dl class="dl-horizontal anhang-container">
 
-                    {# TODO Einsicht erlauben wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
+                    {# TODO Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
                     {% if archivierung.getSichtbarkeit() == 0 %}
                         <section class="nichtSichtbarMsg">
                             <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
@@ -83,21 +81,25 @@
                     {% endif %}
 
                     {% if archivierung.getSichtbarkeit() == 1 %}
-                    {# TODO oder wenn aktiver User == Ersteller (oder Prof?) oder Admin #}
+                    {# TODO Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
 
                         {% if hasAnhaenge %}
                             <dt>Datei-Anhänge</dt>
 
                             {% for anhang in archivierung.getAnhaenge() %}
-                                <dd>
-                                    <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
-                                        <span class="glyphicon glyphicon-paperclip"></span>
-                                        {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
-                                        {% if anhang.getVersionsnummer() is not null %}
-                                                {{ " - Version: " ~ anhang.getVersionsnummer() }}
-                                        {% endif %}
-                                    </a>
-                                </dd>
+
+                                {#TODO Einsicht erlauben wenn User == admin oder ersteller (oder Prof)#}
+                                {% if anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
+                                    <dd>
+                                        <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
+                                            <span class="glyphicon glyphicon-paperclip"></span>
+                                            {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
+                                            {% if anhang.getVersionsnummer() is not null %}
+                                                    {{ " - Version: " ~ anhang.getVersionsnummer() }}
+                                            {% endif %}
+                                        </a>
+                                    </dd>
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
 
