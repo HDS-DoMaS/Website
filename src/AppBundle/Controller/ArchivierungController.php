@@ -66,7 +66,7 @@ class ArchivierungController extends Controller {
             }
         }
         return $this->render(
-            'Archivierung/form.html.twig',
+            'archivierung/form.html.twig',
             array(
                 'form' => $form->createView()
             )
@@ -377,11 +377,11 @@ class ArchivierungController extends Controller {
                 'choice_label' => 'bezeichnung',
             ))
             ->add('fachbereich', EntityType::class, array(
-                'class' => 'AppBundle:fachbereich',
+                'class' => 'AppBundle:Fachbereich',
                 'choice_label' => 'bezeichnung'
             ))
             ->add('studiengang', EntityType::class, array(
-                'class' => 'AppBundle:studiengang',
+                'class' => 'AppBundle:Studiengang',
                 'choice_label' => 'bezeichnung'
             ))
             ->add('kategorie', EntityType::class, array(
