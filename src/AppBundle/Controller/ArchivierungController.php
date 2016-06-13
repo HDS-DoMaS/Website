@@ -138,7 +138,6 @@ class ArchivierungController extends Controller {
             $url = $historyList[$biggestIndex];
             $urlControllerName = $this->URLToControllerName($url, $request);
 
-
             // wenn es sich um eine detailView handelt, dieser mitgeben dass sie nicht zum ersten mal aufgerufen wird.
             // dadurch wird ihr referer nicht erneut in die history eingetragen und es entsteht keine schleife.
             if($urlControllerName === "_detailView" && strpos($url, '/zurueck') === false) {
@@ -214,7 +213,7 @@ class ArchivierungController extends Controller {
             $historyList = array();
         }
 
-        $session->set("historyList", $historyList); // save
+        $session->set("historyList", $historyList); // in der history speichern
 
 
         // RENDERN der View:
@@ -269,7 +268,7 @@ class ArchivierungController extends Controller {
         // checken ob Zugriff auf Path erlaubt
         if ($sichtbarkeit === true || $userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
 
-            // PDF returnen:
+            // DateiPfad
             $pfad = $this->anhaengePfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
 
             // den passenden mimeType zur file extension finden
@@ -278,8 +277,7 @@ class ArchivierungController extends Controller {
             $response = new BinaryFileResponse($pfad);
             $response->trustXSendfileTypeHeader();
             $response->headers->set('Content-Type', $mimeType);
-
-
+            
             $dateiname = $anhang->getPfad();
 
             $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);

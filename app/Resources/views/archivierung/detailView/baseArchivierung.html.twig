@@ -66,32 +66,31 @@
         {% set hasAnhaenge = (archivierung.getAnhaenge() |length > 0) %}
         {% set hasReferenzen = (archivierung.getReferenzen() |length > 0) %}
         {% set hasKeywords = (archivierung.getKeywords() |length > 0) %}
+        {% set isErsteller = 0 %}
+        {% set isAdmin = 0 %}       {#TODO Authentifizierung#}
+        {% set isProf = 0 %}
 
         {% if hasAnhaenge or hasReferenzen or hasKeywords %}
             <div class="col-md-5">
 
                 <dl class="dl-horizontal anhang-container">
 
-                    {# TODO Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
-                    {% if archivierung.getSichtbarkeit() == 0 %}
+                    {% if archivierung.getSichtbarkeit() == 0 and isErsteller == 0 and isAdmin == 0 and isProf == 0 %}
                         <section class="nichtSichtbarMsg">
                             <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
                             <div class="giftschrankMessage2">
                                 {% block nichtSichtbarMssg %}Für Einsicht bitte den angegebenen Ersteller kontaktieren{% endblock %}
                             </div>
                         </section>
-                    {% endif %}
 
-                    {% if archivierung.getSichtbarkeit() == 1 %}
-                    {# TODO ELSE: Einsicht erlauben wenn Sichtbarkeit == 1 oder aktiver User == Ersteller (oder Prof?) oder Admin #}
+                    {% else %}
 
                         {% if hasAnhaenge %}
                             <dt>Datei-Anhänge</dt>
-
                             {% for anhang in archivierung.getAnhaenge() %}
 
-                                {#TODO Einsicht erlauben wenn User == admin oder ersteller (oder Prof)#}
-                                {% if anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
+                                {#Gutachten verbergen#}
+                                {% if isErsteller == 0 and isAdmin == 0 and anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
                                     <dd>
                                         <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
                                             <span class="glyphicon glyphicon-paperclip"></span>
