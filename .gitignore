@@ -26,6 +26,7 @@
 /vendor/*
 !/vendor/composer
 !/vendor/knplabs
+!/vendor/kuleuven
 
 # Assets and user uploads
 /web/bundles/
