@@ -28,7 +28,7 @@ class ArchivierungController extends Controller {
     private $anhaengePfad;
 
     public function __construct() {
-        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/DoMaS/";
+        $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/../";
         $this->anhaengePfad = $this->grundPfad . "anhaenge/";
     }
 
@@ -169,7 +169,8 @@ class ArchivierungController extends Controller {
         $archivierung = $this->getArchivierung($archivId);
 
         //LOGIK für den zurück-knopf:
-        // session hohlen und gucken ob schon history liste gibt
+
+        // session hohlen und gucken ob es schon eine history liste gibt
         $session = $request->getSession();
         $historyList = $session->get("historyList", array());
 
@@ -247,7 +248,7 @@ class ArchivierungController extends Controller {
     public function detailViewFileAction($anhangId)
     {
 
-        // TODO UserId von Shibboleth bekommen
+        // TODO UserId etc von Shibboleth bekommen
 
         $anhang = $this->getAnhang($anhangId);
 
@@ -255,7 +256,7 @@ class ArchivierungController extends Controller {
         $erstellerId = $archivierung->getBenutzerId();
 
         $userId = 1;    //Test
-        $adminId = 666;
+        $adminId = 666; //Test
         $profIds = [7, 8, 9]; //Test
 
 
