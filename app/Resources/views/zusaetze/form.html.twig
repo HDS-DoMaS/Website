@@ -1,0 +1,164 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    {% set zusatzCount = 0 %}
+    {% set prototypeId = form_widget(form.zusaetze.vars.prototype.archivZusatzKategorieId) %}
+    {% set prototypeBezeichnung = form_widget(form.zusaetze.vars.prototype.bezeichnung) %}
+
+    <h1>
+        Zusätze für Archivierung #{{ form.vars.data.archivId }}
+        <small>{{ form.vars.data.titel }}</small>
+    </h1>
+
+    <form name="form" method="post" class="form-horizontal">
+
+        {% set zusatzKategorie = 1 %}
+        <h3>Autoren</h3>
+        <ul class="zusaetze" data-button="Autor" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+            {% for zusatz in form.zusaetze %}
+                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                    <li>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                        </div>
+                    </li>
+
+                    {% set zusatzCount = zusatzCount + 1 %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        {% set zusatzKategorie = 2 %}
+        <h3>Betreuer</h3>
+        <ul class="zusaetze" data-button="Betreuer" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+            {% for zusatz in form.zusaetze %}
+                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                    <li>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                        </div>
+                    </li>
+
+                    {% set zusatzCount = zusatzCount + 1 %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        {% set zusatzKategorie = 3 %}
+        <h3>Unternehmen</h3>
+        <ul class="zusaetze" data-button="Unternehmen" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+            {% for zusatz in form.zusaetze %}
+                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                    <li>
+                        <div class="col-sm-10">
+                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                        </div>
+                    </li>
+
+                    {% set zusatzCount = zusatzCount + 1 %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        {{ form_widget(form._token) }}
+
+        <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId}) }}" class="btn btn-default">zurück</a>
+        <button type="submit" id="form_speichern" name="form[speichern]" class="btn-red btn">Speichern</button>
+
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <style type="text/css">
+        .zusaetze li {
+            padding-bottom: 12px;
+        }
+        .zusaetze .col-sm-10 {
+            padding-left: 0;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var $collectionHolder;
+
+        function addZusatzForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototypeId = $collectionHolder.data('id');
+            var prototypeBezeichnung = $collectionHolder.data('bezeichnung');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototypeId.replace(/__name__/g, index)
+                   + prototypeBezeichnung.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $('ul.zusaetze').data('index', index + 1);
+
+            // Display the form in the page in an li, before the "add" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            $newLinkLi.before($newFormLi);
+            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // set the ID in the hidden field
+            $newFormLi.find("input[id$='archivZusatzKategorieId']").val($collectionHolder.data('zusatzkategorie'));
+
+            // add a delete link
+            addZusatzFormDeleteLink($newFormLi);
+        }
+
+        function addZusatzFormDeleteLink($zusatzFormLi) {
+            var $removeFormA = $('<a href="#" class="btn"><span class="glyphicon glyphicon-trash"></span> entfernen</a>');
+            $zusatzFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the form
+                $zusatzFormLi.remove();
+            });
+        }
+
+        jQuery(document).ready(function() {
+            var $addZusatzLink = $('<a href="#" class="btn add_zusatzlink"><span class="glyphicon glyphicon-plus"></span> Zusatz hinzufügen</a>');
+            var $newLinkLi = $('<li></li>').append($addZusatzLink);
+
+            // Get the ul that holds the collection
+            $collectionHolder = $('ul.zusaetze');
+
+            // add a delete link to all of the existing keyword form li elements
+            $collectionHolder.find('li').each(function() {
+                addZusatzFormDeleteLink($(this));
+            });
+
+            // add the "add" anchor and li to the ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs
+            $collectionHolder.data('index', $collectionHolder.find(':input').length / 2);
+
+            $('.add_zusatzlink').each(function() {
+                // change the "add" link text
+                var text = $(this).closest('ul.zusaetze').data('button');
+                $(this).html('<span class="glyphicon glyphicon-plus"></span>' + text + ' hinzufügen');
+            }).on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new form
+                addZusatzForm($(this).closest('ul.zusaetze'), $(this));
+            });
+        });
+    </script>
+{% endblock %}
+
+

@@ -69,6 +69,9 @@
           <join-column name="Keyword_ID" referenced-column-name="Keyword_ID" />
         </inverse-join-columns>
       </join-table>
+      <cascade>
+        <cascade-persist />
+      </cascade>
     </many-to-many>
     <many-to-many field="zusaetze" inversed-by="archivierungen" target-entity="ArchivZusatz">
       <join-table name="Archiv_Zusatz_Referenzen">
@@ -79,6 +82,9 @@
           <join-column name="Archiv_Zusatz_ID" referenced-column-name="Archiv_Zusatz_ID" />
         </inverse-join-columns>
       </join-table>
+      <cascade>
+        <cascade-persist />
+      </cascade>
     </many-to-many>
     <many-to-many field="referenzen" inversed-by="referenziert" target-entity="Archivierung">
       <join-table name="Archiv_Referenzen">
@@ -89,6 +95,9 @@
           <join-column name="Kind_Archiv_ID" referenced-column-name="Archiv_ID" />
         </inverse-join-columns>
       </join-table>
+      <cascade>
+        <cascade-persist />
+      </cascade>
     </many-to-many>
     <many-to-many field="referenziert" mapped-by="referenzen" target-entity="Archivierung" />
     <one-to-many field="anhaenge" target-entity="ArchivAnhang" mapped-by="archivierung" />

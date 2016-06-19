@@ -231,21 +231,21 @@
                             </td>
                             <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.archivId') %} class="sorted"{% endif %}>
                                 {% set autor = [] %}
-                                {% for zusatz in archivierung.getZusaetze() %}
-                                    {% if zusatz.getZusatzKategorie().getBezeichnung() == "Autor"  %}
+                                {% for zusatz in archivierung.zusaetze %}
+                                    {% if zusatz.zusatzKategorie.bezeichnung == "Autor"  %}
                                         {% set autor = autor | merge([zusatz.bezeichnung]) %}
                                     {% endif %}
                                 {% endfor %}
                                 {{ autor | join(', ') | highlight(form.freitext.vars.value, form.autor.vars.value) | raw }}
                             </td>
                             <td{% if pagination.isSorted('fachbereich.bezeichnung') %} class="sorted"{% endif %}>
-                                {{ archivierung.getFachbereich().bezeichnung | highlight(form.freitext.vars.value, form.fachbereich.vars.value) | raw }}
+                                {{ archivierung.fachbereich.bezeichnung | highlight(form.freitext.vars.value, form.fachbereich.vars.value) | raw }}
                             </td>
                             <td{% if pagination.isSorted('studiengang.bezeichnung') %} class="sorted"{% endif %}>
-                                {{ archivierung.getStudiengang().bezeichnung | highlight(form.freitext.vars.value, form.studiengang.vars.value) | raw }}
+                                {{ archivierung.studiengang.bezeichnung | highlight(form.freitext.vars.value, form.studiengang.vars.value) | raw }}
                             </td>
                             <td{% if pagination.isSorted('kategorie.bezeichnung') %} class="sorted"{% endif %}>
-                                {{ archivierung.getKategorie().bezeichnung | highlight(form.freitext.vars.value, form.kategorie.vars.value) | raw }}
+                                {{ archivierung.kategorie.bezeichnung | highlight(form.freitext.vars.value, form.kategorie.vars.value) | raw }}
                             </td>
                             <td{% if pagination.isSorted('archiv.abgabedatum') %} class="sorted"{% endif %}>
                                 {% if archivierung.abgabedatum is not null %}
@@ -261,8 +261,8 @@
                             {% if form.betreuer.vars.value is not empty %}
                                 <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+archiv.titel') %} class="sorted"{% endif %}>
                                     {% set betreuer = [] %}
-                                    {% for zusatz in archivierung.getZusaetze() %}
-                                        {% if zusatz.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
+                                    {% for zusatz in archivierung.zusaetze %}
+                                        {% if zusatz.zusatzKategorie.bezeichnung == "Betreuer"  %}
                                             {% set betreuer = betreuer | merge([zusatz.bezeichnung]) %}
                                         {% endif %}
                                     {% endfor %}
@@ -274,8 +274,8 @@
                             {% if form.unternehmen.vars.value is not empty %}
                                 <td{% if pagination.isSorted('zusaetze.archivZusatzKategorieId+zusaetze.bezeichnung+fachbereich.bezeichnung') %} class="sorted"{% endif %}>
                                     {% set unternehmen = [] %}
-                                    {% for zusatz in archivierung.getZusaetze() %}
-                                        {% if zusatz.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
+                                    {% for zusatz in archivierung.zusaetze %}
+                                        {% if zusatz.zusatzKategorie.bezeichnung == "Unternehmen"  %}
                                             {% set unternehmen = unternehmen | merge([zusatz.bezeichnung]) %}
                                         {% endif %}
                                     {% endfor %}
@@ -287,7 +287,7 @@
                             {% if form.keywords.vars.value is not empty %}
                                 <td{% if pagination.isSorted('keywords.keyword') %} class="sorted"{% endif %}>
                                     {% set keywords = [] %}
-                                    {% for keyword in archivierung.getKeywords() %}
+                                    {% for keyword in archivierung.keywords %}
                                         {% set keywords = keywords | merge([keyword.keyword]) %}
                                     {% endfor %}
                                     {{ keywords | join(', ') | highlight(form.freitext.vars.value, form.keywords.vars.value) | raw }}
@@ -297,7 +297,7 @@
                             {# Ersteller #}
                             {% if form.benutzer.vars.value is not empty %}
                                 <td{% if pagination.isSorted('benutzer.vorname+benutzer.nachname') %} class="sorted"{% endif %}>
-                                    {{ (archivierung.getBenutzer().vorname ~ ' ' ~ archivierung.getBenutzer().nachname) | highlight(form.freitext.vars.value, form.benutzer.vars.value) | raw }}
+                                    {{ (archivierung.benutzer.vorname ~ ' ' ~ archivierung.benutzer.nachname) | highlight(form.freitext.vars.value, form.benutzer.vars.value) | raw }}
                                 </td>
                             {% endif %}
 

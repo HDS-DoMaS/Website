@@ -26,6 +26,12 @@
         <span class="glyphicon glyphicon-trash"></span> Löschen
     </a>
 #}
+
+    {# TODO: Link wieder entfernen #}
+    <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+        <span class="glyphicon glyphicon-info-sign"></span> Zusätze
+    </a>
+
     <div class="row">
         <div class="col-md-7">
             <dl class="dl-horizontal">
