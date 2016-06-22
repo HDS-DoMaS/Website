@@ -20,6 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Doctrine\ORM\EntityRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 class ArchivierungController extends Controller {
@@ -161,8 +162,12 @@ class ArchivierungController extends Controller {
      *     requirements={"archivId": "\d+", "zurueckButton" : "[z][u][r][u][e][c][k]"}
      * )
      * @param integer $archivId
+     * @param Request $request
      * @param string $zurueckButton
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     *
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EMPLOYEE')")
      */
     public function detailViewAction($archivId, Request $request, $zurueckButton = "error") {
         // Archivierung aus DB auslesen

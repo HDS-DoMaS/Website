@@ -16,7 +16,7 @@ class SuchController extends Controller {
     private $_zusatzMapper;
 
     /**
-     * @Route("/suche",
+     * @Route("/archivierung/suche",
      *     name="_suche"
      * )
      * @param $request
