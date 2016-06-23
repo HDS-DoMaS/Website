@@ -10,5 +10,5 @@
 {% endblock %}
 
 {% block zurueckButton %}
-    <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId}) }}" class="btn btn-default">zur Detailansicht</a>
+    <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId, 'zurueckButton': 'zurueck'}) }}" class="btn btn-default">zur Detailansicht</a>
 {% endblock %}

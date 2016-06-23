@@ -170,7 +170,9 @@ class ArchivierungController extends Controller {
      *     name="_detailViewBack"
      * )
      * @return \Symfony\Component\HttpFoundation\Response
-     * drücken des Zurückknopfes in der Detailview
+     *
+     * drücken des Zurückknopfes in der Detailview.
+     * entscheiden welche auf welche seite der history redirected werden muss und diese dann aus der history löschen.
      */
     public function detailViewBackAction(Request $request) {
 
@@ -183,6 +185,7 @@ class ArchivierungController extends Controller {
         if($historyList == null || $biggestIndex < 0 ) {
             $return = $this->redirect($this->generateUrl('_default'));
         }
+
         // ansonsten redirect zum letzten eintrag
         else{
             $url = $historyList[$biggestIndex];
@@ -222,11 +225,12 @@ class ArchivierungController extends Controller {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
+
         //LOGIK für den zurück-knopf:
 
         // session hohlen und gucken ob es schon eine history liste gibt
         $session = $request->getSession();
-        $historyList = $session->get("historyList", array());
+        $historyList = $session->get("historyList", array());   // wenn nicht: hitoryList = leeres array.
 
 
         // referer pathinfo auslesen
@@ -238,12 +242,12 @@ class ArchivierungController extends Controller {
             $refererControllerId = false;
         }
 
-        // je nach referer entscheiden was mit der history für den zurückbutton passiert..
+        // je nach referer entscheiden ob der history etwas hinzugefügt wird..
 
-        //wenn es sich im eine detailView handelt, an die history anhängen.
+        //wenn es sich um eine detailView handelt, an die history anhängen.
         if($refererControllerId === "_detailView") {
 
-            //ausser man befindet sich sowie grade in einem zurück-request.
+            //ausser man befindet sich sowieso grade in einem zurück-request.
             if($zurueckButton !== "zurueck") {
 
                 $biggestIndex = sizeof($historyList)-1;
@@ -258,12 +262,18 @@ class ArchivierungController extends Controller {
             }
 
         }
-        // wenn man von der suchseite kommt hat, neue history erstellen
+        // wenn man von der suchseite kommt hat, neue history erstellen und referer anhängen.
         elseif($refererControllerId === "_suche") {
             $historyList = array();
             array_push($historyList, $referer);
         }
-        // wenn es keinen referer gibt, gibt es auch keine history
+
+        // wenn man grade von der editView kommt, nichts tun.
+        elseif($refererControllerId === "_editArchivierung") {
+            // mach nix
+        }
+
+        // wenn es keinen referer gibt, gibt es auch keine history.
         else{
             $historyList = array();
         }
