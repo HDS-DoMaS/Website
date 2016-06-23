@@ -28,6 +28,9 @@
 #}
 
     {# TODO: Link wieder entfernen #}
+    <a href="{{ path('_editKeywords', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+        <span class="glyphicon glyphicon-tags"></span> Keywords
+    </a>
     <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
         <span class="glyphicon glyphicon-info-sign"></span> Zusätze
     </a>

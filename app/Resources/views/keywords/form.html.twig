@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    {% set keywordCount = 0 %}
+
+    <h1>
+        Keywords für Archivierung #{{ form.vars.data.archivId }}
+        <small>{{ form.vars.data.titel }}</small>
+    </h1>
+
+    <form name="form" method="post" class="form-horizontal">
+
+        <h3>Keywords</h3>
+
+        <ul class="keywords" data-prototype="{{ form_widget(form.keywords.vars.prototype.keyword)|e('html_attr') }}">
+            {% for keyword in form.keywords %}
+                <li>
+                    <div class="col-sm-10">
+                        <input type="text" id="form_keywords_{{ keywordCount }}_keyword" name="form[keywords][{{ keywordCount }}][keyword]" required="required" class="form-control" value="{{ keyword.vars.value.keyword }}" />
+                    </div>
+                </li>
+
+                {% set keywordCount = keywordCount + 1 %}
+            {% endfor %}
+        </ul>
+
+        {{ form_widget(form._token) }}
+
+        <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId}) }}" class="btn btn-default">
+            zurück
+        </a>
+
+        <button type="submit" id="form_speichern" name="form[speichern]" class="btn-red btn">Speichern</button>
+
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <style type="text/css">
+        .keywords li {
+            padding-bottom: 12px;
+        }
+        .keywords .col-sm-10 {
+            padding-left: 0;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var $collectionHolder;
+
+        // setup an "add a keyword" link
+        var $addKeywordLink = $('<a href="#" class="btn add_keywordlink"><span class="glyphicon glyphicon-plus"></span> Keyword hinzufügen</a>');
+        var $newLinkLi = $('<li></li>').append($addKeywordLink);
+
+        function addKeywordForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a keyword" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            $newLinkLi.before($newFormLi);
+            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // add a delete link
+            addKeywordFormDeleteLink($newFormLi);
+        }
+
+        function addKeywordFormDeleteLink($keywordFormLi) {
+            var $removeFormA = $('<a href="#" class="btn"><span class="glyphicon glyphicon-trash"></span> entfernen</a>');
+            $keywordFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the keyword form
+                $keywordFormLi.remove();
+            });
+        }
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of keywords
+            $collectionHolder = $('ul.keywords');
+
+            // add a delete link to all of the existing keyword form li elements
+            $collectionHolder.find('li').each(function() {
+                addKeywordFormDeleteLink($(this));
+            });
+
+            // add the "add a keyword" anchor and li to the keywords ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addKeywordLink.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new keyword form (see next code block)
+                addKeywordForm($collectionHolder, $newLinkLi);
+            });
+        });
+    </script>
+{% endblock %}
+
+

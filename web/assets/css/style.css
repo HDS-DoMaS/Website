@@ -309,6 +309,7 @@ th.desc a:before{
     font-weight: 600;
     display: block;
     color: inherit;
+    padding: 0;
 }
 .index .row {
     margin-top: 80px;
