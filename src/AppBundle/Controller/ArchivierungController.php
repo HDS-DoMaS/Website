@@ -194,7 +194,7 @@ class ArchivierungController extends Controller {
         //wenn es sich im eine detailView handelt, an die history anhängen.
         if($refererControllerId === "_detailView") {
 
-            //ausser befindet sich sowie grade in einem zurück-request.
+            //ausser man befindet sich sowie grade in einem zurück-request.
             if($zurueckButton !== "zurueck") {
 
                 $biggestIndex = sizeof($historyList)-1;
