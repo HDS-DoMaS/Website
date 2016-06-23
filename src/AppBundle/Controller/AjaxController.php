@@ -9,8 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AjaxController extends Controller {
     /**
-     * @Route("/ajax/zusatz/{kategorie}/{suche}")
-     * @Route("/ajax/zusatz/{kategorie}/")
+     * @Route("/archivierung/ajax/zusatz/{kategorie}/{suche}")
+     * @Route("/archivierung/ajax/zusatz/{kategorie}/")
      */
     public function requestZusatzAction($kategorie, $suche = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -31,8 +31,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/archiv/{feld}/{suche}")
-     * @Route("/ajax/archiv/{feld}/")
+     * @Route("/archivierung/ajax/archiv/{feld}/{suche}")
+     * @Route("/archivierung/ajax/archiv/{feld}/")
      */
     public function requestArchivTitelAction($feld, $suche = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -50,8 +50,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/benutzer/{name}")
-     * @Route("/ajax/benutzer/")
+     * @Route("/archivierung/ajax/benutzer/{name}")
+     * @Route("/archivierung/ajax/benutzer/")
      */
     public function requestBenutzerAction($name = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -69,8 +69,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/fachbereich/{bezeichnung}")
-     * @Route("/ajax/fachbereich/")
+     * @Route("/archivierung/ajax/fachbereich/{bezeichnung}")
+     * @Route("/archivierung/ajax/fachbereich/")
      */
     public function requestFachbereichAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -88,8 +88,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/studiengang/{bezeichnung}")
-     * @Route("/ajax/studiengang/")
+     * @Route("/archivierung/ajax/studiengang/{bezeichnung}")
+     * @Route("/archivierung/ajax/studiengang/")
      */
     public function requestStudiengangAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -107,8 +107,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/kategorie/{bezeichnung}")
-     * @Route("/ajax/kategorie/")
+     * @Route("/archivierung/ajax/kategorie/{bezeichnung}")
+     * @Route("/archivierung/ajax/kategorie/")
      */
     public function requestKategorieAction($bezeichnung = null) {
         $queryBuilder = $this->getQueryBuilder();
@@ -126,8 +126,8 @@ class AjaxController extends Controller {
     }
 
     /**
-     * @Route("/ajax/keywords/{keyword}")
-     * @Route("/ajax/keywords/")
+     * @Route("/archivierung/ajax/keywords/{keyword}")
+     * @Route("/archivierung/ajax/keywords/")
      */
     public function requestKeywordsAction($keyword = null) {
         $queryBuilder = $this->getQueryBuilder();
