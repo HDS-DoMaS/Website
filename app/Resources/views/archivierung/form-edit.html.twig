@@ -2,21 +2,13 @@
 
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 
-{% block h1 %}Archivierung bearbeiten{% endblock %}
-{% block archivId %}
-    <div class="form-group">
-        <label class="col-sm-2 control-label" for="form_archivId">Archiv-ID</label>
-        <div class="col-sm-10">
-            {{ form.archivId.vars.value }}
-        </div>
-    </div>
-{% endblock %}
+{% block bodyclass %}archivierung-form-edit{% endblock %}
+
+{% block h1 %}Archivierung bearbeiten #{{ form.vars.data.archivId }}{% endblock %}
 
 {% block erstelldatum %}
-    <div class="form-group">
-        <label class="col-sm-2 control-label required" for="form_erstelldatum">Erstelldatum</label>
-        <div class="col-sm-10">
-            {{ form.erstelldatum.vars.value }}
-        </div>
-    </div>
+{% endblock %}
+
+{% block zurueckButton %}
+    <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId}) }}" class="btn btn-default">zur Detailansicht</a>
 {% endblock %}

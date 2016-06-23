@@ -36,28 +36,17 @@
         <dd>{{ archivierung.getStudiengang().getBezeichnung() }}</dd>
 
         <dt>Betreuer</dt>
-        {% set betreuer1, betreuer2 = null, null %}
         {% for betreuer in archivierung.getZusaetze() %}
             {% if betreuer.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
-                {% if betreuer1 is null %}
-                    {% set betreuer1 = betreuer.getBezeichnung() %}
-                {% else %}
-                    {% set betreuer2 = betreuer.getBezeichnung() %}
-                {% endif %}
+                <dd>{{ betreuer.getBezeichnung() }}</dd>
             {% endif %}
         {% endfor %}
-        <dd>{{ betreuer1 }}</dd>
-        {% if betreuer2 is not null %}
-            <dd>{{ betreuer2 }}</dd>
-        {% endif %}
 
         <dt>Unternehmen</dt>
-        <dd>
-            {% for unternehmen in archivierung.getZusaetze() %}
-                {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
-                    {{ unternehmen.getBezeichnung() }}
-                {% endif %}
-            {% endfor %}
-        </dd>
+        {% for unternehmen in archivierung.getZusaetze() %}
+            {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
+                <dd>{{ unternehmen.getBezeichnung() }}</dd>
+            {% endif %}
+        {% endfor %}
 
 {% endblock %}

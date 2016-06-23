@@ -604,3 +604,29 @@ span.twitter-typeahead {
         margin-left: 16px;
     }
 }
+
+.archivierung-form-edit .form-control,
+.archivierung-form .form-control{
+    width: 40rem;
+    display:inline;
+}
+
+.archivierung-form-edit ul,
+.archivierung-form ul{
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.archivierung-form-edit li,
+.archivierung-form li{
+    list-style-type:none;
+    padding-bottom: 12px;
+}
+
+ul.zusaetze li div{
+    width: auto;
+}
+
+.zusaetze .col-sm-10 {
+    padding-left: 0;
+}

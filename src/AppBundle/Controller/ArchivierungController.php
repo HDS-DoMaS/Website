@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Form\Type\KeywordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,6 +22,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use AppBundle\Form\Type\ArchivZusatzType;
+use Doctrine\Common\Collections\ArrayCollection;
+
+
 
 
 class ArchivierungController extends Controller {
@@ -32,7 +37,6 @@ class ArchivierungController extends Controller {
         $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/../";
         $this->anhaengePfad = $this->grundPfad . "anhaenge/";
     }
-
 
     /**
      * @Route("/archivierung/neu",
@@ -46,31 +50,27 @@ class ArchivierungController extends Controller {
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
+        if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
 
-        // Wurde das Formular abgesendet?
-        if ($form->isSubmitted()) {
-
-            // Ist das Forumlar valide?
-            if($form->isValid()) {
-                // Archivierung in der DB anlegen
-                $this->saveArchivierung($archivierung);
-
-                // Benachrichtigung: gespeichert
-                $this->addFlash(
-                    'success',
-                    'Ihre Eingaben wurden erfolgreich gespeichert.'
-                );
+            foreach ($archivierung->getZusaetze() as $zusatz) {
+                // Kategorie Objekt setzten
+                if(null == $zusatz->getZusatzKategorie()) {
+                    $zusatz->setZusatzKategorie(
+                        $this->getDoctrine()
+                            ->getRepository('AppBundle:ArchivZusatzKategorie')
+                            ->find($zusatz->getArchivZusatzKategorieId())
+                    );
+                }
             }
-            // Formular enthält Fehler
-            else {
 
-            }
+            $entityManager->persist($archivierung);
+            $entityManager->flush();
         }
+
         return $this->render(
             'archivierung/form.html.twig',
-            array(
-                'form' => $form->createView()
-            )
+            array('form' => $form->createView())
         );
     }
 
@@ -82,37 +82,86 @@ class ArchivierungController extends Controller {
      * )
      */
     public function editArchivierungAction(Request $request, $archivId) {
-        $archivierung = $this->getArchivierung($archivId);
+        $archivierung = $this->getDoctrine()
+            ->getRepository('AppBundle:Archivierung')
+            ->find($archivId);
+
+        // Ursprüngliche Zusatze
+        $originalZusaetze = new ArrayCollection();
+        foreach ($archivierung->getZusaetze() as $zusatz) {
+            $originalZusaetze->add($zusatz);
+        }
 
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
+
         $form->handleRequest($request);
+        if ($form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
 
-        // Wurde das Formular abgesendet?
-        if ($form->isSubmitted()) {
-
-            // Ist das Forumlar valide?
-            if($form->isValid()) {
-                $this->saveArchivierung($archivierung);
-
-                // Benachrichtigung: gespeichert
-                $this->addFlash(
-                    'success',
-                    'Ihre Eingaben wurden erfolgreich gespeichert.'
-                );
+            foreach ($archivierung->getZusaetze() as $zusatz) {
+                // Kategorie Objekt setzten
+                if(null == $zusatz->getZusatzKategorie()) {
+                    $zusatz->setZusatzKategorie(
+                        $this->getDoctrine()
+                            ->getRepository('AppBundle:ArchivZusatzKategorie')
+                            ->find($zusatz->getArchivZusatzKategorieId())
+                    );
+                }
             }
-            // Formular enthält Fehler
-            else {
 
+            // entfernte Zusatze löschen
+            foreach ($originalZusaetze as $zusatz) {
+                if (false === $archivierung->getZusaetze()->contains($zusatz)) {
+                    $entityManager->remove($zusatz);
+                }
             }
+
+            $entityManager->persist($archivierung);
+            $entityManager->flush();
         }
 
         return $this->render(
             'archivierung/form-edit.html.twig',
-            array(
-                'form' => $form->createView()
-            )
+            array('form' => $form->createView())
         );
+    }
+
+    private function getArchivierungForm($archivierung) {
+        return $this->createFormBuilder($archivierung)
+            ->add('titel', TextType::class)
+            ->add('zusaetze', EntityType::class, array(
+                'class' => 'AppBundle:ArchivZusatz',
+                'choice_label' => 'bezeichnung'
+            ))
+            ->add('abgabedatum', DateType::class, array(
+                'widget' => 'single_text',
+                'format' => 'dd.MM.yyyy'
+            ))
+            ->add('beschreibung', TextareaType::class)
+            ->add('fachbereich', EntityType::class, array(
+                'class' => 'AppBundle:Fachbereich',
+                'choice_label' => 'bezeichnung'
+            ))
+            ->add('studiengang', EntityType::class, array(
+                'class' => 'AppBundle:Studiengang',
+                'choice_label' => 'bezeichnung'
+            ))
+            ->add('kategorie', EntityType::class, array(
+                'class' => 'AppBundle:ArchivKategorie',
+                'choice_label' => 'bezeichnung'
+            ))
+            ->add('benutzerId', HiddenType::class, array(
+                'data' => '1'
+            ))
+            ->add('zusaetze', CollectionType::class, array(
+                'entry_type' => ArchivZusatzType::class,
+                'by_reference' => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ))
+            ->add('speichern', SubmitType::class)
+            ->getForm();
     }
 
 
@@ -345,67 +394,5 @@ class ArchivierungController extends Controller {
         }
 
         return $archivierung;
-    }
-
-    private function getArchivierungForm($archivierung) {
-        $zusatzMapper = $this->get('app.zusatz_kategorie_mapper');
-
-        $erZusatz = $this->getDoctrine()
-            ->getRepository('AppBundle:ArchivZusatz')
-            ->createQueryBuilder('zusatz')
-            ->join('zusatz.archivierungen', 'archivierung') // JOIN Fachbereich
-            ->andWhere('archivierung.archivId = :archivId')
-            ->setParameter('archivId', $archivierung->getArchivId())
-            ->orderBy('zusatz.bezeichnung', 'ASC');
-
-        // Erzeugt ein Formular für das Objekt Archivierung
-        return $this->createFormBuilder($archivierung)
-            ->add('archivId')
-            ->add('titel', TextType::class)
-            ->add('zusaetze', EntityType::class, array(
-                'class' => 'AppBundle:ArchivZusatz',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('abgabedatum', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'dd.MM.yyyy'
-            ))
-            ->add('erstelldatum', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'dd.MM.yyyy'
-            ))
-            ->add('beschreibung', TextareaType::class)
-            ->add('zusaetze', EntityType::class, array(
-                'class' => 'AppBundle:ArchivZusatz',
-                'query_builder' => $erZusatz,
-                'choice_label' => 'bezeichnung',
-            ))
-            ->add('fachbereich', EntityType::class, array(
-                'class' => 'AppBundle:Fachbereich',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('studiengang', EntityType::class, array(
-                'class' => 'AppBundle:Studiengang',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('kategorie', EntityType::class, array(
-                'class' => 'AppBundle:ArchivKategorie',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('benutzerId', HiddenType::class, array(
-                'data' => '1'
-            ))
-            ->add('speichern', SubmitType::class)
-            ->getForm();
-    }
-
-    private function saveArchivierung($archivierung) {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        // tells Doctrine you want to (eventually) save the Product (no queries yet)
-        $entityManager->persist($archivierung);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
     }
 }

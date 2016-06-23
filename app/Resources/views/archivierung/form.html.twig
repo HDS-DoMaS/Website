@@ -2,8 +2,15 @@
 
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
 
+{% block bodyclass %}archivierung-form{% endblock %}
+
 {% block body %}
-    {{dump(form.zusaetze.vars.choices)}}
+    {#{dump(form.zusaetze)}}#}
+    {% set zusatzCount = 0 %}
+    {% set keywordCount = 0 %}
+    {% set prototypeId = form_widget(form.zusaetze.vars.prototype.archivZusatzKategorieId) %}
+    {% set prototypeBezeichnung = form_widget(form.zusaetze.vars.prototype.bezeichnung) %}
+
     <h1>{% block h1 %}Neue Archivierung{% endblock %}</h1>
     <div class="body container">
         {% for flash_message in app.session.flashBag.get('success') %}
@@ -15,7 +22,6 @@
 
         <form class="form-horizontal" method="post" name="form">
             <div id="form">
-                {% block archivId %}{% endblock %}
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="form_titel">Titel</label>
                     <div class="col-sm-10">
@@ -23,16 +29,23 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    {% set zusatzKategorie = 1 %}
                     <label class="col-sm-2 control-label required" for="form_autor">Autor</label>
                     <div class="col-sm-10">
-                        {% for key,val in form.zusaetze.vars.choices %}
-                            {% if val.data.archivZusatzKategorieId == 1 %}
-                                <div>
-                                    <input type="text" class="form-control" id="form_autor_0" name="form[zusatz][0]" value="{{val.label}}"/>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                        <button class="btn btn-add-zusatz">+</button>
+                        <ul class="zusaetze" data-button="Autor" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                            {% for zusatz in form.zusaetze %}
+                                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                                    <li>
+                                        <div class="col-sm-10">
+                                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                        </div>
+                                    </li>
+
+                                    {% set zusatzCount = zusatzCount + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
                 <div class="form-group">
@@ -64,17 +77,42 @@
                 </div>
                 {% block erstelldatum %}{% endblock %}
                 <div class="form-group">
-                    <label class="col-sm-2 control-label required" for="form_betreuer">Betreuer 1 & 2</label>
+                    {% set zusatzKategorie = 2 %}
+                    <label class="col-sm-2 control-label required" for="form_betreuer">Betreuer</label>
                     <div class="col-sm-10">
-                        {% for key,val in form.zusaetze.vars.choices %}
-                            {{ val.label }}
-                        {% endfor %}
+                        <ul class="zusaetze" data-button="Betreuer" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                            {% for zusatz in form.zusaetze %}
+                                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                                    <li>
+                                        <div class="col-sm-10">
+                                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                        </div>
+                                    </li>
+                                    {% set zusatzCount = zusatzCount + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
                 <div class="form-group">
+                    {% set zusatzKategorie = 3 %}
                     <label class="col-sm-2 control-label required" for="form_unternehmen">Betreuendes Unternehmen</label>
                     <div class="col-sm-10">
-                        Hier Unternehmen
+                        <ul class="zusaetze" data-button="Unternehmen" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                            {% for zusatz in form.zusaetze %}
+                                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                                    <li>
+                                        <div class="col-sm-10">
+                                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                        </div>
+                                    </li>
+
+                                    {% set zusatzCount = zusatzCount + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
                 <div class="form-group">
@@ -92,7 +130,17 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="form_dateiuploads">Keywords</label>
                     <div class="col-sm-10">
-                        Hier Keywords
+                        {#<ul class="keyword" data-button="Keywords" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                            {% for keyword in form.keywords %}
+                                    <li>
+                                        <div class="col-sm-10">
+                                            <input type="hidden" id="form_keywords_{{ keywordCount }}_keywordId" name="form[keywords][{{ keywordCount }}][keywordId]" required="required" class="form-control" value="{{ keyword.vars.value.keywordId }}" />
+                                            <input type="text" id="form_keywords_{{ keywordCount }}_keyword" name="form[keywords][{{ keywordCount }}][keyword]" required="required" class="form-control" value="{{ keyword.vars.value.keyword }}" />
+                                        </div>
+                                    </li>
+                                    {% set keywordCount = keywordCount + 1 %}
+                            {% endfor %}
+                        </ul>#}
                     </div>
                 </div>
                 <div class="form-group">
@@ -108,57 +156,97 @@
                 <div class="form-group">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-10">
-                        <button id="form_speichern" class="btn-default btn" name="form[speichern]" type="submit">Speichern</button>
+                        {% block zurueckButton %}
+                            <a href="{{ path('_suche')}}" class="btn btn-default">zur Suche</a>
+                        {% endblock %}
+                        <button type="submit" id="form_speichern" name="form[speichern]" class="btn-red btn">speichern</button>
                     </div>
                 </div>
-                <input id="form_benutzerId" type="hidden" name="form[benutzerId]" value="{{ form.benutzerId.vars.value }}">
-                {{ form_widget(form._token) }}
             </div>
+            <input id="form_benutzerId" type="hidden" name="form[benutzerId]" value="{{ form.benutzerId.vars.value }}">
+            {{ form_widget(form._token) }}
         </form>
-
-        {% if true == false %}
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            {{ form_end(form) }}
-        {% endif %}
-
-
-        {% if app.request.headers.get('referer') is null %}
-            <a href="{{ path('_default') }}" class="btn btn-default">
-                zurück
-            </a>
-        {% else %}
-            <a href="{{ app.request.headers.get('referer') }}" class="btn btn-default">
-                zurück
-            </a>
-        {% endif %}
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        // keep track of how many email fields have been rendered
-        var zusaetzeCount = '{{ form.zusaetze|length }}';
 
-        jQuery(document).ready(function() {
-            jQuery('.btn-add-zusatz').click(function(e) {
+
+    <script type="text/javascript">
+        var $collectionHolder;
+
+        function addZusatzForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototypeId = $collectionHolder.data('id');
+            var prototypeBezeichnung = $collectionHolder.data('bezeichnung');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototypeId.replace(/__name__/g, index)
+                    + prototypeBezeichnung.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $('ul.zusaetze').data('index', index + 1);
+
+            // Display the form in the page in an li, before the "add" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            $newLinkLi.before($newFormLi);
+            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // set the ID in the hidden field
+            $newFormLi.find("input[id$='archivZusatzKategorieId']").val($collectionHolder.data('zusatzkategorie'));
+
+            // add a delete link
+            addZusatzFormDeleteLink($newFormLi);
+        }
+
+        function addZusatzFormDeleteLink($zusatzFormLi) {
+            var $removeFormA = $('<a href="#" class="btn"><span class="glyphicon glyphicon-trash"></span> entfernen</a>');
+            $zusatzFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
                 e.preventDefault();
 
-                var emailList = jQuery('#email-fields-list');
-
-                // grab the prototype template
-                var newWidget = emailList.attr('data-prototype');
-                // replace the "__name__" used in the id and name of the prototype
-                // with a number that's unique to your emails
-                // end name attribute looks like name="contact[emails][2]"
-                newWidget = newWidget.replace(/__name__/g, zusaetzeCount);
-                zusaetzeCount++;
-
-                // create a new list element and add it to the list
-                var newLi = jQuery('<li></li>').html(newWidget);
-                newLi.appendTo(emailList);
+                // remove the li for the form
+                $zusatzFormLi.remove();
             });
-        })
+        }
+
+        jQuery(document).ready(function() {
+            var $addZusatzLink = $('<a href="#" class="btn add_zusatzlink"><span class="glyphicon glyphicon-plus"></span> Zusatz hinzufügen</a>');
+            var $newLinkLi = $('<li></li>').append($addZusatzLink);
+
+            // Get the ul that holds the collection
+            $collectionHolder = $('ul.zusaetze');
+
+            // add a delete link to all of the existing keyword form li elements
+            $collectionHolder.find('li').each(function() {
+                addZusatzFormDeleteLink($(this));
+            });
+
+            // add the "add" anchor and li to the ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs
+            $collectionHolder.data('index', $collectionHolder.find(':input').length / 2);
+
+            $('.add_zusatzlink').each(function() {
+                // change the "add" link text
+                var text = $(this).closest('ul.zusaetze').data('button');
+                $(this).html('<span class="glyphicon glyphicon-plus"></span>' + text + ' hinzufügen');
+            }).on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new form
+                addZusatzForm($(this).closest('ul.zusaetze'), $(this));
+            });
+        });
     </script>
 {% endblock %}
 
