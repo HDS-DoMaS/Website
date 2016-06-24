@@ -43,6 +43,7 @@ h1 small {
 
 a {
     color: #d83734;
+    cursor:pointer;
 }
 
 a:hover,

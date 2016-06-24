@@ -10,13 +10,14 @@
     <div class="row">
         <div class="col-sm-4 col-sm-offset-2">
             <div class="transparent">
-                <a href="#">
+                <a href="{{ path('_neuArchivierung') }}">
                     <div class="circle center-block">
-                        <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
                     </div>
-                    <a href="{{ path('_neuArchivierung') }}" class="btn btn-block">
-                        Dokument hochladen
-                    </a>
+                </a>
+
+                <a href="{{ path('_neuArchivierung') }}" class="btn btn-block">
+                    Dokument hochladen
                 </a>
             </div>
         </div>
@@ -24,11 +25,11 @@
             <div class="transparent">
                 <form method="get" name="form" id="form" class="form-horizontal" action="{{ path('_suche') }}">
                     <input id="hdn-collapse" type="hidden" value="collapsed" name="form[hdncollapse]">
-
-                    <div class="circle center-block">
-                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                    </div>
-
+                    <a onclick="form.submit();">
+                        <div class="circle center-block">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </div>
+                    </a>
                     <div>
                         <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="" placeholder="Archivierungen durchsuchen">
                         <button type="submit" class="btn" name="form[submit]"><span class="glyphicon glyphicon-search"></span></button>
