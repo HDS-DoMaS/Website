@@ -46,11 +46,6 @@ class ArchivierungController extends Controller {
     public function neuArchivierungAction(Request $request) {
         // Neue Archivierung
         $archivierung = new Archivierung();
-        echo $url = $this->generateUrl(
-            '_detailView',
-            array('archivId' => 1)
-        );
-        // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -116,7 +111,6 @@ class ArchivierungController extends Controller {
         $form->handleRequest($request);
         if ($form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
-
             foreach ($archivierung->getZusaetze() as $zusatz) {
                 // Kategorie Objekt setzten
                 if(null == $zusatz->getZusatzKategorie()) {
@@ -137,6 +131,12 @@ class ArchivierungController extends Controller {
 
             $entityManager->persist($archivierung);
             $entityManager->flush();
+
+            $url = $this->generateUrl(
+                '_detailView',
+                array('archivId' => $archivierung->getArchivId())
+            );
+            return $this->redirect($url);
         }
 
         return $this->render(
@@ -169,9 +169,7 @@ class ArchivierungController extends Controller {
                 'class' => 'AppBundle:ArchivKategorie',
                 'choice_label' => 'bezeichnung'
             ))
-            ->add('benutzerId', HiddenType::class, array(
-                'data' => '1'
-            ))
+
             ->add('zusaetze', CollectionType::class, array(
                 'entry_type' => ArchivZusatzType::class,
                 'by_reference' => false,
