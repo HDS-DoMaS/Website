@@ -46,11 +46,23 @@ class ArchivierungController extends Controller {
     public function neuArchivierungAction(Request $request) {
         // Neue Archivierung
         $archivierung = new Archivierung();
-
+        echo $url = $this->generateUrl(
+            '_detailView',
+            array('archivId' => 1)
+        );
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $archivierung->setBenutzer($this->getDoctrine()
+                ->getRepository('AppBundle:Benutzer')
+                ->find(1));
+
+            $archivierung->setSichtbarkeit(true);
+            $date = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
+            // echo $date->format('Y-m-d');
+            $archivierung->setErstelldatum($date);
+
             $entityManager = $this->getDoctrine()->getManager();
 
             foreach ($archivierung->getZusaetze() as $zusatz) {
@@ -66,6 +78,12 @@ class ArchivierungController extends Controller {
 
             $entityManager->persist($archivierung);
             $entityManager->flush();
+
+            $url = $this->generateUrl(
+                '_detailView',
+                array('archivId' => $archivierung->getArchivId())
+            );
+            return $this->redirect($url);
         }
 
         return $this->render(
@@ -156,6 +174,12 @@ class ArchivierungController extends Controller {
             ))
             ->add('zusaetze', CollectionType::class, array(
                 'entry_type' => ArchivZusatzType::class,
+                'by_reference' => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ))
+            ->add('keywords', CollectionType::class, array(
+                'entry_type' => KeywordType::class,
                 'by_reference' => false,
                 'allow_add'    => true,
                 'allow_delete' => true,
