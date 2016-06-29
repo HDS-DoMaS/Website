@@ -521,16 +521,16 @@ span.twitter-typeahead {
  * Detailview
  */
 
-.detailView h1 + a,
-.detailView h1 + a + a,
-.detailView h1 + a + a + a,
-.detailView h1 + a + a + a + a {
+.detailView h1 + a, .detailView h1 + a + a {
     float: right;
-    top: -56px;
+    margin-top: -56px;
     z-index: 100;
-    margin-left: 12px;
     position: relative;
 
+}
+
+.detailView h1 + a {
+    left: -94px;
 }
 
 .detailView dd {
