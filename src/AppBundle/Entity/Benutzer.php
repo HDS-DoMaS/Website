@@ -2,30 +2,60 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Benutzer
+ *
+ * @ORM\Table(name="benutzer", indexes={@ORM\Index(name="IDX_Archiv_Benutzer_Vorname_Fulltext", columns={"Vorname"}), @ORM\Index(name="IDX_Archiv_Benutzer_Nachname_Fulltext", columns={"Nachname"}), @ORM\Index(name="IDX_Archiv_Benutzer_Fulltext", columns={"Vorname", "Nachname"})})
+ * @ORM\Entity
  */
 class Benutzer
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Vorname", type="string", length=40, nullable=false)
      */
     private $vorname;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Nachname", type="string", length=40, nullable=false)
      */
     private $nachname;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="E_Mail", type="string", length=255, nullable=true)
+     */
+    private $eMail;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="shibboleth_Uid", type="string", length=16, nullable=false)
+     */
+    private $shibbolethUid;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="domas_role", type="string", length=32, nullable=false)
+     */
+    private $domasRole;
+
+    /**
      * @var integer
+     *
+     * @ORM\Column(name="Benutzer_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $benutzerId;
 
-    /**
-     * @var \AppBundle\Entity\Archivierung
-     */
-    private $archivierung;
 
 
     /**
@@ -75,55 +105,6 @@ class Benutzer
     {
         return $this->nachname;
     }
-
-    /**
-     * Get benutzerId
-     *
-     * @return integer
-     */
-    public function getBenutzerId()
-    {
-        return $this->benutzerId;
-    }
-
-    /**
-     * Set archivierung
-     *
-     * @param \AppBundle\Entity\Archivierung $archivierung
-     *
-     * @return Benutzer
-     */
-    public function setArchivierung(\AppBundle\Entity\Archivierung $archivierung = null)
-    {
-        $this->archivierung = $archivierung;
-
-        return $this;
-    }
-
-    /**
-     * Get archivierung
-     *
-     * @return \AppBundle\Entity\Archivierung
-     */
-    public function getArchivierung()
-    {
-        return $this->archivierung;
-    }
-    /**
-     * @var string
-     */
-    private $eMail;
-
-    /**
-     * @var string
-     */
-    private $shibbolethUid;
-
-    /**
-     * @var string
-     */
-    private $domasRole;
-
 
     /**
      * Set eMail
@@ -195,5 +176,15 @@ class Benutzer
     public function getDomasRole()
     {
         return $this->domasRole;
+    }
+
+    /**
+     * Get benutzerId
+     *
+     * @return integer
+     */
+    public function getBenutzerId()
+    {
+        return $this->benutzerId;
     }
 }

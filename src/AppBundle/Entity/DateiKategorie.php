@@ -2,25 +2,39 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * DateiKategorie
+ *
+ * @ORM\Table(name="Datei_Kategorien")
+ * @ORM\Entity
  */
 class DateiKategorie
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Datei_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $dateiKategorieId;
 
     /**
      * @var \AppBundle\Entity\ArchivAnhang
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ArchivAnhang", mappedBy="dateiKategorie")
      */
     private $archivAnhang;
+
 
 
     /**
@@ -81,4 +95,3 @@ class DateiKategorie
         return $this->archivAnhang;
     }
 }
-

@@ -2,30 +2,46 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Fachbereich
+ *
+ * @ORM\Table(name="Fachbereiche")
+ * @ORM\Entity
  */
 class Fachbereich
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Fachbereich_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $fachbereichId;
 
     /**
      * @var \AppBundle\Entity\Archivierung
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Archivierung", mappedBy="fachbereich")
      */
     private $archivierung;
 
     /**
      * @var \AppBundle\Entity\Studiengang
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Studiengang", mappedBy="fachbereich")
      */
     private $studiengang;
+
 
 
     /**
@@ -110,4 +126,3 @@ class Fachbereich
         return $this->studiengang;
     }
 }
-

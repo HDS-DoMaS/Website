@@ -2,108 +2,191 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Archivierung
+ *
+ * @ORM\Table(name="Archivierungen", indexes={@ORM\Index(name="FK_Studiengang_ID", columns={"Studiengang_ID"}), @ORM\Index(name="FK_Fachbereich_ID", columns={"Fachbereich_ID"}), @ORM\Index(name="FK_Benutzer_ID", columns={"Benutzer_ID"}), @ORM\Index(name="FK_Archiv_Kategorie_ID", columns={"Archiv_Kategorie_ID"})})
+ * @ORM\Entity
  */
 class Archivierung
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Studiengang_ID", type="integer", nullable=false)
      */
     private $studiengangId;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Fachbereich_ID", type="integer", nullable=false)
      */
     private $fachbereichId;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Benutzer_ID", type="integer", nullable=false)
      */
     private $benutzerId;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Kategorie_ID", type="integer", nullable=false)
      */
     private $archivKategorieId;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Titel", type="string", length=255, nullable=false)
      */
     private $titel;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="Sichtbarkeit", type="boolean", nullable=false)
      */
     private $sichtbarkeit;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Beschreibung", type="string", length=1023, nullable=true)
      */
     private $beschreibung;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="Abgabedatum", type="date", nullable=true)
      */
     private $abgabedatum;
 
     /**
      * @var \DateTime
+     *
+     * @ORM\Column(name="Erstelldatum", type="date", nullable=false)
      */
     private $erstelldatum;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Anmerkung", type="string", length=1023, nullable=true)
      */
     private $anmerkung;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivId;
 
     /**
      * @var \AppBundle\Entity\Studiengang
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Studiengang", inversedBy="archivierung")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Studiengang_ID", referencedColumnName="Studiengang_ID", unique=true)
+     * })
      */
     private $studiengang;
 
     /**
      * @var \AppBundle\Entity\Fachbereich
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Fachbereich", inversedBy="archivierung")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Fachbereich_ID", referencedColumnName="Fachbereich_ID", unique=true)
+     * })
      */
     private $fachbereich;
 
     /**
      * @var \AppBundle\Entity\Benutzer
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Benutzer", inversedBy="archivierung")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Benutzer_ID", referencedColumnName="Benutzer_ID", unique=true)
+     * })
      */
     private $benutzer;
 
     /**
      * @var \AppBundle\Entity\ArchivKategorie
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ArchivKategorie", inversedBy="archivierung")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Archiv_Kategorie_ID", referencedColumnName="Archiv_Kategorie_ID", unique=true)
+     * })
      */
     private $kategorie;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ArchivAnhang", mappedBy="archivierung")
      */
     private $anhaenge;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Keyword", inversedBy="archivierungen", cascade={"persist"})
+     * @ORM\JoinTable(name="Archiv_Keywords",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="Archiv_ID", referencedColumnName="Archiv_ID")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="Keyword_ID", referencedColumnName="Keyword_ID")
+     *   }
+     * )
      */
     private $keywords;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\ArchivZusatz", inversedBy="archivierungen", cascade={"persist"})
+     * @ORM\JoinTable(name="Archiv_Zusatz_Referenzen",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="Archiv_ID", referencedColumnName="Archiv_ID")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="Archiv_Zusatz_ID", referencedColumnName="Archiv_Zusatz_ID")
+     *   }
+     * )
      */
     private $zusaetze;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Archivierung", inversedBy="referenziert", cascade={"persist"})
+     * @ORM\JoinTable(name="Archiv_Referenzen",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="Eltern_Archiv_ID", referencedColumnName="Archiv_ID")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="Kind_Archiv_ID", referencedColumnName="Archiv_ID")
+     *   }
+     * )
      */
     private $referenzen;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Archivierung", mappedBy="referenzen")
      */
     private $referenziert;
 
@@ -118,6 +201,7 @@ class Archivierung
         $this->referenzen = new \Doctrine\Common\Collections\ArrayCollection();
         $this->referenziert = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     /**
      * Set studiengangId
@@ -635,4 +719,3 @@ class Archivierung
         return $this->referenziert;
     }
 }
-

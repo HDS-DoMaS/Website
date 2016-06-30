@@ -2,23 +2,36 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Keyword
+ *
+ * @ORM\Table(name="Keywords")
+ * @ORM\Entity
  */
 class Keyword
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Keyword", type="string", length=40, nullable=false)
      */
     private $keyword;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Keyword_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $keywordId;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Archivierung", mappedBy="keywords")
      */
     private $archivierungen;
 
@@ -29,6 +42,7 @@ class Keyword
     {
         $this->archivierungen = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     /**
      * Set keyword
@@ -98,4 +112,3 @@ class Keyword
         return $this->archivierungen;
     }
 }
-

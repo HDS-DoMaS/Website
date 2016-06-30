@@ -2,30 +2,51 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ArchivKategorieFeld
+ *
+ * @ORM\Table(name="Archiv_Kategorie_Felder")
+ * @ORM\Entity
  */
 class ArchivKategorieFeld
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Default", type="string", length=80, nullable=true)
      */
     private $default;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $archivKategorieId;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Feldname", type="string", length=40)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $feldname;
 
     /**
      * @var \AppBundle\Entity\ArchivKategorie
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ArchivKategorie", inversedBy="felder")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Archiv_Kategorie_ID", referencedColumnName="Archiv_Kategorie_ID")
+     * })
      */
     private $archivKategorie;
+
 
 
     /**
@@ -124,4 +145,3 @@ class ArchivKategorieFeld
         return $this->archivKategorie;
     }
 }
-

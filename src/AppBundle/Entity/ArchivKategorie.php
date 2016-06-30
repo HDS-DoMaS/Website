@@ -2,28 +2,43 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ArchivKategorie
+ *
+ * @ORM\Table(name="Archiv_Kategorien")
+ * @ORM\Entity
  */
 class ArchivKategorie
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivKategorieId;
 
     /**
      * @var \AppBundle\Entity\Archivierung
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Archivierung", mappedBy="kategorie")
      */
     private $archivierung;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ArchivKategorieFeld", mappedBy="archivKategorie")
      */
     private $felder;
 
@@ -34,6 +49,7 @@ class ArchivKategorie
     {
         $this->felder = new \Doctrine\Common\Collections\ArrayCollection();
     }
+
 
     /**
      * Set bezeichnung
@@ -127,4 +143,3 @@ class ArchivKategorie
         return $this->felder;
     }
 }
-

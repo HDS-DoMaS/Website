@@ -2,30 +2,46 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ArchivZusatzKategorie
+ *
+ * @ORM\Table(name="Archiv_Zusatz_Kategorien")
+ * @ORM\Entity
  */
 class ArchivZusatzKategorie
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var boolean
+     *
+     * @ORM\Column(name="Ist_n_m", type="boolean", nullable=false)
      */
     private $istNM;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Zusatz_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivZusatzKategorieId;
 
     /**
      * @var \AppBundle\Entity\ArchivZusatz
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ArchivZusatz", mappedBy="zusatzKategorie")
      */
     private $zusatz;
+
 
 
     /**
@@ -110,4 +126,3 @@ class ArchivZusatzKategorie
         return $this->zusatz;
     }
 }
-

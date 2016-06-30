@@ -2,25 +2,41 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ArchivKategorieArchivZusatzKategorien
+ *
+ * @ORM\Table(name="Archiv_Kategorie_Archiv_Zusatz_Kategorien", indexes={@ORM\Index(name="FK_Archiv_Zusatz_Kategorie_ID", columns={"Archiv_Zusatz_Kategorie_ID"})})
+ * @ORM\Entity
  */
 class ArchivKategorieArchivZusatzKategorien
 {
     /**
      * @var string
+     *
+     * @ORM\Column(name="Default", type="string", length=80, nullable=true)
      */
     private $default;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $archivKategorieId;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Zusatz_Kategorie_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $archivZusatzKategorieId;
+
 
 
     /**
@@ -95,4 +111,3 @@ class ArchivKategorieArchivZusatzKategorien
         return $this->archivZusatzKategorieId;
     }
 }
-

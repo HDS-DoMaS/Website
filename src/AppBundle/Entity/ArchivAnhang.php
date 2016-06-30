@@ -2,45 +2,73 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ArchivAnhang
+ *
+ * @ORM\Table(name="Archiv_Anhaenge", indexes={@ORM\Index(name="FK_Archiv_ID", columns={"Archiv_ID"}), @ORM\Index(name="FK_Datei_Kategorie_ID", columns={"Datei_Kategorie_ID"})})
+ * @ORM\Entity
  */
 class ArchivAnhang
 {
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_ID", type="integer", nullable=false)
      */
     private $archivId;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Datei_Kategorie_ID", type="integer", nullable=false)
      */
     private $dateiKategorieId;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Pfad", type="string", length=80, nullable=false)
      */
     private $pfad;
 
     /**
      * @var string
+     *
+     * @ORM\Column(name="Versionsnummer", type="string", length=40, nullable=true)
      */
     private $versionsnummer;
 
     /**
      * @var integer
+     *
+     * @ORM\Column(name="Archiv_Anhang_ID", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivAnhangId;
 
     /**
      * @var \AppBundle\Entity\DateiKategorie
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\DateiKategorie", inversedBy="archivAnhang")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Datei_Kategorie_ID", referencedColumnName="Datei_Kategorie_ID", unique=true)
+     * })
      */
     private $dateiKategorie;
 
     /**
      * @var \AppBundle\Entity\Archivierung
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Archivierung", inversedBy="anhaenge")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="Archiv_ID", referencedColumnName="Archiv_ID")
+     * })
      */
     private $archivierung;
+
 
 
     /**
@@ -197,4 +225,3 @@ class ArchivAnhang
         return $this->archivierung;
     }
 }
-
