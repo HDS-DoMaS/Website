@@ -2,56 +2,35 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Studiengang
- *
- * @ORM\Table(name="Studiengaenge", indexes={@ORM\Index(name="FK_Fachbereich_ID", columns={"Fachbereich_ID"})})
- * @ORM\Entity
  */
 class Studiengang
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Fachbereich_ID", type="integer", nullable=false)
      */
     private $fachbereichId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Bezeichnung", type="string", length=40, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Studiengang_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $studiengangId;
 
     /**
      * @var \AppBundle\Entity\Archivierung
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Archivierung", mappedBy="studiengang")
      */
     private $archivierung;
 
     /**
      * @var \AppBundle\Entity\Fachbereich
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Fachbereich", inversedBy="studiengang")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Fachbereich_ID", referencedColumnName="Fachbereich_ID", unique=true)
-     * })
      */
     private $fachbereich;
-
 
 
     /**
@@ -160,3 +139,4 @@ class Studiengang
         return $this->fachbereich;
     }
 }
+

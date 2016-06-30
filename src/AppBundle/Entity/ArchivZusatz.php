@@ -2,60 +2,38 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * ArchivZusatz
- *
- * @ORM\Table(name="Archiv_Zusaetze", indexes={@ORM\Index(name="FK_Archiv_Zusatz_Kategorie_ID", columns={"Archiv_Zusatz_Kategorie_ID"})})
- * @ORM\Entity
  */
 class ArchivZusatz
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_Zusatz_Kategorie_ID", type="integer", nullable=false)
      */
     private $archivZusatzKategorieId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Bezeichnung", type="string", length=80, nullable=false)
      */
     private $bezeichnung;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="Matrikelnummer", type="string", length=10, nullable=true)
      */
     private $matrikelnummer;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="Archiv_Zusatz_ID", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $archivZusatzId;
 
     /**
      * @var \AppBundle\Entity\ArchivZusatzKategorie
-     *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ArchivZusatzKategorie", inversedBy="zusatz")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="Archiv_Zusatz_Kategorie_ID", referencedColumnName="Archiv_Zusatz_Kategorie_ID", unique=true)
-     * })
      */
     private $zusatzKategorie;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Archivierung", mappedBy="zusaetze")
      */
     private $archivierungen;
 
@@ -66,7 +44,6 @@ class ArchivZusatz
     {
         $this->archivierungen = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
     /**
      * Set archivZusatzKategorieId
@@ -208,3 +185,4 @@ class ArchivZusatz
         return $this->archivierungen;
     }
 }
+
