@@ -70,6 +70,8 @@ class ArchivierungController extends Controller {
                     );
                 }
             }
+			
+			$this->UploadAction($request);
 
             $entityManager->persist($archivierung);
             $entityManager->flush();
@@ -416,5 +418,56 @@ class ArchivierungController extends Controller {
         }
 
         return $archivierung;
+    }
+	
+	public function UploadAction(Request $request)
+    {	
+		$Archivname_Action = $this->getArchivierung($archivId); // für den Hauptordner einer Archivierung 
+		$Archiv_ID = $this->getAnhang($anhangId); //für Unterordner einer Archivierung
+		
+		$path = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/';
+		$totalpath = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/'.$Archiv_ID.'/';
+		
+		//erste Überprüfung
+		if(file_exists($path))
+		{
+			//do nothing
+		}
+		else
+		{
+		mkdir($path, 0700);
+		}
+		
+		if(file_exists($totalpath))
+		{
+			//do nothing
+		}
+		else
+		{
+		mkdir($totalpath, 0700);
+		}
+		
+		
+		
+		//$target_dir = $this->get('kernel')->getRootDir().'/../anhaenge/';
+		
+		$post = Request::createFromGlobals();
+		
+		if ($post->request->has('form_speichern')) 
+		{  
+			$filename= $request->files->get('fileToUpload');
+			$target_file = $totalpath . basename($_FILES["fileToUpload"]["name"]);
+			
+			move_uploaded_file($filename, $target_file);
+			
+				
+		} 
+		else 
+		{
+			$name = 'Not submitted yet';
+				
+			return $this->render('archivierung/form.html.twig');
+		}
+        
     }
 }
