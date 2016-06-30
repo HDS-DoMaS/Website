@@ -109,5 +109,91 @@ class Benutzer
     {
         return $this->archivierung;
     }
-}
+    /**
+     * @var string
+     */
+    private $eMail;
 
+    /**
+     * @var string
+     */
+    private $shibbolethUid;
+
+    /**
+     * @var string
+     */
+    private $domasRole;
+
+
+    /**
+     * Set eMail
+     *
+     * @param string $eMail
+     *
+     * @return Benutzer
+     */
+    public function setEMail($eMail)
+    {
+        $this->eMail = $eMail;
+
+        return $this;
+    }
+
+    /**
+     * Get eMail
+     *
+     * @return string
+     */
+    public function getEMail()
+    {
+        return $this->eMail;
+    }
+
+    /**
+     * Set shibbolethUid
+     *
+     * @param string $shibbolethUid
+     *
+     * @return Benutzer
+     */
+    public function setShibbolethUid($shibbolethUid)
+    {
+        $this->shibbolethUid = $shibbolethUid;
+
+        return $this;
+    }
+
+    /**
+     * Get shibbolethUid
+     *
+     * @return string
+     */
+    public function getShibbolethUid()
+    {
+        return $this->shibbolethUid;
+    }
+
+    /**
+     * Set domasRole
+     *
+     * @param string $domasRole
+     *
+     * @return Benutzer
+     */
+    public function setDomasRole($domasRole)
+    {
+        $this->domasRole = $domasRole;
+
+        return $this;
+    }
+
+    /**
+     * Get domasRole
+     *
+     * @return string
+     */
+    public function getDomasRole()
+    {
+        return $this->domasRole;
+    }
+}

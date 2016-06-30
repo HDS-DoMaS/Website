@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="AppBundle\Entity\Benutzer" table="Benutzer">
+  <entity name="AppBundle\Entity\Benutzer" table="benutzer">
+    <indexes>
+      <index name="IDX_Archiv_Benutzer_Vorname_Fulltext" columns="Vorname"/>
+      <index name="IDX_Archiv_Benutzer_Nachname_Fulltext" columns="Nachname"/>
+      <index name="IDX_Archiv_Benutzer_Fulltext" columns="Vorname,Nachname"/>
+    </indexes>
     <id name="benutzerId" type="integer" column="Benutzer_ID">
       <generator strategy="IDENTITY"/>
     </id>
@@ -14,6 +19,20 @@
         <option name="fixed"/>
       </options>
     </field>
-    <one-to-one field="archivierung" target-entity="Archivierung" mapped-by="benutzer" />
+    <field name="eMail" type="string" column="E_Mail" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="shibbolethUid" type="string" column="shibboleth_Uid" length="16" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
+    <field name="domasRole" type="string" column="domas_role" length="32" nullable="false">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
   </entity>
 </doctrine-mapping>
