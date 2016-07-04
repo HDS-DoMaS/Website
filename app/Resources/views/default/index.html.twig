@@ -15,20 +15,23 @@
 
     <h1>DoMaS<small>Archivierungssystem der Hochschule Düsseldorf</small></h1>
 
-    <div class="row">
-        <div class="col-sm-4 col-sm-offset-2">
-            <div class="transparent">
-                <a href="{{ path('_neuArchivierung') }}">
-                    <div class="circle center-block">
-                            <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
-                    </div>
-                </a>
+    {% if isEmployeeOrAdmin %}  {#TODO: statt ausblenden ausgrauen#}
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-2">
+                <div class="transparent">
+                    <a href="{{ path('_neuArchivierung') }}">
+                        <div class="circle center-block">
+                                <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                        </div>
+                    </a>
 
-                <a href="{{ path('_neuArchivierung') }}" class="btn btn-block">
-                    Archivierung erstellen
-                </a>
+                    <a href="{{ path('_neuArchivierung') }}" class="btn btn-block">
+                        Archivierung erstellen
+                    </a>
+                </div>
             </div>
-        </div>
+    {% endif %}
+
         <div class="col-sm-4">
             <div class="transparent">
                 <form method="get" name="form" id="form" class="form-horizontal" action="{{ path('_suche') }}">

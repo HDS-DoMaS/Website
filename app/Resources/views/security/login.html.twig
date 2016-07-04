@@ -13,6 +13,8 @@
         </div>
     {% endfor %}
 
+    {#TODO: loginform so aussehen lassen wie die homepage#}
+
     <form action="{{ path('_login') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}"

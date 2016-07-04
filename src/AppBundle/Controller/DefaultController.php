@@ -8,6 +8,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Security\DomasUser;
+
 
 class DefaultController extends Controller
 {
@@ -24,9 +26,12 @@ class DefaultController extends Controller
             ->add('submit', SubmitType::class)
             ->getForm();
 
+        $isEmployeeOrAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
+
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'isEmployeeOrAdmin' => $isEmployeeOrAdmin
         ]);
     }
 }
