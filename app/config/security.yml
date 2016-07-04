@@ -52,7 +52,6 @@ security:
 
     # Anmeldezwang für die gesamte Website
     access_control:
-
         # login und logout sind immer erreichbar
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
