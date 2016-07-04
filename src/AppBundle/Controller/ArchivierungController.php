@@ -131,6 +131,12 @@ class ArchivierungController extends Controller {
             $originalZusaetze->add($zusatz);
         }
 
+        // Ursprüngliche Keywords
+        $originalKeywords = new ArrayCollection();
+        foreach ($archivierung->getKeywords() as $keyword) {
+            $originalKeywords->add($keyword);
+        }
+
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
 
@@ -152,6 +158,13 @@ class ArchivierungController extends Controller {
             foreach ($originalZusaetze as $zusatz) {
                 if (false === $archivierung->getZusaetze()->contains($zusatz)) {
                     $entityManager->remove($zusatz);
+                }
+            }
+
+            // entfernte Keywords löschen
+            foreach ($originalKeywords as $keyword) {
+                if (false === $archivierung->getKeywords()->contains($keyword)) {
+                    $entityManager->remove($keyword);
                 }
             }
 
