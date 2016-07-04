@@ -43,6 +43,17 @@ class ArchivierungController extends Controller {
      * )
      */
     public function neuArchivierungAction(Request $request) {
+
+        $isEmployeeOrAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
+
+        // Wenn nicht authorisiert:
+        if (!$isEmployeeOrAdmin) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um eine Archivierung zu erstellen.');
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
+
         // Neue Archivierung
         $archivierung = new Archivierung();
         $form = $this->getArchivierungForm($archivierung);
@@ -69,7 +80,7 @@ class ArchivierungController extends Controller {
                     );
                 }
             }
-			
+
 			$this->UploadAction($request);
 
             $entityManager->persist($archivierung);
@@ -96,6 +107,20 @@ class ArchivierungController extends Controller {
      * )
      */
     public function editArchivierungAction(Request $request, $archivId) {
+
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
+        $isErsteller = false;
+        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
+
+        // Wenn nicht authorisiert:
+        if (!$isAdmin || $isErsteller) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu bearbeiten.');
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
+
+        // Archivierung aus DB laden
         $archivierung = $this->getDoctrine()
             ->getRepository('AppBundle:Archivierung')
             ->find($archivId);
@@ -245,16 +270,15 @@ class ArchivierungController extends Controller {
      */
     public function detailViewAction($archivId, Request $request, $zurueckButton = "errorString") {
 
-        // Wenn nicht authorisiert:
-        if (!$this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole)) {
-            $this->addFlash('error',
-                'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu betrachten');
-
-            return $this->redirect($this->generateUrl('_default'));
-        }
-
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
+
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
+
+        $isErsteller = false;
+        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
+
+        $sichtbarkeit = $archivierung->getSichtbarkeit();
 
 
         //LOGIK für den zurück-knopf:
@@ -262,7 +286,6 @@ class ArchivierungController extends Controller {
         // session hohlen und gucken ob es schon eine history liste gibt
         $session = $request->getSession();
         $historyList = $session->get("historyList", array());
-
 
         // referer pathinfo auslesen
         $referer = $request->headers->get('referer');
@@ -318,14 +341,22 @@ class ArchivierungController extends Controller {
         if($kategorie == "Anleitung") {
             return $this->render(
                 'archivierung/detailView/anleitung.html.twig',
-                array('archivierung' => $archivierung)
+                array(  'archivierung'  => $archivierung,
+                        'isAdmin'       => $isAdmin,
+                        'isErsteller'   => $isErsteller,
+                        'sichtbarkeit'  => $sichtbarkeit
+                    )
             );
         }
 
         else{
             return $this->render(
                 'archivierung/detailView/arbeit.html.twig',
-                array('archivierung' => $archivierung)
+                array(  'archivierung'  => $archivierung,
+                    'isAdmin'       => $isAdmin,
+                    'isErsteller'   => $isErsteller,
+                    'sichtbarkeit'  => $sichtbarkeit
+                )
             );
         }
     }
@@ -338,54 +369,50 @@ class ArchivierungController extends Controller {
      * )
      * @param $anhangId
      * @return \Symfony\Component\HttpFoundation\Response
-     * öffnen eines Anhanges einer Archivierung mit vorheriger Authentifizierung
+     * öffnen eines Anhanges einer Archivierung mit vorherigem Authorisierungscheck
      */
-    public function detailViewFileAction($anhangId)
-    {
+    public function detailViewFileAction($anhangId) {
 
-        // TODO UserId etc von Shibboleth bekommen
-
+        //AnhangEntity aus DB laden
         $anhang = $this->getAnhang($anhangId);
-
         $archivierung = $anhang->getArchivierung();
-        $erstellerId = $archivierung->getBenutzerId();
 
-        $userId = 1;    //Test
-        $adminId = 666; //Test
-        $profIds = [7, 8, 9]; //Test
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
 
+        $isErsteller = false;
+        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
 
         if ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
-            $sichtbarkeit = 0;
-        } else {
+            $sichtbarkeit = 0;  // Gutachten sind immer nicht sichtbar!
+        }
+        else {
             $sichtbarkeit = $archivierung->getSichtbarkeit();
         }
 
-        // checken ob Zugriff auf Path erlaubt
-        if ($sichtbarkeit === true || $userId === $adminId || in_array($userId, $profIds) || $userId === $erstellerId) {
+        // Wenn nicht authorisiert:
+        if (!$sichtbarkeit && !$isErsteller && !$isAdmin) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diesen Anhang zu öffnen.');
 
-            // DateiPfad
-            $pfad = $this->anhaengePfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
-
-            // den passenden mimeType zur file extension finden
-            $mimeType = MimeTypeHelper::findMimeType($pfad);
-
-            $response = new BinaryFileResponse($pfad);
-            $response->trustXSendfileTypeHeader();
-            $response->headers->set('Content-Type', $mimeType);
-            
-            $dateiname = $anhang->getPfad();
-
-            $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);
-
-            $dateiname = null;
-            return $response;
-        } else { // Nicht authorisierter Zugriff
-
-            throw $this->createAccessDeniedException(
-                'SIE HABEN KEINE ZUGRIFFSBERECHTIGUNG FÜR DIESEN ANHANG!'
-            );
+            return $this->redirect($this->generateUrl('_default'));
         }
+
+        // DateiPfad
+        $pfad = $this->anhaengePfad . "archivierung" . $anhang->getArchivId() . "/" . $anhangId . "/" . $anhang->getPfad();
+
+        // den passenden mimeType zur file extension finden
+        $mimeType = MimeTypeHelper::findMimeType($pfad);
+
+        $response = new BinaryFileResponse($pfad);
+        $response->trustXSendfileTypeHeader();
+        $response->headers->set('Content-Type', $mimeType);
+
+        $dateiname = $anhang->getPfad();
+
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_INLINE, $dateiname);
+
+        $dateiname = null;
+        return $response;
     }
 
 
@@ -407,6 +434,14 @@ class ArchivierungController extends Controller {
         return $urlControllerName;
     }
 
+    /**
+     * @param $archivierung
+     * @return bool
+     * Prüft ob der aktuell eingeloggte User die $archivierung erstellt hat.
+     */
+    private function UserIsErsteller($archivierung) {
+        return ($archivierung->getBenutzerId() === $this->getUser()->getBenutzerId());  //TODO auf DomasUser anpassen.
+    }
 
     private function getAnhang($anhangId) {
         $anhang = $this->getDoctrine()
@@ -437,15 +472,15 @@ class ArchivierungController extends Controller {
 
         return $archivierung;
     }
-	
+
 	public function UploadAction(Request $request)
-    {	
-		$Archivname_Action = $this->getArchivierung($archivId); // für den Hauptordner einer Archivierung 
+    {
+		$Archivname_Action = $this->getArchivierung($archivId); // für den Hauptordner einer Archivierung
 		$Archiv_ID = $this->getAnhang($anhangId); //für Unterordner einer Archivierung
-		
+
 		$path = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/';
 		$totalpath = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/'.$Archiv_ID.'/';
-		
+
 		//erste Überprüfung
 		if(file_exists($path))
 		{
@@ -455,7 +490,7 @@ class ArchivierungController extends Controller {
 		{
 		mkdir($path, 0700);
 		}
-		
+
 		if(file_exists($totalpath))
 		{
 			//do nothing
@@ -464,28 +499,28 @@ class ArchivierungController extends Controller {
 		{
 		mkdir($totalpath, 0700);
 		}
-		
-		
-		
+
+
+
 		//$target_dir = $this->get('kernel')->getRootDir().'/../anhaenge/';
-		
+
 		$post = Request::createFromGlobals();
-		
-		if ($post->request->has('form_speichern')) 
-		{  
+
+		if ($post->request->has('form_speichern'))
+		{
 			$filename= $request->files->get('fileToUpload');
 			$target_file = $totalpath . basename($_FILES["fileToUpload"]["name"]);
-			
+
 			move_uploaded_file($filename, $target_file);
-			
-				
-		} 
-		else 
+
+
+		}
+		else
 		{
 			$name = 'Not submitted yet';
-				
+
 			return $this->render('archivierung/form.html.twig');
 		}
-        
+
     }
 }

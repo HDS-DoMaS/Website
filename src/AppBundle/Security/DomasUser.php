@@ -43,6 +43,11 @@ class DomasUser implements UserInterface, EquatableInterface {
     }
 
 
+    public function getBenutzerId() {
+        return $this->benutzer->getBenutzerId();
+    }
+
+
     public function getRoles()
     {
         return array($this->benutzer->getDomasRole());
@@ -67,7 +72,7 @@ class DomasUser implements UserInterface, EquatableInterface {
         }
         $this->benutzer->setDomasRole($temp);
     }
-    
+
 
     public function getPassword()
     {

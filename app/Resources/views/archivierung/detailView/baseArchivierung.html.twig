@@ -16,24 +16,27 @@
 
     <h1>{{ archivierung.getTitel() }}</h1>
 
-    <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-        <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
-    </a>
+    {% if isAdmin or isErsteller %}
 
+        <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
+        </a>
 
-{#  TODO einbauen
-    <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-        <span class="glyphicon glyphicon-trash"></span> Löschen
-    </a>
-#}
+        {#TODO einbauen:
+        <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-trash"></span> Löschen
+        </a>
+        #}
 
-    {# TODO: Link wieder entfernen #}
-    <a href="{{ path('_editKeywords', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-        <span class="glyphicon glyphicon-tags"></span> Keywords
-    </a>
-    <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-        <span class="glyphicon glyphicon-info-sign"></span> Zusätze
-    </a>
+        {# TODO: Link wieder entfernen #}
+        <a href="{{ path('_editKeywords', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-tags"></span> Keywords
+        </a>
+
+        <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
+            <span class="glyphicon glyphicon-info-sign"></span> Zusätze
+        </a>
+    {% endif %}
 
     <div class="row">
         <div class="col-md-7">
@@ -76,16 +79,14 @@
         {% set hasAnhaenge = (archivierung.getAnhaenge() |length > 0) %}
         {% set hasReferenzen = (archivierung.getReferenzen() |length > 0) %}
         {% set hasKeywords = (archivierung.getKeywords() |length > 0) %}
-        {% set isErsteller = 0 %}
-        {% set isAdmin = 0 %}       {#TODO Authentifizierung#}
-        {% set isProf = 0 %}
 
         {% if hasAnhaenge or hasReferenzen or hasKeywords %}
-            <div class="col-md-5">
+            <div class="col-md-5">{#rechten kasten öffnen#}
 
                 <dl class="dl-horizontal anhang-container">
 
-                    {% if archivierung.getSichtbarkeit() == 0 and isErsteller == 0 and isAdmin == 0 and isProf == 0 %}
+                    {#Giftschrank-Hinweis#}
+                    {% if (hasAnhaenge or hasReferenzen) and sichtbarkeit == 0 and isErsteller == 0 and isAdmin == 0 %}
                         <section class="nichtSichtbarMsg">
                             <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
                             <div class="giftschrankMessage2">
@@ -100,7 +101,7 @@
                             {% for anhang in archivierung.getAnhaenge() %}
 
                                 {#Gutachten verbergen#}
-                                {% if isErsteller == 0 and isAdmin == 0 and anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
+                                {% if isErsteller or isAdmin or anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
                                     <dd>
                                         <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
                                             <span class="glyphicon glyphicon-paperclip"></span>
