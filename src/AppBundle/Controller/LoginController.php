@@ -8,32 +8,45 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
-class InMemorySecurityController extends Controller {
+class LoginController extends Controller {
 
     /**
-     * @Route("/localLogin", name="_inMemoryLogin")
+     * @Route("/login", name="_login")
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function inMemoryLoginAction(Request $request) {
+    public function LoginViewAction(Request $request) {
+
+        // Wenn bereits eingeloggt:
+        if ($this->get('security.authorization_checker')->isGranted("IS_AUTHENTICATED_FULLY")) {
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
 
         $authenticationUtils = $this->get('security.authentication_utils');
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
+        if($error) {
+            $this->addFlash('error', 'Ungültige Eingabedaten!');
+        }
+
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render(
-            'security/inMemoryLogin.html.twig',
+            'security/login.html.twig',
             array(
                 // last username entered by the user
-                'last_username' => $lastUsername,
-                'error'         => $error,
+                'last_username' => $lastUsername   , 'error' => $error
             )
         );
     }
+
+
+
+
 
 }

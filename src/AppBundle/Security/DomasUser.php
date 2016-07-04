@@ -4,82 +4,85 @@ namespace AppBundle\Security;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\EquatableInterface;
+use AppBundle\Entity\Benutzer;
 
 
 class DomasUser implements UserInterface, EquatableInterface {
 
-    private $shibbolethUid;   // z.B: dave1337
-    //private $password;  // passwort wird wahrscheinlich garnicht übertragen!
-    private $salt;
-    private $roles;
-    private $vorname;
-    private $nachname;
-    private $email;
-    private $domasId;
+    private $benutzer;  // Datenbank-Entity
 
     const adminRole = "ROLE_ADMIN";
     const employeeRole = "ROLE_EMPLOYEE";
     const studentRole = "ROLE_STUDENT";
 
 
-    public function __construct($shibbolethUid, $salt, array $roles, $vorname, $nachname, $email, $domasId)
-    {
-        $this->shibbolethUid = $shibbolethUid;
-        $this->salt = $salt;
-        $this->roles = $roles;
-        $this->vorname = $vorname;
-        $this->nachname = $nachname;
-        $this->email = $email;
-        $this->domasId = $domasId;
+    public function __construct($doctrine, $shibbolethUid, $salt, array $roles, $vorname, $nachname, $email, $domasId) {
+
+        // Benutzer in der DB suchen
+        $this->benutzer = $doctrine
+            ->getRepository('AppBundle:ArchivZusatzKategorie')
+            ->findOneBy(
+                array('shibbolethUid' => $shibbolethUid));       // TODO TESTEN
+
+        //wenn User noch nicht in der DB existiert
+        if($this->benutzer == null) {
+            $this->benutzer = new Benutzer();
+            $this->benutzer->setShibbolethUid($shibbolethUid);
+        }
+
+        $this->benutzer->setVorname($vorname);
+        $this->benutzer->setNachname($nachname);
+        $this->benutzer->setEMail($email);
+        $this->setRoles($roles);
+
+//        $queryBuilder = $doctrine->createQueryBuilder();
+
+
+        $doctrine->persist($this->benutzer);
+        $doctrine->flush();
     }
+
 
     public function getRoles()
     {
-        return $this->roles;
+        return array($this->benutzer->getDomasRole());
     }
 
     /**
-     * @return boolean
-     * ob der User über Admin-Rechte oder höher verfügt.
+     * @param array $roles
+     * mappt die Shibboleth-Roles auf die internen Domas-Role um.
      */
-    public function hasAdminRights()
-    {
-        return in_array(self::adminRole, $this->roles);
-    }
+    private function setRoles(array $roles) {
 
-    /**
-     * @return boolean
-     * ob der User über Employee-Rechte oder höher verfügt.
-     */
-    public function hasEmployeeRights()
-    {
-        return (in_array(self::employeeRole, $this->roles) || $this->hasAdminRights());
-    }
+        $temp = null;
 
-    /**
-     * @return boolean
-     * ob der User über Student-Rechte oder höher verfügt.
-     */
-    public function hasStudentRights()
-    {
-        return (in_array(self::studentRole, $this->roles) || $this->hasEmployeeRights());
-    }
+        foreach($roles as $role) {
 
+            if($role === "student") {
+                $temp = self::studentRole;
+            }
+            elseif($role === "employee" && $temp === null) {
+                $temp = self::employeeRole;
+            }
+        }
+        $this->benutzer->setDomasRole($temp);
+    }
+    
 
     public function getPassword()
     {
-        return $this->password;
+        return null;
     }
 
     public function getSalt()
     {
-        return $this->salt;
+        return null;
     }
 
     // "Username" wegen Zwang des Interfaces!
     public function getUsername()
     {
-        return $this->shibbolethUid;
+        return $this->benutzer->getShibbolethUid();
     }
 
     public function eraseCredentials()
@@ -89,11 +92,11 @@ class DomasUser implements UserInterface, EquatableInterface {
 
     public function isEqualTo(UserInterface $user)
     {
-        if (!$user instanceof DomasUser) {
+        if (!($user instanceof DomasUser)) {
             return false;
         }
 
-        if ($this->shibbolethUid !== $user->shibbolethUid()) {
+        if ($this->getUsername() !== $user->getUsername()) {
             return false;
         }
 

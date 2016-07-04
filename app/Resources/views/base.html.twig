@@ -16,11 +16,9 @@
         <div class="header container-fluid">
             <div class="container">
                 {% block header %}
-                    {% if is_granted("ROLE") %}
+                    {% if is_granted("IS_AUTHENTICATED_FULLY") %}
                         <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
-                        <div class="pull-right"><a href="#">Logout</a></div>
-                    {% else %}
-                        <div class="pull-right"><a href="#">Login</a></div>
+                        <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
                     {% endif %}
                 {% endblock %}
             </div>
@@ -36,6 +34,7 @@
                             <a class="hompage" href="{{ path('_default') }}">DoMaS</a>
                         </div>
 
+                        {% if is_granted("IS_AUTHENTICATED_FULLY") %}
                         <div class="col-sm-8 suchcontainer">
                             <div class="col-sm-8 nopadding">
                                 <input id="form_freitext" name="form[freitext]" title="Suchbegriff" class="form-control" type="text" value="" placeholder="Archivierungen durchsuchen">
@@ -44,6 +43,8 @@
                                 <button type="submit" class="btn btn-red" name="form[submittop]"><span class="glyphicon glyphicon-search"></span></button>
                             </div>
                         </div>
+                        {% endif %}
+
                     </div>
                 </form>
             </div>

@@ -2,3 +2,6 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
     schemes:  https
+
+_logout:
+    path: /logout

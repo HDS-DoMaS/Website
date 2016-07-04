@@ -24,8 +24,7 @@ use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Form\Type\ArchivZusatzType;
 use Doctrine\Common\Collections\ArrayCollection;
-
-
+use AppBundle\Security\DomasUser;
 
 
 class ArchivierungController extends Controller {
@@ -138,6 +137,9 @@ class ArchivierungController extends Controller {
                 '_detailView',
                 array('archivId' => $archivierung->getArchivId())
             );
+
+            $url = $url . "/zurueck";
+
             return $this->redirect($url);
         }
 
@@ -194,12 +196,13 @@ class ArchivierungController extends Controller {
      *     name="_detailViewBack"
      * )
      * @return \Symfony\Component\HttpFoundation\Response
-     * drücken des Zurückknopfes in der Detailview
+     * drücken des Zurückknopfes in der Detailview.
+     * entscheiden welche auf welche seite der history redirected werden muss und diese dann aus der history löschen.
      */
     public function detailViewBackAction(Request $request) {
 
         $session = $request->getSession();
-        $historyList = $session->get("historyList", array());
+        $historyList = $session->get("historyList", array());   // wenn nicht: hitoryList = leeres array.
         $biggestIndex = sizeof($historyList)-1;
 
 
@@ -239,12 +242,20 @@ class ArchivierungController extends Controller {
      * @param string $zurueckButton
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     *
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_EMPLOYEE')")
      */
-    public function detailViewAction($archivId, Request $request, $zurueckButton = "error") {
+    public function detailViewAction($archivId, Request $request, $zurueckButton = "errorString") {
+
+        // Wenn nicht authorisiert:
+        if (!$this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole)) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu betrachten');
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
+
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
+
 
         //LOGIK für den zurück-knopf:
 
@@ -262,12 +273,12 @@ class ArchivierungController extends Controller {
             $refererControllerId = false;
         }
 
-        // je nach referer entscheiden was mit der history für den zurückbutton passiert..
+        // je nach referer entscheiden ob der history etwas hinzugefügt wird..
 
-        //wenn es sich im eine detailView handelt, an die history anhängen.
+        //wenn es sich um eine detailView handelt, an die history anhängen.
         if($refererControllerId === "_detailView") {
 
-            //ausser befindet sich sowie grade in einem zurück-request.
+            //ausser man befindet sich sowieso grade in einem zurück-request.
             if($zurueckButton !== "zurueck") {
 
                 $biggestIndex = sizeof($historyList)-1;
@@ -282,11 +293,17 @@ class ArchivierungController extends Controller {
             }
 
         }
-        // wenn man von der suchseite kommt hat, neue history erstellen
+        // wenn man von der suchseite kommt hat, neue history erstellen und referer anhängen.
         elseif($refererControllerId === "_suche") {
             $historyList = array();
             array_push($historyList, $referer);
         }
+
+        // wenn man grade von der editView kommt, nichts tun.
+        elseif($refererControllerId === "_editArchivierung") {
+            // mach nix
+        }
+
         // wenn es keinen referer gibt, gibt es auch keine history
         else{
             $historyList = array();
@@ -372,7 +389,8 @@ class ArchivierungController extends Controller {
     }
 
 
-    // aus einer URL die passende ControllerFunktion finden
+    /** aus einer URL die passende ControllerFunktion finden
+     */
     private function URLToControllerName($url, $request) {
         $urlControllerName = false;   //fehlerfall
 

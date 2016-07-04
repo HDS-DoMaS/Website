@@ -7,16 +7,22 @@ security:
         in_memory:
             memory:
                 users:
-                    teststudent:
-                        password: student123
-                        roles: 'ROLE_STUDENT'
                     admin:
                         password: admin123
                         roles: 'ROLE_ADMIN'
-                    testemployee:
+
+                    # für tests:
+                    student:
+                        password: student123
+                        roles: 'ROLE_STUDENT'
+                    employee:
                         password: employee123
                         roles: 'ROLE_EMPLOYEE'
 
+    # Rechte-Vererbung
+    role_hierarchy:
+            ROLE_ADMIN:       ROLE_EMPLOYEE
+            ROLE_EMPLOYEE:    ROLE_STUDENT
 
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext
@@ -37,10 +43,19 @@ security:
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
             form_login:
-                login_path: _inMemoryLogin
-                check_path: _inMemoryLogin
+                login_path: _login
+                check_path: _login
 
+            logout:
+                path:   _logout
+                target: /
 
+    # Anmeldezwang für die gesamte Website
+    access_control:
 
+        # login und logout sind immer erreichbar
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
+        # der Rest benötigt Authentifizierung
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 

@@ -30,7 +30,7 @@ class Benutzer
     /**
      * @var string
      */
-    private $shibbolethUid;
+    private $shibbolethUid; // z.B: dave1337
 
     /**
      * @var string
