@@ -12,6 +12,12 @@
             {{ flash_message }}
         </div>
     {% endfor %}
+    {% for flash_message in app.session.flashBag.get('logout') %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
 
     {#TODO: loginform so aussehen lassen wie die homepage#}
 

@@ -49,12 +49,13 @@ security:
             logout:
                 path:   _logout
                 target: /
+                success_handler: logout_listener
+                invalidate_session: false
 
     # Anmeldezwang für die gesamte Website
     access_control:
         # login und logout sind immer erreichbar
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-
         # der Rest benötigt Authentifizierung
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 

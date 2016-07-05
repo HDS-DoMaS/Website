@@ -45,6 +45,18 @@ class LoginController extends Controller {
         );
     }
 
+    /**
+     * @Route("/logoutRedirect", name="_logoutRedirector")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     * Leitet nach erfolgreichem Logout auf die Loginseite weiter + Flashmessage.
+     */
+    public function LogoutRedirectAction() {
+
+        $this->addFlash('logout', 'Sie haben sich erfolgreich ausgeloggt.  Bitte schließen Sie aus Sicherheitsgründen ihren Browser, um sicherzugehen, dass sich niemand mit Ihren Shibboleth-Daten einloggen kann.');
+
+        return $this->redirect($this->generateUrl('_login'));
+    }
 
 
 

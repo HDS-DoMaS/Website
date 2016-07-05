@@ -24,3 +24,6 @@ services:
             class: Symfony\Bundle\FrameworkBundle\Command\CacheWarmupCommand
             calls:
                 - [setContainer, ["@service_container"] ]
+    logout_listener:
+       class:  AppBundle\Security\LogoutListener
+       arguments: ['@router', '@session']
