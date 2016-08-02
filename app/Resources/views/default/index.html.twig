@@ -15,8 +15,9 @@
 
     <h1>DoMaS<small>Archivierungssystem der Hochschule Düsseldorf</small></h1>
 
+    <div class="row">
+
     {% if isEmployeeOrAdmin %}  {#TODO: statt ausblenden ausgrauen#}
-        <div class="row">
             <div class="col-sm-4 col-sm-offset-2">
                 <div class="transparent">
                     <a href="{{ path('_neuArchivierung') }}">

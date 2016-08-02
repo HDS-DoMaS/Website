@@ -15,6 +15,15 @@ class CacheController extends Controller {
     public function resetAction() {
         $response = "<pre>";
 
+        session_abort();
+
+        if (function_exists('opcache_reset')) {
+            // Clear it twice to avoid some internal issues...
+            opcache_reset();
+            opcache_reset();
+            $response .= "OP Cache resetted\n";
+        }
+        
         if (extension_loaded('apc')) {
             $response .= "APC-User cache: " . apc_clear_cache('user') . "\n";
             $response .= "APC-System cache: " . apc_clear_cache() . "\n";

@@ -29,6 +29,11 @@
         <option name="fixed"/>
       </options>
     </field>
+    <field name="flag" type="string" column="flag" length="255" nullable="true">
+      <options>
+        <option name="fixed"/>
+      </options>
+    </field>
     <one-to-one field="archivierung" target-entity="Archivierung" mapped-by="benutzer" />
   </entity>
 </doctrine-mapping>

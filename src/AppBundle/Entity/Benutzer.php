@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * Benutzer
  */
@@ -36,6 +38,11 @@ class Benutzer
      * @var string
      */
     private $domasRole;
+
+    /**
+     * @var string
+     */
+    private $flag;
 
     /**
      * @var \AppBundle\Entity\Archivierung
@@ -171,6 +178,48 @@ class Benutzer
     public function getDomasRole()
     {
         return $this->domasRole;
+    }
+
+    /**
+     * Set flag
+     *
+     * @param string flag
+     *
+     * @return Benutzer
+     */
+    public function setFlag($flag)
+    {
+        $this->flag = $flag;
+
+        return $this;
+    }
+
+    /**
+     * Get flag
+     *
+     * @return string
+     */
+    public function getFlag()
+    {
+        return $this->flag;
+    }
+
+    /**
+     * Get Username
+     *
+     * @return string
+     */
+    public function getUsername() {
+        return $this->getVorname() . ' ' . $this->getNachname();
+    }
+
+    /**
+     * ToString
+     *
+     * @return string
+     */
+    public function __toString() {
+        return $this->getUsername();
     }
 
     /**

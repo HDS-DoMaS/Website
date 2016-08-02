@@ -21,6 +21,10 @@
 
     {#TODO: loginform so aussehen lassen wie die homepage#}
 
+    <p>Login über den zentralen Single-Sign-On Dienst "Shibboleth" der Campus-IT</p>
+    <a href="{{ path('_shibbolethLogin') }}">Login über Shibboleth</a>
+
+
     <form action="{{ path('_login') }}" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="_username" value="{{ last_username }}"
