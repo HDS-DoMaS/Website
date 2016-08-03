@@ -45,9 +45,8 @@ if (strpos($data['rollen'], 'professor')) {
 // Unique-Flag für Smyfony-Übergabe
 $flag = md5(uniqid(rand(), true));
 
-// Benutzer aktualisieren (REPLACE INTO = INSERT OR UPDATE)
-$sql = "REPLACE INTO
-		benutzer (
+// Benutzer aktualisieren (INSERT OR UPDATE)
+$sql = "INSERT INTO benutzer (
 			shibboleth_Uid,
 			Vorname,
 			Nachname,
@@ -62,7 +61,13 @@ $sql = "REPLACE INTO
 			'" . $data['eMail'] . "',
 			'" . $role . "',
 			'" . $flag . "'
-		);";
+		) ON DUPLICATE KEY UPDATE 
+			Vorname = '" . $data['vorname'] . "',
+			Nachname = '" . $data['nachname'] . "',
+			E_Mail = '" . $data['eMail'] . "',
+			domas_role = '" . $role . "',
+			flag = '" . $flag . "';";
+
 $conn = new mysqli('127.0.0.1', 'domas', 'domas', 'domas');
 $conn->query($sql);
 $conn->close();
