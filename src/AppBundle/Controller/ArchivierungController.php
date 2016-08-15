@@ -361,7 +361,6 @@ class ArchivierungController extends Controller {
                     )
             );
         }
-
         else{
             return $this->render(
                 'archivierung/detailView/arbeit.html.twig',
@@ -429,7 +428,56 @@ class ArchivierungController extends Controller {
     }
 
 
-    /** aus einer URL die passende ControllerFunktion finden
+    /**
+     * @Route("/archivierung/delete/{archivId}",
+     *     name="_deleteArchivierung")
+     * @param Request $request
+     * @param $archivId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteArchivierungAction(Request $request, $archivId) {
+
+        // Benachrichtigung: wirklich löschen?
+        $this->addFlash(
+            'delete',
+            'Möchten Sie die Archivierung wirklich löschen?'
+        );
+
+        // rendern der View
+        //return $this->detailViewAction($archivId, $request);
+
+        return $this->redirectToRoute('_detailView', array('archivId' => $archivId, 'zurueckButton' => 'zurueck'));
+    }
+
+    /**
+     * @Route("/archivierung/delete-confirm/{archivId}",
+     *     name="_deleteConfirmArchivierung"
+     * )
+     * @param Request $request
+     * @param $archivId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteConfirmArchivierungAction(Request $request, $archivId) {
+
+        $archivierung = $this->getArchivierung($archivId);
+
+        // Archivierung aus der DB entfernen
+        $this->removeArchivierung($archivierung);
+
+        // Benachrichtigung: Archivierung gelöscht
+        $this->addFlash(
+            'deleteSuccess',
+            'Die Archivierung wurde gelöscht.'
+        );
+
+        // URL für weiterleitung
+        $url = $this->generateUrl("_default");
+        return $this->redirect($url);
+    }
+
+
+
+    /** aus einer URL die dazugehoerige ControllerFunktion finden
      */
     private function URLToControllerName($url, $request) {
         $urlControllerName = false;   //fehlerfall
@@ -447,14 +495,23 @@ class ArchivierungController extends Controller {
         return $urlControllerName;
     }
 
+    private function removeArchivierung($archivierung) {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // tells Doctrine you want to (eventually) delete the Product (no queries yet)
+        $entityManager->remove($archivierung);
+
+        // actually executes the queries (i.e. the INSERT query)
+        $entityManager->flush();
+    }
+
     /**
-     * @param $archivierung
-     * @return bool
      * Prüft ob der aktuell eingeloggte User die $archivierung erstellt hat.
      */
     private function UserIsErsteller($archivierung) {
         return ($archivierung->getBenutzerId() === $this->getUser()->getBenutzerId());  //TODO auf DomasUser anpassen.
     }
+
 
     private function getAnhang($anhangId) {
         $anhang = $this->getDoctrine()

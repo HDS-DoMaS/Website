@@ -12,6 +12,15 @@
             {{ flash_message }}
         </div>
     {% endfor %}
+    {% for flash_message in app.session.flashBag.get('delete') %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+            <a href="{{ path('_deleteConfirmArchivierung', {'archivId': archivierung.getArchivId()}) }}">
+                Archivierung löschen
+            </a>
+        </div>
+    {% endfor %}
 
 
     <h1>{{ archivierung.getTitel() }}</h1>
@@ -22,17 +31,16 @@
             <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
         </a>
 
-        {#TODO einbauen:
         <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
             <span class="glyphicon glyphicon-trash"></span> Löschen
         </a>
-        #}
 
         {# TODO: Link wieder entfernen #}
         <a href="{{ path('_editKeywords', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
             <span class="glyphicon glyphicon-tags"></span> Keywords
         </a>
 
+        {# TODO: Link wieder entfernen #}
         <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
             <span class="glyphicon glyphicon-info-sign"></span> Zusätze
         </a>
@@ -67,7 +75,7 @@
 
 
                 <dt title="Uploader in DoMaS">Ersteller</dt>
-                <dd title="Uploader in DoMaS">{{ archivierung.getBenutzer().getVorname() ~ "" ~ archivierung.getBenutzer().getNachname() }}</dd>
+                <dd title="Uploader in DoMaS">{{ archivierung.getBenutzer().getVorname() ~ " " ~ archivierung.getBenutzer().getNachname() }}</dd>
 
                 <dt title="Uploaddatum in DoMaS">Erstelldatum</dt>
                 <dd title="Uploaddatum in DoMaS">{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
