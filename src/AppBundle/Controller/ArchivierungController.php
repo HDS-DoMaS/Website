@@ -113,7 +113,7 @@ class ArchivierungController extends Controller {
         //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
 
         // Wenn nicht authorisiert:
-        if (!$isAdmin || $isErsteller) {
+        if (!$isAdmin && !$isErsteller) {
             $this->addFlash('error',
                 'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu bearbeiten.');
 
