@@ -35,18 +35,30 @@
         <dt>Studiengang</dt>
         <dd>{{ archivierung.getStudiengang().getBezeichnung() }}</dd>
 
+
+        {% set hasBetreuer = false %}
         <dt>Betreuer</dt>
         {% for betreuer in archivierung.getZusaetze() %}
             {% if betreuer.getZusatzKategorie().getBezeichnung() == "Betreuer"  %}
                 <dd>{{ betreuer.getBezeichnung() }}</dd>
+                {% set hasBetreuer = true %}
             {% endif %}
         {% endfor %}
+        {% if hasBetreuer == false %}
+            <dd></dd>
+        {% endif %}
 
+
+        {% set hasUnternehmen = false %}
         <dt>Unternehmen</dt>
         {% for unternehmen in archivierung.getZusaetze() %}
             {% if unternehmen.getZusatzKategorie().getBezeichnung() == "Unternehmen"  %}
                 <dd>{{ unternehmen.getBezeichnung() }}</dd>
+                {% set hasUnternehmen = true %}
             {% endif %}
         {% endfor %}
+        {% if hasUnternehmen == false %}
+            <dd></dd>
+        {% endif %}
 
 {% endblock %}
