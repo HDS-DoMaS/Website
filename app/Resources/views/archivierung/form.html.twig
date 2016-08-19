@@ -4,6 +4,8 @@
 
 {% block bodyclass %}archivierung-form{% endblock %}
 
+{% block title %}{{ parent() }} | Neue Archivierung{% endblock %}
+
 {% block body %}
     {#{dump(form.zusaetze)}}#}
     {% set zusatzCount = 0 %}

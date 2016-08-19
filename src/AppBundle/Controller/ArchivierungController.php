@@ -108,9 +108,13 @@ class ArchivierungController extends Controller {
      */
     public function editArchivierungAction(Request $request, $archivId) {
 
+        // Archivierung aus DB laden
+        $archivierung = $this->getDoctrine()
+            ->getRepository('AppBundle:Archivierung')
+            ->find($archivId);
+
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
-        $isErsteller = false;
-        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
+        $isErsteller = $this->UserIsErsteller($archivierung);
 
         // Wenn nicht authorisiert:
         if (!$isAdmin && !$isErsteller) {
@@ -119,11 +123,6 @@ class ArchivierungController extends Controller {
 
             return $this->redirect($this->generateUrl('_default'));
         }
-
-        // Archivierung aus DB laden
-        $archivierung = $this->getDoctrine()
-            ->getRepository('AppBundle:Archivierung')
-            ->find($archivId);
 
         // Ursprüngliche Zusatze
         $originalZusaetze = new ArrayCollection();
@@ -287,9 +286,7 @@ class ArchivierungController extends Controller {
         $archivierung = $this->getArchivierung($archivId);
 
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
-
-        $isErsteller = false;
-        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
+        $isErsteller = $this->UserIsErsteller($archivierung);
 
         $sichtbarkeit = $archivierung->getSichtbarkeit();
 
@@ -390,9 +387,7 @@ class ArchivierungController extends Controller {
         $archivierung = $anhang->getArchivierung();
 
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
-
-        $isErsteller = false;
-        //$isErsteller = $this->UserIsErsteller($archivierung);   //TODO einbauen
+        $isErsteller = $this->UserIsErsteller($archivierung);
 
         if ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
             $sichtbarkeit = 0;  // Gutachten sind immer nicht sichtbar!
@@ -435,7 +430,7 @@ class ArchivierungController extends Controller {
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteArchivierungAction(Request $request, $archivId) {
+    public function deleteArchivierungAction(Request $request, $archivId) {     // TODO in PHPmyadmin testen
 
         // Benachrichtigung: wirklich löschen?
         $this->addFlash(
@@ -444,8 +439,6 @@ class ArchivierungController extends Controller {
         );
 
         // rendern der View
-        //return $this->detailViewAction($archivId, $request);
-
         return $this->redirectToRoute('_detailView', array('archivId' => $archivId, 'zurueckButton' => 'zurueck'));
     }
 
@@ -509,7 +502,13 @@ class ArchivierungController extends Controller {
      * Prüft ob der aktuell eingeloggte User die $archivierung erstellt hat.
      */
     private function UserIsErsteller($archivierung) {
-        return ($archivierung->getBenutzerId() === $this->getUser()->getBenutzerId());  //TODO auf DomasUser anpassen.
+        $user = $this->getUser();
+
+        if($user instanceof DomasUser) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
+            return ($archivierung->getBenutzerId() === $user->getBenutzerId()); // todo testen
+        }
+
+        return false;
     }
 
 

@@ -4,6 +4,8 @@
 
 {% block bodyclass %}archivierung-form-edit{% endblock %}
 
+{% block title %}{{ parent() }} | Archivierung Bearbeiten{% endblock %}
+
 {% block headline %}
     <select id="form_kategorie" class="form-control" required="required" name="form[kategorie]">
         {% for key,val in form.kategorie.vars.choices %}
