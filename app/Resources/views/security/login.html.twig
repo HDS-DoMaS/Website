@@ -1,5 +1,80 @@
 {% extends 'base.html.twig' %}
 
+{% block bodyclass %}index{% endblock %}
+
+{% block top %}{% endblock %}
+
+{% block title %}{{ parent() }} | Login{% endblock %}
+
+{% block body %}
+
+    {% for flash_message in app.session.flashBag.get('loginError') %}
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+    {% for flash_message in app.session.flashBag.get('logout') %}
+        <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{ flash_message }}
+        </div>
+    {% endfor %}
+
+    <h1>DoMaS<small>Archivierungssystem der Hochschule Düsseldorf</small></h1>
+
+    <div class="row">
+
+        <div class="col-sm-4 col-sm-offset-2">
+            <div class="transparent">
+                <a href="{{ path('_shibbolethLogin') }}">
+                    <div class="circle center-block">
+                        <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                    </div>
+                </a>
+
+                <a href="{{ path('_shibbolethLogin') }}" class="btn btn-block">
+                    Login über Shibboleth
+                </a>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="transparent">
+                <form method="post" id="form" name="form" class="form-horizontal" action="{{ path('_login') }}">
+                    <input id="hdn-collapse" type="hidden" value="collapsed" name="form[hdncollapse]">
+                    <a onclick="form.submit();">
+                        <div class="circle center-block">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </div>
+                    </a>
+                    <div>
+                        <input id="username" name="_username" title="Username" class="form-control" type="text" placeholder="Username"
+                                {% if not error %} autofocus {% endif %}
+                        />
+
+                        <input id="password" name="_password" title="Passwort" class="form-control" type="password" placeholder="Passwort"
+                                {% if not error %} autofocus {% endif %}
+                        />
+
+                        <button type="submit" class="btn" >Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+
+
+
+
+{#      TODO entfernen:
+
+{% extends 'base.html.twig' %}
+
 {% block bodyclass %}localLogin{% endblock %}
 
 {% block title %}{{ parent() }} | Login{% endblock %}
@@ -19,7 +94,6 @@
         </div>
     {% endfor %}
 
-    {#TODO: loginform so aussehen lassen wie die homepage#}
 
     <p>Login über den zentralen Single-Sign-On Dienst "Shibboleth" der Campus-IT</p>
     <a class="btn btn-red" href="{{ path('_shibbolethLogin') }}">Login über Shibboleth</a>
@@ -36,13 +110,10 @@
             {% if error %} autofocus {% endif %}
         />
 
-        {#
-            If you want to control the URL the user
-            is redirected to on success (more details below)
-            <input type="hidden" name="_target_path" value="/account" />
-        #}
 
         <button type="submit">Login</button>
     </form>
 
 {% endblock %}
+
+#}
