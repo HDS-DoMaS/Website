@@ -32,7 +32,7 @@ class LogoutListener implements LogoutSuccessHandlerInterface {
         // Sichergehen, dass Flashmessage nicht mehrfach angehangen wird.
         $flashBag = $request->getSession()->getFlashBag();
         if(!$flashBag->has("logout")) {
-            $flashBag->add('logout', 'Sie haben sich erfolgreich ausgeloggt. Bitte schließen Sie aus Sicherheitsgründen ihren Browser, um sicherzugehen, dass niemand Zugriff auf Ihre Shibboleth-Daten hat.');
+            $flashBag->add('logout', 'Sie haben sich erfolgreich ausgeloggt. Bitte schließen Sie aus Sicherheitsgründen ihren Browser, um sicherzugehen, dass niemand auf Ihre Shibboleth-Daten zugreift.');
         }
 
         $responsePath = $this->router->generate('_login');

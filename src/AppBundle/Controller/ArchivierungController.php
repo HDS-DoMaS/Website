@@ -108,10 +108,8 @@ class ArchivierungController extends Controller {
      */
     public function editArchivierungAction(Request $request, $archivId) {
 
-        // Archivierung aus DB laden
-        $archivierung = $this->getDoctrine()
-            ->getRepository('AppBundle:Archivierung')
-            ->find($archivId);
+        // Archivierung aus DB auslesen
+        $archivierung = $this->getArchivierung($archivId);
 
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
         $isErsteller = $this->UserIsErsteller($archivierung);
@@ -426,11 +424,25 @@ class ArchivierungController extends Controller {
     /**
      * @Route("/archivierung/delete/{archivId}",
      *     name="_deleteArchivierung")
-     * @param Request $request
+     *
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteArchivierungAction(Request $request, $archivId) {     // TODO in PHPmyadmin testen
+    public function deleteArchivierungAction($archivId) {     // TODO in PHPmyadmin testen
+
+        // Archivierung aus DB auslesen
+        $archivierung = $this->getArchivierung($archivId);
+
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
+        $isErsteller = $this->UserIsErsteller($archivierung);
+
+        // Wenn nicht authorisiert:
+        if (!$isAdmin && !$isErsteller) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu löschen.');
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
 
         // Benachrichtigung: wirklich löschen?
         $this->addFlash(
@@ -446,13 +458,24 @@ class ArchivierungController extends Controller {
      * @Route("/archivierung/delete-confirm/{archivId}",
      *     name="_deleteConfirmArchivierung"
      * )
-     * @param Request $request
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteConfirmArchivierungAction(Request $request, $archivId) {
+    public function deleteConfirmArchivierungAction($archivId) {
 
+        // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
+
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
+        $isErsteller = $this->UserIsErsteller($archivierung);
+
+        // Wenn nicht authorisiert:
+        if (!$isAdmin && !$isErsteller) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diese Archivierung zu löschen.');
+
+            return $this->redirect($this->generateUrl('_default'));
+        }
 
         // Archivierung aus der DB entfernen
         $this->removeArchivierung($archivierung);
@@ -505,7 +528,7 @@ class ArchivierungController extends Controller {
         $user = $this->getUser();
 
         if($user instanceof DomasUser) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
-            return ($archivierung->getBenutzerId() === $user->getBenutzerId()); // todo testen
+            return ($archivierung->getBenutzerId() === $user->getBenutzerId()); // TODO testen
         }
 
         return false;
