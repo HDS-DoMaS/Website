@@ -36,7 +36,7 @@ foreach ($as->getAttributes() as $key => $value) {
 // Rolle ermitteln
 $role = 'ROLE_STUDENT';
 if (strpos($data['rollen'], 'professor')) {
-	$role = 'ROLE_ADMIN';
+	$role = 'ROLE_EMPLOYEE'; // Kein ROLE_ADMIN
 } elseif (strpos($data['rollen'], 'employee')) {
 	$role = 'ROLE_EMPLOYEE';
 }

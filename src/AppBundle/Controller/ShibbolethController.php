@@ -48,7 +48,7 @@ class ShibbolethController extends Controller {
 				// Fehler: Benutzer wurde nicht gefunden
 				$this->container->get('session')->getFlashBag()->add(
 					'error',
-					'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_USER (' . $flag . ')'
+					'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_USER'
 				);
 				$this->returnToRoute = '_login';
 			} else {
