@@ -16,8 +16,8 @@ class ShibbolethController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function LoginAction() {
-		// web/shibboleth.php übernimmt authetifizierung
-        return $this->redirect('/shibboleth.php');
+		// web/shibboleth.php übernimmt Authetifizierung
+        return $this->redirect('/shibboleth.php?env=' . $this->get('kernel')->getEnvironment());
     }
 	
 	/**
@@ -29,7 +29,10 @@ class ShibbolethController extends Controller {
 		// Wurde kein Flag übergeben?
 		if(empty($flag)) {
 			// Fehler: Es wurde kein Flag übergeben
-			$this->session->getFlashBag()->add('error', 'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_FLAG');
+			$this->container->get('session')->getFlashBag()->add(
+				'error',
+				'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_FLAG'
+			);
 
 			$this->returnToRoute = '_login';
 		} else {
@@ -43,15 +46,18 @@ class ShibbolethController extends Controller {
 			// Wurde kein Benutzer gefunden?
 			if (!$benutzer) {
 				// Fehler: Benutzer wurde nicht gefunden
-				$this->session->getFlashBag()->add('error', 'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_USER');
+				$this->container->get('session')->getFlashBag()->add(
+					'error',
+					'Der Shibboleth-Login ist fehlgeschlagen. Fehlermeldung: NO_USER (' . $flag . ')'
+				);
 				$this->returnToRoute = '_login';
 			} else {
 				// Login-Token erstellen
 				$token = new UsernamePasswordToken(
-					$benutzer, 						// Benutzer
-					null,							// Passwort
-					$this->firewall,				// Firewall
-					array($benutzer->getDomasRole())// Rollen
+					$benutzer, 						 // Benutzer
+					null,							 // Passwort
+					$this->firewall,				 // Firewall
+					array($benutzer->getDomasRole()) // Rollen
 				);
 
 				// Smyfony Authentifizierung über Login-Token

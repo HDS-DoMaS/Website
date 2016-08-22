@@ -4,11 +4,10 @@
 session_start();
 
 // Testsystem / Livesystem
-if(isset($_SERVER['HTTP_REFERER'])) {
-	if($_SERVER['HTTP_REFERER'] == 'https://domas.medien.hs-duesseldorf.de/app_dev.php/login') {
-		$_SESSION['env'] = '/app_dev.php';
-	} elseif ($_SERVER['HTTP_REFERER'] == 'https://domas.medien.hs-duesseldorf.de/login') {
-		$_SESSION['env'] = '';
+$env = '';
+if(isset($_GET['env'])) {
+	if($_GET['env'] == 'dev') {
+		$env = '/app_dev.php';
 	}
 }
 
@@ -75,6 +74,6 @@ $conn->close();
 // Zu Symfony weiterleiten
 header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
 header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
-header("Location: " . $_SESSION['env'] . '/login/shibboleth/redirect/' . $flag);
+header("Location: " . $env . '/login/shibboleth/redirect/' . $flag);
 
 die();
