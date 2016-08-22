@@ -357,12 +357,14 @@ th.desc a:before{
 }
 .login .input-group {
     width: 100%;
-    padding-bottom: 14px;
+    padding-top: 12px;
+    padding-bottom: 10px;
 }
 .login .input-group-addon {
     width: 30%;
 }
 .btn-login {
+    margin-top: 24px;
     width: 100%;
 }
 

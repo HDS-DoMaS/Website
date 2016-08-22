@@ -19,6 +19,8 @@
                     {% if is_granted("IS_AUTHENTICATED_FULLY") %}
                         <div class="pull-left">Angemeldet als: {{ app.user.username }}</div>
                         <div class="pull-right"><a href="{{ path('_logout') }}">Logout</a></div>
+                    {% else %}
+                        <div class="pull-right"><a href="{{ path('_login') }}">Login</a></div>
                     {% endif %}
                 {% endblock %}
             </div>
