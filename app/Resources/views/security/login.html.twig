@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block bodyclass %}index{% endblock %}
+{% block bodyclass %}index login{% endblock %}
 
 {% block top %}{% endblock %}
 
@@ -31,11 +31,11 @@
             <div class="transparent">
                 <a href="{{ path('_shibbolethLogin') }}">
                     <div class="circle center-block">
-                        <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                     </div>
                 </a>
 
-                <a href="{{ path('_shibbolethLogin') }}" class="btn btn-block">
+                <a href="{{ path('_shibbolethLogin') }}" class="btn btn-red btn-block">
                     Login über Shibboleth
                 </a>
             </div>
@@ -45,21 +45,20 @@
             <div class="transparent">
                 <form method="post" id="form" name="form" class="form-horizontal" action="{{ path('_login') }}">
                     <input id="hdn-collapse" type="hidden" value="collapsed" name="form[hdncollapse]">
-                    <a onclick="form.submit();">
-                        <div class="circle center-block">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                        </div>
-                    </a>
+
                     <div>
-                        <input id="username" name="_username" title="Username" class="form-control" type="text" placeholder="Username"
-                                {% if not error %} autofocus {% endif %}
-                        />
+                        <h2>Lokaler Login</h2>
+                        <div class="input-group">
+                            <span class="input-group-addon">Benutzer</span>
+                            <input id="username" name="_username" title="Username" class="form-control" type="text" placeholder="Benutzer" />
+                        </div>
 
-                        <input id="password" name="_password" title="Passwort" class="form-control" type="password" placeholder="Passwort"
-                                {% if not error %} autofocus {% endif %}
-                        />
+                        <div class="input-group">
+                            <span class="input-group-addon">Passwort</span>
+                            <input id="password" name="_password" title="Passwort" class="form-control" type="password" placeholder="Passwort" />
+                        </div>
 
-                        <button type="submit" class="btn" >Login</button>
+                        <button type="submit" class="btn btn-login">Login</button>
                     </div>
                 </form>
             </div>

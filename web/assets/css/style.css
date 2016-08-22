@@ -57,7 +57,8 @@ a:active {
     text-decoration: none;
 }
 
-a .glyphicon{
+button .glyphicon,
+a.btn .glyphicon {
     margin-right: 6px;
 }
 
@@ -132,6 +133,15 @@ a .glyphicon{
 .form-control:focus {
     border-color: #d83734;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6)
+}
+.input-group-addon {
+    border-radius: 0;
+    border:2px solid #000;
+    background: #333;
+    color: #fff;
+    font-weight: bold;
+    line-height: 1;
+    padding-top: 4px;
 }
 /*
  * Classes
@@ -333,6 +343,27 @@ th.desc a:before{
     background-color: #d83734;
     box-shadow: none;
 }
+/**
+ * Login
+ */
+.login h2 {
+    margin:0;
+    padding: 0;
+    height: 40px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.login .input-group {
+    width: 100%;
+    padding-bottom: 14px;
+}
+.login .input-group-addon {
+    width: 30%;
+}
+.btn-login {
+    width: 100%;
+}
+
 /**
  * Suche
  */
