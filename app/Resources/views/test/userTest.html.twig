@@ -6,30 +6,6 @@
 
 {% block body %}
 
-
-    <h1>{{ archivierung.getTitel() }}</h1>
-
-    {% if isAdmin or isErsteller %}
-
-        <a href="{{ path('_editArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-            <span class="glyphicon glyphicon-pencil"></span> Bearbeiten
-        </a>
-
-        <a href="{{ path('_deleteArchivierung', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-            <span class="glyphicon glyphicon-trash"></span> Löschen
-        </a>
-
-        {# TODO: Link wieder entfernen #}
-        <a href="{{ path('_editKeywords', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-            <span class="glyphicon glyphicon-tags"></span> Keywords
-        </a>
-
-        {# TODO: Link wieder entfernen #}
-        <a href="{{ path('_editZusaetze', {'archivId': archivierung.getArchivId()}) }}" class="btn btn-sm btn-default">
-            <span class="glyphicon glyphicon-info-sign"></span> Zusätze
-        </a>
-    {% endif %}
-
     <div class="row">
         <div class="col-md-7">
             <dl class="dl-horizontal">
@@ -38,121 +14,13 @@
 
                 <dt>isAdmin</dt>
                 <dd>{{ isAdmin }}</dd>
-                <dt>isErsteller</dt>
-                <dd>{{ isErsteller }}</dd>
-                <dt>sichtbarkeit</dt>
-                <dd>{{ sichtbarkeit }}</dd>
+                <dt>Ersteller</dt>
+                <dd>{{ Ersteller }}</dd>
 
                 {#Testausgabe Ende -------------------------------------------------#}
 
-                <dt>Archiv-ID</dt>
-                <dd>{{ archivierung.getArchivId() }}</dd>
-
-                <dt>Kategorie</dt>
-                <dd>{{ archivierung.getKategorie().getBezeichnung() }}</dd>
-
-
-                {% block spezifischeAttributeOben %}{% endblock %}
-
-
-                <dt>Abgabedatum</dt>
-                <dd>
-                    {% if archivierung.getAbgabedatum() is not null %}
-                        {{ archivierung.getAbgabedatum().format('d.m.Y') }}
-                    {% endif %}
-                </dd>
-
-                <dt>Beschreibung</dt>
-                <dd><span>{{ archivierung.getBeschreibung() }}</span></dd>
-
-
-                {% block spezifischeAttributeMitte %}{% endblock %}
-
-
-                <dt title="Uploader in DoMaS">Ersteller</dt>
-                <dd title="Uploader in DoMaS">{{ archivierung.getBenutzer().getVorname() ~ " " ~ archivierung.getBenutzer().getNachname() }}</dd>
-
-                <dt title="Uploaddatum in DoMaS">Erstelldatum</dt>
-                <dd title="Uploaddatum in DoMaS">{{ archivierung.getErstelldatum().format('d.m.Y') }}</dd>
             </dl>
-        </div>
-
-        {#Rechter Kasten:#}
-
-        {% set hasAnhaenge = (archivierung.getAnhaenge() |length > 0) %}
-        {% set hasReferenzen = (archivierung.getReferenzen() |length > 0) %}
-        {% set hasKeywords = (archivierung.getKeywords() |length > 0) %}
-
-        {% if hasAnhaenge or hasReferenzen or hasKeywords %}
-            <div class="col-md-5">{#rechten kasten öffnen#}
-
-                <dl class="dl-horizontal anhang-container">
-
-                    {#Giftschrank-Hinweis#}
-                    {% if (hasAnhaenge or hasReferenzen) and sichtbarkeit == 0 and isErsteller == 0 and isAdmin == 0 %}
-                        <section class="nichtSichtbarMsg">
-                            <div class="giftschrankMessage1">Archivierung mit eingeschränkter Sichtbarkeit</div>
-                            <div class="giftschrankMessage2">
-                                {% block nichtSichtbarMssg %}Für Einsicht bitte den angegebenen Ersteller kontaktieren{% endblock %}
-                            </div>
-                        </section>
-
-                    {% else %}
-
-                        {% if hasAnhaenge %}
-                            <dt>Datei-Anhänge</dt>
-                            {% for anhang in archivierung.getAnhaenge() %}
-
-                                {#Gutachten verbergen#}
-                                {% if isErsteller or isAdmin or anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
-                                    <dd>
-                                        <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
-                                            <span class="glyphicon glyphicon-paperclip"></span>
-                                            {{ anhang.getDateiKategorie().getBezeichnung() ~ " - " ~ anhang.getPfad() }}
-                                            {% if anhang.getVersionsnummer() is not null %}
-                                                    {{ " - Version: " ~ anhang.getVersionsnummer() }}
-                                            {% endif %}
-                                        </a>
-                                    </dd>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-
-                        {% if hasReferenzen %}
-                            <dt>Referenzen in DoMas</dt>
-
-                            {% for referenz in archivierung.getReferenzen() %}
-                                <dd><a href="{{ path('_detailView', {'archivId': referenz.getArchivId()}) }}"><span class="glyphicon glyphicon-link"></span> {{ referenz.getTitel() }}</a></dd>
-                            {% endfor %}
-                        {% endif %}
-
-                    {% endif %}
-
-                    {% if hasKeywords %}
-                        <dt>Keywords</dt>
-                        <dd>
-                            {% set isFirstOne = true %}
-                            {% for keyword in archivierung.getKeywords() %}
-                                {% if isFirstOne == false %}
-                                    {{ ", " }}
-                                {% endif %}
-                                {{ keyword.getKeyword() }}
-                                {% set isFirstOne = false %}
-                            {% endfor %}
-                        </dd>
-                    {% endif %}
-                </dl>
-            </div>
-        {% endif %}
-
     </div>
-
-
-    <a href="{{ path('_detailViewBack') }}" class="btn btn-default">
-        zurück
-    </a>
-
-
-
+    </div>
 
 {% endblock %}

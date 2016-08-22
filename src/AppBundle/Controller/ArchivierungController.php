@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Benutzer;
 use AppBundle\Form\Type\KeywordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -428,7 +429,7 @@ class ArchivierungController extends Controller {
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteArchivierungAction($archivId) {     // TODO in PHPmyadmin testen
+    public function deleteArchivierungAction($archivId) {
 
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
@@ -527,8 +528,8 @@ class ArchivierungController extends Controller {
     private function UserIsErsteller($archivierung) {
         $user = $this->getUser();
 
-        if($user instanceof DomasUser) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
-            return ($archivierung->getBenutzerId() === $user->getBenutzerId()); // TODO testen
+        if($user instanceof Benutzer) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
+            return ($archivierung->getBenutzerId() === $user->getBenutzerId());
         }
 
         return false;
