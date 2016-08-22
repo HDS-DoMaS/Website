@@ -349,7 +349,9 @@ th.desc a:before{
 .login h2 {
     margin:0;
     padding: 0;
-    height: 40px;
+    line-height: 1;
+    height: 42px;
+    margin-top: -2px;
     font-size: 22px;
     font-weight: bold;
 }
