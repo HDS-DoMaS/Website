@@ -57,8 +57,7 @@ a:active {
     text-decoration: none;
 }
 
-button .glyphicon,
-a.btn .glyphicon {
+.btn-collapse .glyphicon {
     margin-right: 6px;
 }
 
@@ -149,7 +148,7 @@ a.btn .glyphicon {
 .transparent {
     background: rgba(255,255,255,0.8);
 }
-.circle{
+.circle {
     width: 120px;
     height: 120px;
     border-radius: 60px;
@@ -159,6 +158,10 @@ a.btn .glyphicon {
     text-align: center;
     background: #d83834;
     margin-bottom: 20px;
+}
+a:hover .circle,
+a.circle:hover {
+    background: #db4542;
 }
 .nopadding {
     padding: 0 !important;
@@ -337,7 +340,7 @@ th.desc a:before{
 .index .hover .form-control {
     border-color: #d83734;
     box-shadow: none;
-}
+}cle
 .index .hover .btn {
     border-color: #d83734;
     background-color: #d83734;
