@@ -25,6 +25,7 @@ class AjaxController extends Controller {
             ->setParameter('bezeichnung', '%' . $suche . '%')
             ->setParameter('match', '*' . $suche . '*')
             ->setParameter('zusatzKategorieId', $zusatzMapper->mapToId($kategorie))
+            ->groupBy('zusaetze.bezeichnung')
             ->orderBy('zusaetze.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -44,6 +45,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (archiv.titel) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('suche', '%' . $suche . '%')
             ->setParameter('match', '*' . $suche . '*')
+            ->groupBy('archiv.' . $feld)
             ->orderBy('archiv.' . $feld, 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -63,6 +65,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (benutzer.vorname, benutzer.nachname) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('name', '%' . $name . '%')
             ->setParameter('match', '*' . $name . '*')
+            ->groupBy('benutzer.vorname, benutzer.nachname')
             ->orderBy('benutzer.vorname, benutzer.nachname', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -82,6 +85,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (fachbereich.bezeichnung) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
             ->setParameter('match', '*' . $bezeichnung . '*')
+            ->groupBy('fachbereich.bezeichnung')
             ->orderBy('fachbereich.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -101,6 +105,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (studiengang.bezeichnung) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
             ->setParameter('match', '*' . $bezeichnung . '*')
+            ->groupBy('studiengang.bezeichnung')
             ->orderBy('studiengang.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -120,6 +125,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (archivKategorie.bezeichnung) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('bezeichnung', '%' . $bezeichnung . '%')
             ->setParameter('match', '*' . $bezeichnung . '*')
+            ->groupBy('archivKategorie.bezeichnung')
             ->orderBy('archivKategorie.bezeichnung', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
@@ -139,6 +145,7 @@ class AjaxController extends Controller {
             ->orWhere('MATCH (keyword.keyword) AGAINST (:match BOOLEAN) > 1')
             ->setParameter('keyword', '%' . $keyword . '%')
             ->setParameter('match', '*' . $keyword . '*')
+            ->groupBy('keyword.keyword')
             ->orderBy('keyword.keyword', 'ASC');
 
         return $this->returnJsonResponse($queryBuilder);
