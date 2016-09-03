@@ -23,7 +23,8 @@
 
     <div class="row">
 
-    {% if isEmployeeOrAdmin %}  {#TODO: statt ausblenden ausgrauen#}
+
+    {% if isEmployee %}   {# TODO : statt ausblenden ausgrauen #}
             <div class="col-sm-4 col-sm-offset-2">
                 <div class="transparent">
                     <a href="{{ path('_neuArchivierung') }}">

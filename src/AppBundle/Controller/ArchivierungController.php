@@ -45,13 +45,18 @@ class ArchivierungController extends Controller {
      */
     public function neuArchivierungAction(Request $request) {
 
-        $isEmployeeOrAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
+        $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
+        $isEmployee = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
 
-        // Wenn nicht authorisiert:
-        if (!$isEmployeeOrAdmin) {
+        // Wenn nicht authorisiert (der admin kann auch keine Archivierungen erstellen):
+        if (!$isEmployee) {
             $this->addFlash('error',
                 'Sie haben nicht die nötige Authorisierung, um eine Archivierung zu erstellen.');
-
+            return $this->redirect($this->generateUrl('_default'));
+        }
+        if ($isAdmin) {
+            $this->addFlash('error',
+                'Nur Mitarbeiter der Hochschule können Archivierungen erstellen. Der Administrator ist lediglich zu seltenen, administraiven Zwecken zu benutzen..');
             return $this->redirect($this->generateUrl('_default'));
         }
 
@@ -238,7 +243,7 @@ class ArchivierungController extends Controller {
     public function detailViewBackAction(Request $request) {
 
         $session = $request->getSession();
-        $historyList = $session->get("historyList", array());   // wenn nicht: hitoryList = leeres array.
+        $historyList = $session->get("historyList", array());   // wenn nicht vorhanden: hitoryList = leeres array.
         $biggestIndex = sizeof($historyList)-1;
 
 
@@ -361,9 +366,9 @@ class ArchivierungController extends Controller {
             return $this->render(
                 'archivierung/detailView/arbeit.html.twig',
                 array(  'archivierung'  => $archivierung,
-                    'isAdmin'       => $isAdmin,
-                    'isErsteller'   => $isErsteller,
-                    'sichtbarkeit'  => $sichtbarkeit
+                        'isAdmin'       => $isAdmin,
+                        'isErsteller'   => $isErsteller,
+                        'sichtbarkeit'  => $sichtbarkeit
                 )
             );
         }

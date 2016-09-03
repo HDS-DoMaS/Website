@@ -26,12 +26,15 @@ class DefaultController extends Controller
             ->add('submit', SubmitType::class)
             ->getForm();
 
-        $isEmployeeOrAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
+        $isEmployee = (     // User ist employee aber kein admin.
+            $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole) &&
+            !$this->get('security.authorization_checker')->isGranted(DomasUser::adminRole)
+        );
 
         // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'form' => $form->createView(),
-            'isEmployeeOrAdmin' => $isEmployeeOrAdmin
+            'isEmployee' => $isEmployee
         ]);
     }
 }
