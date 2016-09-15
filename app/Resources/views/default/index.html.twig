@@ -24,7 +24,7 @@
     <div class="row">
 
 
-    {% if isEmployee %}   {# TODO : statt ausblenden ausgrauen #}
+    {% if isEmployee %}
             <div class="col-sm-4 col-sm-offset-2">
                 <div class="transparent">
                     <a href="{{ path('_neuArchivierung') }}">
@@ -38,6 +38,28 @@
                     </a>
                 </div>
             </div>
+    {% else %}
+        {# TODO : statt ausblenden ausgrauen #}
+
+        <div class="col-sm-4 col-sm-offset-2" id="disable-upload">
+
+            <div class=" btn" disabled="true">
+                <div class="transparent">
+                    <div class="circle center-block">
+                        <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                    </div>
+
+                    <p class="btn btn-block" disabled="true">
+                        Archivierung erstellen
+                    </p>
+                </div>
+            </div>
+
+            <div class="alert alert-warning">
+                <p>Nur Mitarbeiter sind berechtigt Archivierungen zu erstellen.</p>
+            </div>
+        </div>
+
     {% endif %}
 
         <div class="col-sm-4">

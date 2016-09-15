@@ -340,7 +340,7 @@ th.desc a:before{
 .index .hover .form-control {
     border-color: #d83734;
     box-shadow: none;
-}cle
+}
 .index .hover .btn {
     border-color: #d83734;
     background-color: #d83734;
@@ -669,4 +669,35 @@ ul.zusaetze li div{
 
 .zusaetze .col-sm-10 {
     padding-left: 0;
+}
+
+#disable-upload{
+    height:340px;
+}
+
+#disable-upload > div:first-child {
+    border:none;
+    padding:0px;
+    width: 100%;
+}
+
+#disable-upload > div:last-child {
+    margin-top: -200px;
+    z-index: 300;
+    position: relative;
+    width: 90%;
+    display: block;
+    margin-left: 5%;
+    text-align: center;
+    opacity: 0;
+    transition: opacity .1s .1s;
+}
+
+#disable-upload:hover > div:last-child {
+    opacity: 1;
+}
+
+#disable-upload .btn:hover{
+    background-color: #000;
+    border-color: #000;
 }
