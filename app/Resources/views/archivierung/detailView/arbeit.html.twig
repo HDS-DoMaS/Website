@@ -13,6 +13,7 @@
 
 {% block spezifischeAttributeOben %}
 
+        {% set hasAutor = false %}
         <dt>Autor</dt>
         {% for autor in archivierung.getZusaetze() %}
             {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
@@ -21,9 +22,13 @@
                     {% if autor.getMatrikelnummer() is not null %}
                         {{ " - MatrikelNr: " ~ autor.getMatrikelnummer() }}
                     {% endif %}
+                    {% set hasAutor = true %}
                 </dd>
             {% endif %}
         {% endfor %}
+        {% if hasAutor == false %}
+            <dd></dd>
+        {% endif %}
 
 {% endblock %}
 

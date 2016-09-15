@@ -11,6 +11,7 @@ use AppBundle\Entity\Archivierung;
 use AppBundle\Entity\ArchivAnhang;
 use AppBundle\Entity\ArchivZusatz;
 use AppBundle\Helper\MimeTypeHelper;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -47,31 +48,39 @@ class ArchivierungController extends Controller {
 
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
         $isEmployee = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
+        $user = $this->getUser();
 
-        // Wenn nicht authorisiert (der admin kann auch keine Archivierungen erstellen):
+        // Wenn nicht authorisiert:
         if (!$isEmployee) {
             $this->addFlash('error',
                 'Sie haben nicht die nötige Authorisierung, um eine Archivierung zu erstellen.');
             return $this->redirect($this->generateUrl('_default'));
         }
-        if ($isAdmin) {
+        /*if ($isAdmin) {
             $this->addFlash('error',
                 'Nur Mitarbeiter der Hochschule können Archivierungen erstellen. Der Administrator ist lediglich zu seltenen, administraiven Zwecken zu benutzen..');
             return $this->redirect($this->generateUrl('_default'));
-        }
+        }*/
 
         // Neue Archivierung
         $archivierung = new Archivierung();
+        $userId = false;
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
         if ($form->isValid()) {
+
+            if($isAdmin) {
+                $userId = 1;
+            }else {
+                $userId = $user->getBenutzerId();
+            }
+
             $archivierung->setBenutzer($this->getDoctrine()
                 ->getRepository('AppBundle:Benutzer')
-                ->find(1));
+                ->find($userId));
 
             $archivierung->setSichtbarkeit(true);
             $date = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
-            // echo $date->format('Y-m-d');
             $archivierung->setErstelldatum($date);
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -86,8 +95,6 @@ class ArchivierungController extends Controller {
                     );
                 }
             }
-
-			$this->UploadAction($request);
 
             $entityManager->persist($archivierung);
             $entityManager->flush();
@@ -214,7 +221,9 @@ class ArchivierungController extends Controller {
                 'class' => 'AppBundle:ArchivKategorie',
                 'choice_label' => 'bezeichnung'
             ))
-
+            ->add('sichtbarkeit', CheckboxType::class, array(
+                'label'    => 'sichtbarkeit',
+            ))
             ->add('zusaetze', CollectionType::class, array(
                 'entry_type' => ArchivZusatzType::class,
                 'by_reference' => false,

@@ -27,8 +27,7 @@ class DefaultController extends Controller
             ->getForm();
 
         $isEmployee = (     // User ist employee aber kein admin.
-            $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole) &&
-            !$this->get('security.authorization_checker')->isGranted(DomasUser::adminRole)
+            $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole)
         );
 
         // replace this example code with whatever you need
