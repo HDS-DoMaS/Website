@@ -30,9 +30,9 @@ h1:before{
     content:'';
     position:absolute;
     width:4px;
-    height:28px;
+    height:100%;
     left:0;
-    top:-4px;
+    top:0px;
     background:#d83734;
 }
 
@@ -76,38 +76,45 @@ a:active {
 .btn:focus {
     background-color:#333;
     border-color:#333;
+    outline-color:#333;
     color:#fff;
 }
 .btn:active {
     background-color:#555;
     border-color:#555;
+    outline-color:#555;
     color:#fff;
 }
 
 .btn-red {
     border-color:#d83734;
     background-color:#d83734;
+    outline-color:#d83734;
 }
 
 .btn-red:hover,
 .btn-red:focus {
     border-color:#db4542;
     background-color:#db4542;
+    outline-color:#d83734;
 }
 .index .hover {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6);
     border-color:#d83734;
     background-color:#d83734;
+    outline-color:#d83734;
 }
 .btn-red:active {
     border-color:#dd5350;
     background-color:#dd5350;
+    outline-color:#d83734;
 }
 
 .btn-grey {
     border-color:#bbb;
     background-color:#bbb;
     color: #111;
+    outline-color:#bbb;
 }
 
 .btn-grey:hover,
@@ -115,11 +122,13 @@ a:active {
     border-color:#c4c4c4;
     background-color:#c4c4c4;
     color: #333;
+    outline-color:#c4c4c4;
 }
 .btn-grey:active {
     border-color:#ccc;
     background-color:#ccc;
     color: #333;
+    outline-color:#ccc;
 }
 /*
  * Inputs
@@ -131,7 +140,7 @@ a:active {
 }
 .form-control:focus {
     border-color: #d83734;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6)
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(216, 55, 52, 0.6);
 }
 .input-group-addon {
     border-radius: 0;
@@ -647,7 +656,7 @@ span.twitter-typeahead {
 
 .archivierung-form-edit .form-control,
 .archivierung-form .form-control{
-    width: 40rem;
+    width: 100%;
     display:inline;
 }
 
@@ -661,6 +670,19 @@ span.twitter-typeahead {
 .archivierung-form li{
     list-style-type:none;
     padding-bottom: 12px;
+}
+
+.archivierung-form-edit h1 .form-control, .archivierung-form h1 .form-control {
+    border-color:#d83734;
+    color: #d83734;
+    max-width: 25rem;
+    width:100%;
+}
+
+@media (min-width: 768px) {
+    .archivierung-form-edit h1, .archivierung-form h1 {
+        margin-left: 19.3333332%;
+    }
 }
 
 ul.zusaetze li div{
@@ -700,4 +722,9 @@ ul.zusaetze li div{
 #disable-upload .btn:hover{
     background-color: #000;
     border-color: #000;
+}
+
+.archivierung-form-edit .body .glyphicon, .archivierung-form .body .glyphicon {
+    font-size: 0.8em;
+    padding: 0 8px 0 0;
 }
