@@ -39,32 +39,40 @@ class ArchivierungController extends Controller {
         $this->anhaengePfad = $this->grundPfad . "anhaenge/";
     }
 
+
     /**
      * @Route("/archivierung/neu",
-     *     name="_neuArchivierung"
+     *     name="_neuArchivierungDefault",
      * )
      */
-    public function neuArchivierungAction(Request $request) {
+    public function neuArchivierungDeafultAction(Request $request) {
 
+        return $this->redirect($this->generateUrl(
+            '_neuArchivierung',
+            array('archivKategorie' => 'Bachelorarbeit')
+        ));
+    }
+    /**
+     * @Route("/archivierung/neu/{archivKategorie}",
+     *     name="_neuArchivierung",
+     * )
+     */
+    public function neuArchivierungAction(Request $request, $archivKategorie) {
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
         $isEmployee = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
         $user = $this->getUser();
-
         // Wenn nicht authorisiert:
         if (!$isEmployee) {
             $this->addFlash('error',
                 'Sie haben nicht die nötige Authorisierung, um eine Archivierung zu erstellen.');
             return $this->redirect($this->generateUrl('_default'));
         }
-        /*if ($isAdmin) {
-            $this->addFlash('error',
-                'Nur Mitarbeiter der Hochschule können Archivierungen erstellen. Der Administrator ist lediglich zu seltenen, administraiven Zwecken zu benutzen..');
-            return $this->redirect($this->generateUrl('_default'));
-        }*/
 
         // Neue Archivierung
         $archivierung = new Archivierung();
         $userId = false;
+
+        $archivierung->setKategorie($this->getDoctrine()->getRepository('AppBundle:ArchivKategorie')->findBy(array('bezeichnung' => $archivKategorie))[0]);
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -79,7 +87,6 @@ class ArchivierungController extends Controller {
                 ->getRepository('AppBundle:Benutzer')
                 ->find($userId));
 
-            $archivierung->setSichtbarkeit(true);
             $date = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
             $archivierung->setErstelldatum($date);
 
@@ -106,10 +113,17 @@ class ArchivierungController extends Controller {
             return $this->redirect($url);
         }
 
-        return $this->render(
-            'archivierung/form.html.twig',
-            array('form' => $form->createView())
-        );
+        if($archivierung->getKategorie()->getBezeichnung() != 'Anleitung'){
+            return $this->render(
+                'archivierung/form.html.twig',
+                array('form' => $form->createView())
+            );
+        } else {
+            return $this->render(
+                'archivierung/form-anleitung.html.twig',
+                array('form' => $form->createView())
+            );
+        }
     }
 
 
@@ -185,59 +199,108 @@ class ArchivierungController extends Controller {
                 '_detailView',
                 array('archivId' => $archivierung->getArchivId())
             );
-
             $url = $url . "/zurueck";
-
             return $this->redirect($url);
         }
 
-        return $this->render(
-            'archivierung/form-edit.html.twig',
-            array('form' => $form->createView())
-        );
+        if($archivierung->getKategorie()->getBezeichnung() != "Anleitung"){
+            return $this->render(
+                'archivierung/form-edit.html.twig',
+                array('form' => $form->createView())
+            );
+        } else{
+            return $this->render(
+                'archivierung/form-edit-anleitung.html.twig',
+                array('form' => $form->createView())
+            );
+        }
     }
 
-    private function getArchivierungForm($archivierung) {
-        return $this->createFormBuilder($archivierung)
-            ->add('titel', TextType::class)
-            ->add('zusaetze', EntityType::class, array(
-                'class' => 'AppBundle:ArchivZusatz',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('abgabedatum', DateType::class, array(
-                'widget' => 'single_text',
-                'format' => 'dd.MM.yyyy'
-            ))
-            ->add('beschreibung', TextareaType::class)
-            ->add('fachbereich', EntityType::class, array(
-                'class' => 'AppBundle:Fachbereich',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('studiengang', EntityType::class, array(
-                'class' => 'AppBundle:Studiengang',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('kategorie', EntityType::class, array(
-                'class' => 'AppBundle:ArchivKategorie',
-                'choice_label' => 'bezeichnung'
-            ))
-            ->add('sichtbarkeit', CheckboxType::class, array(
-                'label'    => 'sichtbarkeit',
-            ))
-            ->add('zusaetze', CollectionType::class, array(
-                'entry_type' => ArchivZusatzType::class,
-                'by_reference' => false,
-                'allow_add'    => true,
-                'allow_delete' => true,
-            ))
-            ->add('keywords', CollectionType::class, array(
-                'entry_type' => KeywordType::class,
-                'by_reference' => false,
-                'allow_add'    => true,
-                'allow_delete' => true,
-            ))
-            ->add('speichern', SubmitType::class)
-            ->getForm();
+    private function getArchivierungForm(Archivierung $archivierung) {
+        if($archivierung->getKategorie()->getBezeichnung() != "Anleitung"){
+            return $this->createFormBuilder($archivierung)
+                ->add('titel', TextType::class)
+                ->add('zusaetze', EntityType::class, array(
+                    'class' => 'AppBundle:ArchivZusatz',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('abgabedatum', DateType::class, array(
+                    'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy'
+                ))
+                ->add('beschreibung', TextareaType::class)
+                ->add('fachbereich', EntityType::class, array(
+                    'class' => 'AppBundle:Fachbereich',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('studiengang', EntityType::class, array(
+                    'class' => 'AppBundle:Studiengang',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('kategorie', EntityType::class, array(
+                    'class' => 'AppBundle:ArchivKategorie',
+                    'choice_label' => 'bezeichnung',
+                ))
+                ->add('sichtbarkeit', CheckboxType::class, array(
+                    'label'    => 'sichtbarkeit',
+                ))
+                ->add('zusaetze', CollectionType::class, array(
+                    'entry_type' => ArchivZusatzType::class,
+                    'by_reference' => false,
+                    'allow_add'    => true,
+                    'allow_delete' => true,
+                ))
+                ->add('keywords', CollectionType::class, array(
+                    'entry_type' => KeywordType::class,
+                    'by_reference' => false,
+                    'allow_add'    => true,
+                    'allow_delete' => true,
+                ))
+                ->add('speichern', SubmitType::class)
+                ->getForm();
+        } else {
+            return $this->createFormBuilder($archivierung)
+                ->add('titel', TextType::class)
+                ->add('zusaetze', EntityType::class, array(
+                    'class' => 'AppBundle:ArchivZusatz',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('abgabedatum', DateType::class, array(
+                    'widget' => 'single_text',
+                    'format' => 'dd.MM.yyyy'
+                ))
+                ->add('beschreibung', TextareaType::class)
+                ->add('fachbereich', EntityType::class, array(
+                    'class' => 'AppBundle:Fachbereich',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('studiengang', EntityType::class, array(
+                    'class' => 'AppBundle:Studiengang',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('kategorie', EntityType::class, array(
+                    'class' => 'AppBundle:ArchivKategorie',
+                    'choice_label' => 'bezeichnung'
+                ))
+                ->add('sichtbarkeit', CheckboxType::class, array(
+                    'label'    => 'sichtbarkeit',
+                ))
+                ->add('zusaetze', CollectionType::class, array(
+                    'entry_type' => ArchivZusatzType::class,
+                    'by_reference' => false,
+                    'allow_add'    => true,
+                    'allow_delete' => true,
+                ))
+                ->add('keywords', CollectionType::class, array(
+                    'entry_type' => KeywordType::class,
+                    'by_reference' => false,
+                    'allow_add'    => true,
+                    'allow_delete' => true,
+                ))
+                ->add('speichern', SubmitType::class)
+                ->getForm();
+        }
+       
     }
 
 

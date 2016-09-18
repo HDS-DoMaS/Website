@@ -21,9 +21,9 @@
         <h1>
             {% block headline %}
                 Neue
-                <select id="form_kategorie" class="form-control" required="required" name="form[kategorie]">
+                <select id="form_kategorie" class="form-control" required="required" name="form[kategorie]" onchange="this.options[this.selectedIndex].getAttribute('redirectLink') && (window.location = this.options[this.selectedIndex].getAttribute('redirectLink'));">
                     {% for key,val in form.kategorie.vars.choices %}
-                        <option value="{{ val.value }}" {{  form.kategorie.vars.value == '' and key==0 ? ' selected ' :(val.value == form.kategorie.vars.value ? ' selected ' : '') }}>{{ val.label | trans }}</option>
+                        <option redirectLink="{{ path('_neuArchivierung', {'archivKategorie': val.label}) }}" value="{{ val.value }}" {{  form.kategorie.vars.value == '' and key==0 ? ' selected ' :(val.label == app.request.get('archivKategorie') ? ' selected ' : '') }}>{{ val.label | trans }}</option>
                     {% endfor %}
                 </select>
                 hochladen
@@ -47,7 +47,11 @@
                 </div>
                 <div class="form-group">
                     {% set zusatzKategorie = 1 %}
-                    <label class="col-sm-2 control-label required" for="form_autor">Autor</label>
+                    <label class="col-sm-2 control-label required" for="form_autor">
+                        {% block autor %}
+                            Autor
+                        {% endblock %}
+                    </label>
                     <div class="col-sm-10">
                         <ul class="zusaetze" data-button="Autor" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
                             {% for zusatz in form.zusaetze %}
@@ -103,50 +107,57 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label required" for="form_abgabedatum">Abgabedatum</label>
+                    <label class="col-sm-2 control-label required" for="form_abgabedatum">
+                        {% block abgabedatum %}
+                            Abgabedatum
+                        {% endblock %}
+                    </label>
                     <div class="col-sm-10">
                         <input id="form_abgabedatum" class="form-control datepicker-single" type="text" value="{{ form.abgabedatum.vars.value }}" required="required" name="form[abgabedatum]">
                     </div>
                 </div>
-                {% block erstelldatum %}{% endblock %}
-                <div class="form-group">
-                    {% set zusatzKategorie = 2 %}
-                    <label class="col-sm-2 control-label required" for="form_betreuer">Betreuer</label>
-                    <div class="col-sm-10">
-                        <ul class="zusaetze" data-button="Betreuer" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
-                            {% for zusatz in form.zusaetze %}
-                                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
-                                    <li>
-                                        <div class="col-sm-10">
-                                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
-                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
-                                        </div>
-                                    </li>
-                                    {% set zusatzCount = zusatzCount + 1 %}
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
+                {% block betreuer %}
+                    <div class="form-group">
+                        {% set zusatzKategorie = 2 %}
+                        <label class="col-sm-2 control-label required" for="form_betreuer">Betreuer</label>
+                        <div class="col-sm-10">
+                            <ul class="zusaetze" data-button="Betreuer" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                                {% for zusatz in form.zusaetze %}
+                                    {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                                        <li>
+                                            <div class="col-sm-10">
+                                                <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                            </div>
+                                        </li>
+                                        {% set zusatzCount = zusatzCount + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    {% set zusatzKategorie = 3 %}
-                    <label class="col-sm-2 control-label required" for="form_unternehmen">Betreuendes Unternehmen</label>
-                    <div class="col-sm-10">
-                        <ul class="zusaetze" data-button="Unternehmen" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
-                            {% for zusatz in form.zusaetze %}
-                                {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
-                                    <li>
-                                        <div class="col-sm-10">
-                                            <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
-                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
-                                        </div>
-                                    </li>
-                                    {% set zusatzCount = zusatzCount + 1 %}
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
+                {% endblock %}
+                {% block  betreuendesUnternehmen %}
+                    <div class="form-group">
+                        {% set zusatzKategorie = 3 %}
+                        <label class="col-sm-2 control-label required" for="form_unternehmen">Betreuendes Unternehmen</label>
+                        <div class="col-sm-10">
+                            <ul class="zusaetze" data-button="Unternehmen" data-zusatzkategorie="{{ zusatzKategorie }}" data-id="{{ prototypeId|e('html_attr') }}" data-bezeichnung="{{ prototypeBezeichnung|e('html_attr') }}">
+                                {% for zusatz in form.zusaetze %}
+                                    {% if zusatz.vars.value.archivZusatzKategorieId == zusatzKategorie %}
+                                        <li>
+                                            <div class="col-sm-10">
+                                                <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
+                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                            </div>
+                                        </li>
+                                        {% set zusatzCount = zusatzCount + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                {% endblock %}
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="form_dateiuploads">Dateiuploads</label>
                     <div class="col-sm-10">
@@ -187,16 +198,15 @@
             {{ form_widget(form._token) }}
         </div>
     </form>
-
     {#{{ form_start(form) }}
     {{ form_widget(form) }}
-    {{ form_end(form) }}}
-    {{ dump(form) }#}
+    {{ form_end(form) }}#}
+
+
+    {{ dump(form) }}
 {% endblock %}
 
-
 {% block javascripts %}
-
     <script src="{{ asset('assets/js/bootstrap-switch.js') }}"></script>
     <script type="text/javascript">
         $("[name='form[sichtbarkeit]']").bootstrapSwitch();

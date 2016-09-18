@@ -27,13 +27,13 @@
     {% if isEmployee %}
             <div class="col-sm-4 col-sm-offset-2">
                 <div class="transparent">
-                    <a href="{{ path('_neuArchivierung') }}">
+                    <a href="{{ path('_neuArchivierung', {'archivKategorie': 'Bachelorarbeit'}) }}">
                         <div class="circle center-block">
                                 <span class="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
                         </div>
                     </a>
 
-                    <a href="{{ path('_neuArchivierung') }}" class="btn btn-block">
+                    <a href="{{ path('_neuArchivierung', {'archivKategorie': 'Bachelorarbeit'}) }}" class="btn btn-block">
                         Archivierung erstellen
                     </a>
                 </div>
