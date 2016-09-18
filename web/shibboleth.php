@@ -67,7 +67,17 @@ $sql = "INSERT INTO benutzer (
 			domas_role = '" . $role . "',
 			flag = '" . $flag . "';";
 
-$conn = new mysqli('127.0.0.1', 'domas', 'domas', 'domas');
+// DB Verbindung aus yaml lesen
+require_once "spyc.php";
+$yaml = spyc_load_file('../app/config/parameters.yml');
+
+// Verbinden und ausführen
+$conn = new mysqli(
+	$yaml['parameters']['database_host'],
+	$yaml['parameters']['database_user'],
+	$yaml['parameters']['database_password'],
+	$yaml['parameters']['database_name']
+);
 $conn->query($sql);
 $conn->close();
 

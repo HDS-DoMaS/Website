@@ -358,6 +358,9 @@ th.desc a:before{
 /**
  * Login
  */
+.alert {
+    border-radius: 0px;
+}
 .login h2 {
     margin:0;
     padding: 0;
