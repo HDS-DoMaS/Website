@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block nichtSichtbarMssg %}
-    Für Einsicht bitte den angegebenen Ersteller oder Autor kontaktieren
+    Für Einsicht bitte einen der angegebenen Ersteller oder den Autor kontaktieren.
 {% endblock %}
 
 
@@ -16,6 +16,7 @@
         <dt>Titel/Gerät</dt>
         <dd>{{ archivierung.getTitel() }}</dd>
 
+        {% set hasAutor = false %}
         <dt>Autor/Hersteller</dt>
         {% for autor in archivierung.getZusaetze() %}
             {% if autor.getZusatzKategorie().getBezeichnung() == "Autor"  %}
@@ -24,8 +25,12 @@
                     {% if autor.getMatrikelnummer() is not null %}
                         {{ " - MatrikelNr: " ~ autor.getMatrikelnummer() }}
                     {% endif %}
+                    {% set hasAutor = true %}
                 </dd>
             {% endif %}
         {% endfor %}
+        {% if hasAutor == false %}
+            <dd></dd>
+        {% endif %}
 
 {% endblock %}
