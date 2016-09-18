@@ -685,11 +685,13 @@ span.twitter-typeahead {
     }
 }
 
-ul.zusaetze li div{
+ul.zusaetze li div,
+ul.keywords li div{
     width: auto;
 }
 
-.zusaetze .col-sm-10 {
+.zusaetze .col-sm-10,
+.keywords .col-sm-10 {
     padding-left: 0;
 }
 

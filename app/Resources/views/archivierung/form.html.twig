@@ -58,7 +58,6 @@
                                             <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
                                         </div>
                                     </li>
-
                                     {% set zusatzCount = zusatzCount + 1 %}
                                 {% endif %}
                             {% endfor %}
@@ -142,7 +141,6 @@
                                             <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
                                         </div>
                                     </li>
-
                                     {% set zusatzCount = zusatzCount + 1 %}
                                 {% endif %}
                             {% endfor %}
@@ -171,7 +169,6 @@
                                         <input type="text" id="form_keywords_{{ keywordCount }}_keyword" name="form[keywords][{{ keywordCount }}][keyword]" required="required" class="form-control" value="{{ keyword.vars.value.keyword }}" />
                                     </div>
                                 </li>
-
                                 {% set keywordCount = keywordCount + 1 %}
                             {% endfor %}
                         </ul>
@@ -193,8 +190,8 @@
 
     {#{{ form_start(form) }}
     {{ form_widget(form) }}
-    {{ form_end(form) }}#}
-    {{ dump(form) }}
+    {{ form_end(form) }}}
+    {{ dump(form) }#}
 {% endblock %}
 
 
