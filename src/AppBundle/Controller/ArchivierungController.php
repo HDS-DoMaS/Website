@@ -578,7 +578,14 @@ class ArchivierungController extends Controller {
 
         if($url != null) {
             $urlFirstPart = explode('?', $url)[0];
-            $urlMiddlePart = explode($_SERVER['SERVER_NAME'], $urlFirstPart)[1];
+
+            $serverName = $request->getBaseURL();  // lokales testen. Auf life-System ist das == null.
+
+            if (strlen($serverName) === 0) {
+                $serverName = $_SERVER['SERVER_NAME'];  // Life-System
+            }
+
+            $urlMiddlePart = explode($serverName, $urlFirstPart)[1];
 
             $fullRoute = $this->get('router')->match($urlMiddlePart);
             $urlControllerPfad = $fullRoute['_controller'];
