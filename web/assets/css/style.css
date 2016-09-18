@@ -733,3 +733,24 @@ ul.keywords li div{
     font-size: 0.8em;
     padding: 0 8px 0 0;
 }
+
+.fileupload {
+    position: relative;
+    height: 36px;
+}
+
+.fileupload span, .fileupload input {
+    top: 0px;
+    left: 15px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.fileupload input{
+    z-index: 200;
+    height: 36px;
+}
+
+.fileupload .file {
+    opacity:0;
+}
