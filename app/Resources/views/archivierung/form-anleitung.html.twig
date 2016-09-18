@@ -1,0 +1,16 @@
+{% extends 'archivierung/form.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block bodyclass %}archivierung-form archivierung-form-anleitung{% endblock %}
+
+{% block betreuer %}{% endblock %}
+{% block betreuendesUnternehmen %}{% endblock %}
+
+{% block autor %}
+    Autor/Hersteller
+{% endblock %}
+
+{% block abgabedatum %}
+    Herausgabedatum
+{% endblock %}
