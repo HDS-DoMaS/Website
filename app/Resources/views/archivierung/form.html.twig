@@ -1,16 +1,11 @@
 {% extends 'base.html.twig' %}
-
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
-
 {% block bodyclass %}archivierung-form{% endblock %}
-
-{% block title %}{{ parent() }} | Neue Archivierung{% endblock %}
-
+{% block title %}DoMaS | Neue Archivierung{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('assets/css/bootstrap-switch.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
-
 
 {% block body %}
     {% set zusatzCount = 0 %}

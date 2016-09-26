@@ -1,17 +1,12 @@
 {% extends 'archivierung/form-edit.html.twig' %}
-
 {% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
-
+{% block title %}DoMaS | Archivierung bearbeiten{% endblock %}
 {% block bodyclass %}archivierung-form archivierung-form-edit-anleitung{% endblock %}
-
 {% block betreuer %}{% endblock %}
 {% block betreuendesUnternehmen %}{% endblock %}
-
-
 {% block autor %}
     Autor/Hersteller
 {% endblock %}
-
 {% block abgabedatum %}
     Herausgabedatum
 {% endblock %}
