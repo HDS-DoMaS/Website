@@ -6,6 +6,8 @@ use Doctrine\ORM\QueryBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class AjaxController extends Controller {
     /**
@@ -157,6 +159,126 @@ class AjaxController extends Controller {
 
     private function returnJsonResponse(QueryBuilder $queryBuilder) {
         $array = $queryBuilder->setMaxResults(20)->getQuery()->getArrayResult();
+
+        $response = new JsonResponse();
+        $response->setData($array);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/archivierung/ajax/suche-referenzen/{search}")
+     * @Route("/archivierung/ajax/suche-referenzen/", name="_sucheReferenzen")
+     */
+    public function requestSuchReferenzAction(Request $request, $search = null) {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $queryBuilder->select('archiv')
+            ->from('AppBundle\Entity\Archivierung', 'archiv') // Archivierung
+            ->leftJoin('archiv.fachbereich', 'fachbereich') // JOIN Fachbereich
+            ->leftJoin('archiv.studiengang', 'studiengang') // JOIN Studiengang
+            ->leftJoin('archiv.kategorie', 'kategorie') // JOIN Kategorie
+            ->leftJoin('archiv.benutzer', 'benutzer') // JOIN Benutzer
+            ->leftJoin('archiv.zusaetze', 'zusaetze') // JOIN Zusaetze
+            ->leftJoin('archiv.keywords', 'keywords'); // JOIN Keywords
+
+        // WHERE Statement
+        $this->handleWhereStatement($queryBuilder, $search);
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(), // Zu Pagende Query
+            $request->query->getInt('page', 1), // Seiten Nummer
+            10, // Limit Pro Seite
+            array( // Optionen
+                'defaultSortFieldName' => 'archiv.titel', // Default Sortierung
+                'defaultSortDirection' => 'ASC',
+                'wrap-queries' => true // Sortieren über 2 Spalten
+            )
+        );
+
+        return $this->renderResponse($pagination);
+    }
+
+    /**
+     * Setzt das WHERE Statement der Query
+     * @param $data
+     */
+    private function handleWhereStatement($queryBuilder, $data) {
+        // WHERE Freitext
+        if(strlen($data) > 0) {
+            $this->setWhereFreitext($queryBuilder, $data);
+        }
+    }
+
+    /**
+     * Splittet den Freitext Suchbegriff bei Leerzeichen und setzt die WHERE-Clause
+     * @param $search
+     */
+    private function setWhereFreitext($queryBuilder, $search) {
+        // Bei ' ' splitten und suchen
+        $search_array = explode(' ', $search);
+
+        for ($i = 0; $i < count($search_array); $i++) {
+            $queryBuilder
+                ->andWhere('
+                    (
+                        archiv.titel LIKE :freitext_' . $i . ' 
+                        OR archiv.beschreibung LIKE :freitext_' . $i . '
+                        OR archiv.abgabedatum LIKE :freitext_' . $i . '
+                        OR archiv.erstelldatum LIKE :freitext_' . $i . '
+                        OR archiv.anmerkung LIKE :freitext_' . $i . '
+                        OR fachbereich.bezeichnung LIKE :freitext_' . $i . '
+                        OR studiengang.bezeichnung LIKE :freitext_' . $i . '
+                        OR kategorie.bezeichnung LIKE :freitext_' . $i . '
+                        OR CONCAT(benutzer.vorname, \' \', benutzer.nachname) LIKE :freitext_' . $i . '
+                        OR zusaetze.bezeichnung LIKE :freitext_' . $i . '
+                        OR keywords.keyword LIKE :freitext_' . $i . '
+                    )
+                    OR MATCH(
+                        archiv.titel, 
+                        archiv.beschreibung,
+                        archiv.anmerkung,
+                        fachbereich.bezeichnung,
+                        studiengang.bezeichnung,
+                        kategorie.bezeichnung,
+                        benutzer.vorname,
+                        benutzer.nachname,
+                        zusaetze.bezeichnung,
+                        keywords.keyword
+                    ) AGAINST (:freitext_match_' . $i . ' BOOLEAN) > 1
+                ')
+                ->setParameter('freitext_' . $i, '%' . $search_array[$i] . '%')
+                ->setParameter('freitext_match_' . $i, '*' . $search_array[$i] . '*');
+        }
+    }
+
+    /**
+     * @param $pagination
+     * @return JsonResponse
+     */
+    private function renderResponse($pagination) {
+        $items = array();
+        foreach ($pagination as $archivierung) {
+            $items[] = array(
+                'archivId' => $archivierung->getArchivId(),
+                'titel' => $archivierung->getTitel(),
+            );
+        }
+
+        $array = array(
+            'page' => $pagination->getCurrentPageNumber(),
+            'totalCount' => $pagination->getTotalItemCount(),
+            'params' => $pagination->getParams(),
+            'items' => $items
+        );
+
+        /*
+        dump($array);
+        return $this->render(
+            'base.html.twig'
+        );
+        */
 
         $response = new JsonResponse();
         $response->setData($array);

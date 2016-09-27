@@ -360,6 +360,20 @@ class Archivierung
     }
 
     /**
+     * Set archivId
+     *
+     * @param integer $archivId
+     *
+     * @return Archivierung
+     */
+    public function setArchivId($archivId)
+    {
+        $this->archivId = $archivId;
+
+        return $this;
+    }
+
+    /**
      * Get archivId
      *
      * @return integer

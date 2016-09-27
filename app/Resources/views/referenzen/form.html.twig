@@ -1,0 +1,174 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_3_horizontal_layout.html.twig' %}
+
+{% block body %}
+    {% set referenzenCount = 0 %}
+
+    <h1>
+        Referenzen für Archivierung #{{ form.vars.data.archivId }}
+        <small>{{ form.vars.data.titel }}</small>
+    </h1>
+
+    <form name="form" method="post" class="form-horizontal">
+
+        <h3>Referenzen in DoMaS</h3>
+        <ul class="referenzen" data-id="{{ form_widget(form.referenzen.vars.prototype.archivId)|e('html_attr') }}" data-titel="{{ form_widget(form.referenzen.vars.prototype.titel)|e('html_attr') }}">
+            {% for referenz in form.referenzen %}
+                <li>
+                    <div class="col-sm-10">
+                        <input type="text" id="form_referenzen_{{ referenzenCount }}_archivId" name="form[referenzen][{{ referenzenCount }}][archivId]" required="required" class="form-control" value="{{ referenz.vars.value.archivId }}" />
+                        <input type="text" id="form_referenzen_{{ referenzenCount }}_titel" name="form[referenzen][{{ referenzenCount }}][titel]" required="required" class="form-control" value="{{ referenz.vars.value.titel }}" />
+                        <a href="{{ path('_detailView', {'archivId': referenz.vars.value.archivId}) }}" target="_blank"><span class="glyphicon glyphicon-link"></span> {{ referenz.vars.value.titel }}</a>
+                    </div>
+                </li>
+
+                {% set referenzenCount = referenzenCount + 1 %}
+            {% endfor %}
+        </ul>
+
+        <h3>Alle Archivierungen</h3>
+        <ul class="archivierungen-liste">
+        {% for archivierung in archivierungen %}
+            <li>
+                {{ archivierung.getTitel() }}
+                <a href="#" class="addReferenz" data-id="{{ archivierung.getArchivId() }}" data-titel="{{ archivierung.getTitel() }}">hinzufügen</a>
+            </li>
+        {% endfor %}
+        </ul>
+
+        <h3>Archivierungen durchsuchen</h3>
+        <div>
+            <input type="text" name="suche" id="referenzenSuche">
+            <table id="referenzenTabelle">
+
+            </table>
+        </div>
+
+        {{ form_widget(form._token) }}
+
+        <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId}) }}" class="btn btn-default">
+            zurück
+        </a>
+
+        <button type="submit" id="form_speichern" name="form[speichern]" class="btn-red btn">Speichern</button>
+
+    </form>
+{% endblock %}
+
+{% block javascripts %}
+    <style type="text/css">
+        h3 {
+            clear: both;
+        }
+        .referenzen li {
+            padding-bottom: 12px;
+        }
+        .referenzen input {
+            display: none;
+        }
+        .referenzen .col-sm-10 {
+            padding-left: 0;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var $collectionHolder;
+
+        function addReferenzForm($collectionHolder, archivId, titel) {
+            var archivLink = '{{ path('_detailView', {'archivId': 666}) }}';
+
+            // Get the data-prototype explained earlier
+            var prototypeId = $collectionHolder.data('id');
+            var prototypeTitel = $collectionHolder.data('titel');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototypeId.replace(/__name__/g, index).replace(/required=/, 'value="' + archivId + '" required=')
+                    + prototypeTitel.replace(/__name__/g, index).replace(/required=/, 'value="' + titel + '" required=')
+                    + '<a href="' + archivLink.replace(/666/, archivId) + '" target="_blank"><span class="glyphicon glyphicon-link"></span> ' + titel + '</a>';
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a referenz" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            $collectionHolder.append($newFormLi);
+            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // add a delete link
+            addReferenzFormDeleteLink($newFormLi);
+        }
+
+        function addReferenzFormDeleteLink($referenzFormLi) {
+            var $removeFormA = $('<a href="#" class="btn btn-sm"><span class="glyphicon glyphicon-trash"></span> entfernen</a>');
+            $referenzFormLi.append($removeFormA);
+
+            $removeFormA.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // remove the li for the keyword form
+                $referenzFormLi.remove();
+            });
+        }
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of referenzen
+            $collectionHolder = $('ul.referenzen');
+
+            // add a delete link to all of the existing referenz form li elements
+            $collectionHolder.find('li').each(function() {
+                addReferenzFormDeleteLink($(this));
+            });
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $('.archivierungen-liste').delegate('.addReferenz', 'click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                addReferenzForm($collectionHolder, $(this).data('id'), $(this).data('titel'));
+
+                return false;
+            });
+
+            var delay = (function(){
+                var timer = 0;
+                return function(callback, ms){
+                    clearTimeout (timer);
+                    timer = setTimeout(callback, ms);
+                };
+            })();
+
+            $('#referenzenSuche').keyup(function() {
+                delay(function() {
+                    $.ajax({
+                        url: "{{ path('_sucheReferenzen') }}" + $('#referenzenSuche').val(),
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+
+                            var html = '';
+                            response.items.forEach(function (item) {
+                                html += '<tr>'
+                                        + '<td>' + item.titel + '</td>'
+                                        + '</tr>';
+                            });
+
+                            $('#referenzenTabelle').html(html);
+                        }
+                    });
+                }, 200);
+            });
+        });
+    </script>
+{% endblock %}
+
+
