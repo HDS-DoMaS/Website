@@ -8,7 +8,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: 48{$w(3##otFdmas
+                        password: admin123
                         roles: 'ROLE_ADMIN'
 
                     # für tests:

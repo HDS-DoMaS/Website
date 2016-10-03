@@ -80,16 +80,20 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="form_fachbereich">Fachbereich & Studiengang</label>
                     <div class="col-sm-5">
-                        <select id="form_fachbereich" class="form-control" required="required" name="form[fachbereich]">
+                        <select id="form_fachbereich" class="form-control" required="required" name="form[fachbereich]" onchange="hideWrongStudiengaenge();">
                             {% for key,val in form.fachbereich.vars.choices %}
-                                <option value="{{ val.value }}" {{  form.fachbereich.vars.value == '' and key==0 ? ' selected ' :(val.value == form.fachbereich.vars.value ? ' selected ' : '') }}>{{ val.label | trans }}</option>
+                                <option value="{{ val.value }}" {{  form.fachbereich.vars.value == '' and key==0 ? ' selected ' :(val.value == form.fachbereich.vars.value ? ' selected ' : '') }} class="fachbereich{{ key }}">
+                                    {{ val.label | trans }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-sm-5">
                         <select id="form_studiengang" class="form-control" required="required" name="form[studiengang]">
                             {% for key,val in form.studiengang.vars.choices %}
-                                <option value="{{ val.value }}" {{  form.studiengang.vars.value == '' and key==0 ? ' selected ' :(val.value == form.studiengang.vars.value ? ' selected ' : '') }}>{{ val.label | trans }}</option>
+                                <option value="{{ val.value }}" {{  form.studiengang.vars.value == '' and key==0 ? ' selected ' :(val.value == form.studiengang.vars.value ? ' selected ' : '') }} class="fachbereich{{ val.data.fachbereichId }}">
+                                    {{ val.label | trans }}
+                                </option>
                             {% endfor %}
                         </select>
                     </div>
@@ -336,6 +340,22 @@
                 addKeywordForm($collectionHolderKeywords, $newLinkLiKeywords);
             });
         });
+    </script>
+
+    <script>  //Für das dynamische ändern des Studiengang-Feldes bei Eingabe im Fachbereich-Feld
+        var hideWrongStudiengaenge = function() {
+            var fachbereiche = document.getElementById("form_fachbereich");
+            var fachbereichSelectedClass = fachbereiche.options[fachbereiche.selectedIndex].className;
+
+            $('#form_studiengang option:not(.' + fachbereichSelectedClass + ')').addClass('hidden');
+            $('#form_studiengang option.' + fachbereichSelectedClass + ', #form_studiengang option.fachbereich123').removeClass('hidden');
+
+            if($('#form_studiengang option:selected').hasClass('hidden')) {
+                var val = $('#form_studiengang option:not(.hidden):first').attr("selected","selected").click().val();
+                $('#form_studiengang').val(val).change();
+            }
+        };
+        hideWrongStudiengaenge();
     </script>
 {% endblock %}
 
