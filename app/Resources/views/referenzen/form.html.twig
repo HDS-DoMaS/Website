@@ -64,7 +64,7 @@
     </style>
 
     <script type="text/javascript">
-        var $collectionHolder;
+        var $collectionHolderReferenzen;
 
         function addReferenzForm($collectionHolder, archivId, titel) {
             var archivLink = '{{ path('_detailView', {'archivId': 666}) }}';
@@ -110,23 +110,23 @@
 
         jQuery(document).ready(function() {
             // Get the ul that holds the collection of referenzen
-            $collectionHolder = $('ul.referenzen');
+            $collectionHolderReferenzen = $('ul.referenzen');
 
             // add a delete link to all of the existing referenz form li elements
-            $collectionHolder.find('li').each(function() {
+            $collectionHolderReferenzen.find('li').each(function() {
                 addReferenzFormDeleteLink($(this));
             });
 
             // count the current form inputs we have (e.g. 2), use that as the new
             // index when inserting a new item (e.g. 2)
-            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+            $collectionHolderReferenzen.data('index', $collectionHolderReferenzen.find(':input').length);
 
             $('#referenzenTabelle').delegate('.addReferenz', 'click', function(e) {
                 // prevent the link from creating a "#" on the URL
                 e.preventDefault();
 
                 if(false == IsInReferenzen($(this).data('id'))) {
-                    addReferenzForm($collectionHolder, $(this).data('id'), $(this).data('titel'));
+                    addReferenzForm($collectionHolderReferenzen, $(this).data('id'), $(this).data('titel'));
                     $(this).addClass('disabled');
                 }
 

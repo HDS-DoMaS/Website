@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Form\Type\ArchivZusatzType;
-use AppBundle\Form\Type\AnhangType;
+use AppBundle\Form\Type\ReferenzenType;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Security\DomasUser;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -105,6 +105,13 @@ class ArchivierungController extends Controller {
                             ->find($zusatz->getArchivZusatzKategorieId())
                     );
                 }
+            }
+
+            // Referenzen mit Werten aus DB überschreiben
+            $archivRepos = $this->getDoctrine()->getRepository('AppBundle:Archivierung');
+            foreach ($archivierung->getReferenzen() as $referenz) {
+                $archivierung->removeReferenzen($referenz);
+                $archivierung->addReferenzen($archivRepos->find($referenz->getArchivId()));
             }
 
             $entityManager->persist($archivierung);
@@ -194,6 +201,13 @@ class ArchivierungController extends Controller {
                 if (false === $archivierung->getKeywords()->contains($keyword)) {
                     $entityManager->remove($keyword);
                 }
+            }
+
+            // Referenzen mit Werten aus DB überschreiben
+            $archivRepos = $this->getDoctrine()->getRepository('AppBundle:Archivierung');
+            foreach ($archivierung->getReferenzen() as $referenz) {
+                $archivierung->removeReferenzen($referenz);
+                $archivierung->addReferenzen($archivRepos->find($referenz->getArchivId()));
             }
 
 
@@ -291,6 +305,12 @@ class ArchivierungController extends Controller {
             ))
             ->add('zusaetze', CollectionType::class, array(
                 'entry_type' => ArchivZusatzType::class,
+                'by_reference' => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ))
+            ->add('referenzen', CollectionType::class, array(
+                'entry_type' => ReferenzenType::class,
                 'by_reference' => false,
                 'allow_add'    => true,
                 'allow_delete' => true,

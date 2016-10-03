@@ -763,3 +763,66 @@ ul.keywords li div{
 .fileupload .file {
     opacity:0;
 }
+
+#referenzenSuche {
+    position:relative;
+    z-index: 2
+}
+
+.referenzen-container {
+    z-index: 1;
+    top: -2px;
+    position: relative;
+    border: 2px solid #000;
+    border-top: 0;
+}
+
+.referenzen {
+    margin: 0;
+}
+
+.referenzen li:last-child {
+    margin-bottom: 10px;
+}
+
+.referenzen .col-sm-10 {
+    width: auto;
+}
+
+.referenzen div a {
+    font-size: 18px;
+    line-height: 1.6em;
+}
+
+.archivierung-form .referenzen input,
+.archivierung-form-edit .referenzen input {
+    display: none;
+}
+
+#referenzenTabelle {
+    margin-bottom: 0;
+    border-bottom: 2px solid #000;
+}
+
+#referenzenTabelle.visible {
+    margin-top: 2px;
+}
+
+#referenzenTabelle .tdButton {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.addReferenz {
+    float: right;
+}
+
+#referenzenPaging .pagination {
+    border: 0;
+    margin: 0 6px;
+    font-size: 13px;
+}
+
+#referenzenPaging a {
+    font-size: 13px;
+}

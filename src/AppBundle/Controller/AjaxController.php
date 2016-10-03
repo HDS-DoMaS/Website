@@ -276,6 +276,8 @@ class AjaxController extends Controller {
             $items[] = array(
                 'archivId' => $archivierung->getArchivId(),
                 'titel' => $archivierung->getTitel(),
+                'fachbereich' => $archivierung->getFachbereich()->getBezeichnung(),
+                'studiengang' => $archivierung->getStudiengang()->getBezeichnung(),
                 'kategorie' => $archivierung->getKategorie()->getBezeichnung(),
                 'abgabedatum' => $abgabedatum,
             );
