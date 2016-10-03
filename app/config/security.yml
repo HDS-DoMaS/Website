@@ -8,7 +8,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: TdlHc9F@!3x328
+                        password: 48{$w(3##otFdmas
                         roles: 'ROLE_ADMIN'
 
                     # für tests:
