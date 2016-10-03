@@ -181,7 +181,7 @@
                                 {% set referenzenCount = referenzenCount + 1 %}
                             {% endfor %}
                         </table>
-                        <input type="text" class="form-control" id="referenzenSuche" name="referenzenSuche" value="" placeholder="Archivierungen druchsuchen">
+                        <input type="text" class="form-control" id="referenzenSuche" name="referenzenSuche" value="" placeholder="Archivierungen durchsuchen">
                         <div class="referenzen-container">
                             <div class="table-responsive">
                                 <table id="referenzenTabelle" class="table table-striped table-bordered table-condensed"></table>
@@ -465,33 +465,32 @@
 
             // Table Header
             var html = '<tr>'
+                    + '<th class="tButton"></th>'
                     + '<th><a>#</a></th>'
                     + '<th><a>Titel</a></th>'
                     + '<th><a>Fachbereich</a></th>'
                     + '<th><a>Studiengang</a></th>'
                     + '<th><a>Kategorie</a></th>'
                     + '<th><a>Abgabe</a></th>'
-                    + '<th></th>'
                     + '</tr>';
 
             response.items.forEach(function (item) {
-                // archivId & Titel
-                html += '<tr>'
-                        + '<td>' + item.archivId + '</td>'
+                html += '<tr>';
+
+                // Button
+                if(IsInReferenzen(item.archivId)) {
+                    html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm disabled" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-eject"></span>hinzugefügt</a></td>';
+                } else {
+                    html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-plus"></span>hinzufügen</a></td>';
+                }
+
+                html += '<td>' + item.archivId + '</td>'
                         + '<td>' + highlight(item.titel, search) + '</td>'
                         + '<td>' + highlight(item.fachbereich, search) + '</td>'
                         + '<td>' + highlight(item.studiengang, search) + '</td>'
                         + '<td>' + highlight(item.kategorie, search) + '</td>'
                         + '<td>' + highlight(item.abgabedatum, search) + '</td>';
-
-                // Button
-                if(IsInReferenzen(item.archivId)) {
-                    html += '<td class="tdButton"><a href="#" class="addReferenz btn btn-sm disabled" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-plus"></span>hinzugefügt</a></td>';
-                } else {
-                    html += '<td class="tdButton"><a href="#" class="addReferenz btn btn-sm" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-plus"></span>hinzufügen</a></td>';
-                }
-
-                html += '</tr>';
+                        + '</tr>';
             });
 
             // Paging
@@ -620,7 +619,7 @@
                     $(this).addClass('disabled');
                 }
 
-                $(this).html('<span class="glyphicon glyphicon-plus"></span>hinzugefügt');
+                $(this).html('<span class="glyphicon glyphicon-eject"></span>hinzugefügt');
                 this.blur();
 
                 return false;

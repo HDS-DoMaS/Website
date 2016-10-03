@@ -771,7 +771,7 @@ ul.keywords li div{
 
 .referenzen-container {
     z-index: 1;
-    top: -2px;
+    top: -3px;
     position: relative;
     border: 2px solid #000;
     border-top: 0;
@@ -805,16 +805,13 @@ ul.keywords li div{
 }
 
 #referenzenTabelle.visible {
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
-#referenzenTabelle .tdButton {
+#referenzenTabelle .tButton {
     padding-top: 2px;
     padding-bottom: 2px;
-}
-
-.addReferenz {
-    float: right;
+    width: 118px;
 }
 
 #referenzenPaging .pagination {
