@@ -168,19 +168,19 @@
                 <div class="form-group">
                     <label class="col-sm-2 control-label required" for="referenzenSuche">Referenzen</label>
                     <div class="col-sm-10 col-referenzen">
-                        <ul class="referenzen" data-id="{{ form_widget(form.referenzen.vars.prototype.archivId)|e('html_attr') }}" data-titel="{{ form_widget(form.referenzen.vars.prototype.titel)|e('html_attr') }}">
+                        <table class="referenzen" data-id="{{ form_widget(form.referenzen.vars.prototype.archivId)|e('html_attr') }}" data-titel="{{ form_widget(form.referenzen.vars.prototype.titel)|e('html_attr') }}">
                             {% for referenz in form.referenzen %}
-                                <li>
-                                    <div class="col-sm-10">
+                                <tr>
+                                    <td>
                                         <input type="text" id="form_referenzen_{{ referenzenCount }}_archivId" name="form[referenzen][{{ referenzenCount }}][archivId]" required="required" class="form-control" value="{{ referenz.vars.value.archivId }}" />
                                         <input type="text" id="form_referenzen_{{ referenzenCount }}_titel" name="form[referenzen][{{ referenzenCount }}][titel]" required="required" class="form-control" value="{{ referenz.vars.value.titel }}" />
                                         <a href="{{ path('_detailView', {'archivId': referenz.vars.value.archivId}) }}" target="_blank"><span class="glyphicon glyphicon-link"></span> {{ referenz.vars.value.titel }}</a>
-                                    </div>
-                                </li>
+                                    </td>
+                                </tr>
 
                                 {% set referenzenCount = referenzenCount + 1 %}
                             {% endfor %}
-                        </ul>
+                        </table>
                         <input type="text" class="form-control" id="referenzenSuche" name="referenzenSuche" value="" placeholder="Archivierungen druchsuchen">
                         <div class="referenzen-container">
                             <div class="table-responsive">
@@ -336,18 +336,17 @@
             $collectionHolder.data('index', index + 1);
 
             // Display the form in the page in an li, before the "Add a referenz" link li
-            var $newFormLi = $('<li></li>').append(newForm);
+            var $newFormTr = $('<tr></tr>').append(newForm).wrapInner('<td></td>');
 
-            $collectionHolder.append($newFormLi);
-            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+            $collectionHolder.append($newFormTr);
 
             // add a delete link
-            addReferenzFormDeleteLink($newFormLi);
+            addReferenzFormDeleteLink($newFormTr);
         }
 
-        function addReferenzFormDeleteLink($referenzFormLi) {
-            var $removeFormA = $('<a href="#" class="btn btn-sm"><span class="glyphicon glyphicon-trash"></span>entfernen</a>');
-            $referenzFormLi.append($removeFormA);
+        function addReferenzFormDeleteLink($newFormTr) {
+            var $removeFormA = $('<td><a href="#" class="btn btn-sm"><span class="glyphicon glyphicon-trash"></span>entfernen</a></td>');
+            $newFormTr.find('td').after($removeFormA);
 
             $removeFormA.on('click', function(e) {
                 // prevent the link from creating a "#" on the URL
@@ -358,7 +357,7 @@
                 $('.addReferenz[data-id="' + archivId  + '"]').removeClass('disabled').html('<span class="glyphicon glyphicon-plus"></span>hinzufügen');
 
                 // remove the li for the keyword form
-                $referenzFormLi.remove();
+                $newFormTr.remove();
             });
         }
 
@@ -600,10 +599,10 @@
                 return false;
             });
 
-            $collectionHolderReferenzen = $('ul.referenzen');
+            $collectionHolderReferenzen = $('table.referenzen');
 
             // add a delete link to all of the existing referenz form li elements
-            $collectionHolderReferenzen.find('li').each(function() {
+            $collectionHolderReferenzen.find('tr').each(function() {
                 addReferenzFormDeleteLink($(this));
             });
 

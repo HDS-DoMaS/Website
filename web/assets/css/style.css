@@ -781,12 +781,12 @@ ul.keywords li div{
     margin: 0;
 }
 
-.referenzen li:last-child {
-    margin-bottom: 10px;
+.referenzen td {
+    padding-bottom: 12px;
 }
 
-.referenzen .col-sm-10 {
-    width: auto;
+.referenzen td:first-child {
+    padding-right: 15px;
 }
 
 .referenzen div a {
