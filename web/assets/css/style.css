@@ -130,6 +130,11 @@ a:active {
     color: #333;
     outline-color:#ccc;
 }
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.4;
+}
 /*
  * Inputs
  */
@@ -208,7 +213,7 @@ td.sorted .highlight {
 th.sorted a {
     color: #fff;
 }
-th a:before {
+th.sorted a:before {
     content:"\e151";
     margin-top: -1px;
     font-size: 16px;
@@ -218,7 +223,7 @@ th a:before {
     z-index: 1;
     visibility: hidden;
 }
-th a:hover:before,
+th.sorted a:hover:before,
 th.DESC a:hover:before,
 th.desc a:hover:before,
 th.ASC a:before,
@@ -236,6 +241,10 @@ th.desc a:before{
 .highlight {
     color: #d83734;
     font-weight: bold;
+}
+#referenzenTabelle th a {
+    color: #fff;
+    cursor: default;
 }
 /*
  * Paging

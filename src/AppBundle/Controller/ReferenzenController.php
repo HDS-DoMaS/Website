@@ -51,7 +51,6 @@ class ReferenzenController extends Controller {
             'referenzen/form.html.twig',
             array(
                 'form' => $form->createView(),
-                'archivierungen' => $this->getDoctrine()->getRepository('AppBundle:Archivierung')->findAll()
             )
         );
     }

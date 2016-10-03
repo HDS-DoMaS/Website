@@ -27,22 +27,13 @@
             {% endfor %}
         </ul>
 
-        <h3>Alle Archivierungen</h3>
-        <ul class="archivierungen-liste">
-        {% for archivierung in archivierungen %}
-            <li>
-                {{ archivierung.getTitel() }}
-                <a href="#" class="addReferenz" data-id="{{ archivierung.getArchivId() }}" data-titel="{{ archivierung.getTitel() }}">hinzufügen</a>
-            </li>
-        {% endfor %}
-        </ul>
-
         <h3>Archivierungen durchsuchen</h3>
         <div>
             <input type="text" name="suche" id="referenzenSuche">
-            <table id="referenzenTabelle">
+            <table id="referenzenTabelle" class="table table-striped table-bordered table-condensed">
 
             </table>
+            <div id="referenzenPaging"></div>
         </div>
 
         {{ form_widget(form._token) }}
@@ -130,11 +121,17 @@
             // index when inserting a new item (e.g. 2)
             $collectionHolder.data('index', $collectionHolder.find(':input').length);
 
-            $('.archivierungen-liste').delegate('.addReferenz', 'click', function(e) {
+            $('#referenzenTabelle').delegate('.addReferenz', 'click', function(e) {
                 // prevent the link from creating a "#" on the URL
                 e.preventDefault();
 
-                addReferenzForm($collectionHolder, $(this).data('id'), $(this).data('titel'));
+                if(false == IsInReferenzen($(this).data('id'))) {
+                    addReferenzForm($collectionHolder, $(this).data('id'), $(this).data('titel'));
+                    $(this).addClass('disabled');
+                }
+
+                $(this).html('hinzugefügt');
+                this.blur();
 
                 return false;
             });
@@ -147,25 +144,178 @@
                 };
             })();
 
-            $('#referenzenSuche').keyup(function() {
+            $('#referenzenSuche').keypress(function(e) {
+                // Enter
+                if(e.keyCode == 13) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            function IsInReferenzen(id) {
+                var isInReferenzen = false;
+
+                $("[name^='form[referenzen]']").each(function() {
+                    if(this.name.indexOf('archivId') > 0 && this.value == id) {
+                        isInReferenzen = true;
+                        return true;
+                    }
+                });
+
+                return isInReferenzen;
+            }
+
+            function referenzenPaging(response) {
+                var html = '';
+
+                if(response.items.length > 0) {
+                    html += '<div class="pagination">';
+
+                    for (page = 1; page <= response.pageCount; page++) {
+                        // First
+                        if(page == 1) {
+                            // First
+                            if(page != response.page) {
+                                html += '<span class="first">' + '\r\n' + '<a href="#" title="Seite 1" data-page="1">&lt;&lt;</a></span>';
+                            } else {
+                                html += '<span class="disabled first">&lt;&lt;</span>';
+                            }
+
+                            // Previous
+                            if(response.page > 1) {
+                                html += '<span class="previous">' + '\r\n' + '<a href="#" title="Seite ' + (response.page - 1) + '" data-page="' + (response.page - 1) + '">&lt;</a></span>';
+                            }
+
+                            // ..
+                            if(response.page - 3 > 1) {
+                                html += '<span class="disabled"><span>&hellip;</span></span>';
+                            }
+                        }
+
+                        // Current in Range
+                        if(page <= response.page + 3 && page >= response.page - 3) {
+                            if(page != response.page) {
+                                html += '<span class="page">' + '\r\n' + '<a href="#" title="Seite ' + page + '" data-page="' + page + '">' + page + '</a></span>';
+                            }
+                            else {
+                                html += '<span class="current">' + page + '</span>';
+                            }
+                        }
+
+                        // Last
+                        if(page == response.pageCount) {
+                            // ..
+                            if(response.page + 3 < response.pageCount) {
+                                html += '<span class="disabled"><span>&hellip;</span></span>';
+                            }
+
+                            // Next
+                            if(response.page < response.pageCount) {
+                                html += '<span class="next">' + '\r\n' + '<a href="#" title="Seite ' + (response.page + 1) + '" data-page="' + (response.page + 1) + '">&gt;</a></span>';
+                            }
+
+                            // Last
+                            if(page != response.page) {
+                                html += '<span class="last">' + '\r\n' + '<a href="#" title="Seite ' + response.pageCount + '" data-page="' + response.pageCount + '">&gt;&gt;</a></span>';
+                            } else {
+                                html += '<span class="disabled last">&gt;&gt;</span>';
+                            }
+                        }
+                    }
+
+                    html += '</div>';
+                }
+
+                $('#referenzenPaging').html(html);
+            }
+
+            function preg_quote (str, delimiter) {
+                return (str + '')
+                        .replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\' + (delimiter || '') + '-]', 'g'), '\\$&')
+            }
+
+            function highlight(html, search) {
+                var words = '';
+
+                // Erster Suchparameter
+                if(search.length > 0) {
+                    words = preg_quote(search) + '|' + preg_quote(search).replace(' ', '|');
+                }
+
+                if(words.length > 0) {
+                    html = html.replace(new RegExp( '(' + words + ')', "i"), '<span class="highlight">$1</span>')
+                }
+
+                return html;
+            }
+
+            function referenzenResponse(response, search) {
+                if(response == null) {
+                    return false;
+                }
+
+                // Table Header
+                var html = '<tr>'
+                        + '<th><a>#</a></th>'
+                        + '<th><a>Titel</a></th>'
+                        + '<th><a>Kategorie</a></th>'
+                        + '<th><a>Abgabe</a></th>'
+                        + '<th></th>'
+                        + '</tr>';
+
+                response.items.forEach(function (item) {
+                    // archivId & Titel
+                    html += '<tr>'
+                            + '<td>' + item.archivId + '</td>'
+                            + '<td>' + highlight(item.titel, search) + '</td>'
+                            + '<td>' + highlight(item.kategorie, search) + '</td>'
+                            + '<td>' + highlight(item.abgabedatum, search) + '</td>';
+
+                    // Button
+                    if(IsInReferenzen(item.archivId)) {
+                        html += '<td><a href="#" class="addReferenz btn btn-sm disabled" data-id="' + item.archivId + '" data-titel="' + item.titel + '">hinzugefügt</a></td>';
+                    } else {
+                        html += '<td><a href="#" class="addReferenz btn btn-sm" data-id="' + item.archivId + '" data-titel="' + item.titel + '">hinzufügen</a></td>';
+                    }
+
+                    html += '</tr>';
+                });
+
+                // Paging
+                referenzenPaging(response);
+
+                $('#referenzenTabelle').html(html);
+            }
+
+            function referenzenAjaxRequest(page) {
+                var search = $('#referenzenSuche').val();
+
                 delay(function() {
+                    var url = "{{ path('_sucheReferenzen') }}" + search;
+
+                    if(page > 1) {
+                        url += '?page=' + page;
+                    }
+
                     $.ajax({
-                        url: "{{ path('_sucheReferenzen') }}" + $('#referenzenSuche').val(),
+                        url: url,
                         dataType: "json",
+                        cache: false,
                         success: function (response) {
-                            console.log(response);
-
-                            var html = '';
-                            response.items.forEach(function (item) {
-                                html += '<tr>'
-                                        + '<td>' + item.titel + '</td>'
-                                        + '</tr>';
-                            });
-
-                            $('#referenzenTabelle').html(html);
+                            referenzenResponse(response, search);
                         }
                     });
-                }, 200);
+                }, 300);
+            }
+
+            $('#referenzenSuche').keyup(function() {
+                referenzenAjaxRequest(1);
+            });
+
+            $('#referenzenPaging').delegate('a', 'click', function(e) {
+                referenzenAjaxRequest($(this).data('page'));
+                e.preventDefault();
+                return false;
             });
         });
     </script>

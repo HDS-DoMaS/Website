@@ -194,7 +194,8 @@ class SuchController extends Controller {
             $this->_queryBuilder
                 ->andWhere('
                     (
-                        archiv.titel LIKE :freitext_' . $i . ' 
+                        archiv.archivId LIKE :freitext_' . $i . '
+                        OR archiv.titel LIKE :freitext_' . $i . ' 
                         OR archiv.beschreibung LIKE :freitext_' . $i . '
                         OR archiv.abgabedatum LIKE :freitext_' . $i . '
                         OR archiv.erstelldatum LIKE :freitext_' . $i . '
@@ -207,7 +208,8 @@ class SuchController extends Controller {
                         OR keywords.keyword LIKE :freitext_' . $i . '
                     )
                     OR MATCH(
-                        archiv.titel, 
+                        archiv.archivId,
+                        archiv.titel,
                         archiv.beschreibung,
                         archiv.anmerkung,
                         fachbereich.bezeichnung,

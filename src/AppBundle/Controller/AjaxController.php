@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class AjaxController extends Controller {
+    private $pageSize = 10;
+    private $pageSizeReferenzen = 10;
+
     /**
      * @Route("/archivierung/ajax/zusatz/{kategorie}/{suche}")
      * @Route("/archivierung/ajax/zusatz/{kategorie}/")
@@ -158,7 +161,7 @@ class AjaxController extends Controller {
     }
 
     private function returnJsonResponse(QueryBuilder $queryBuilder) {
-        $array = $queryBuilder->setMaxResults(20)->getQuery()->getArrayResult();
+        $array = $queryBuilder->setMaxResults($this->pageSize)->getQuery()->getArrayResult();
 
         $response = new JsonResponse();
         $response->setData($array);
@@ -189,7 +192,7 @@ class AjaxController extends Controller {
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(), // Zu Pagende Query
             $request->query->getInt('page', 1), // Seiten Nummer
-            10, // Limit Pro Seite
+            $this->pageSizeReferenzen, // Limit Pro Seite
             array( // Optionen
                 'defaultSortFieldName' => 'archiv.titel', // Default Sortierung
                 'defaultSortDirection' => 'ASC',
@@ -223,7 +226,8 @@ class AjaxController extends Controller {
             $queryBuilder
                 ->andWhere('
                     (
-                        archiv.titel LIKE :freitext_' . $i . ' 
+                        archiv.archivId LIKE :freitext_' . $i . ' 
+                        OR archiv.titel LIKE :freitext_' . $i . ' 
                         OR archiv.beschreibung LIKE :freitext_' . $i . '
                         OR archiv.abgabedatum LIKE :freitext_' . $i . '
                         OR archiv.erstelldatum LIKE :freitext_' . $i . '
@@ -236,6 +240,7 @@ class AjaxController extends Controller {
                         OR keywords.keyword LIKE :freitext_' . $i . '
                     )
                     OR MATCH(
+                        archiv.archivId,
                         archiv.titel, 
                         archiv.beschreibung,
                         archiv.anmerkung,
@@ -259,17 +264,27 @@ class AjaxController extends Controller {
      */
     private function renderResponse($pagination) {
         $items = array();
+
         foreach ($pagination as $archivierung) {
+            $abgabedatum = $archivierung->getAbgabedatum();
+            if($abgabedatum != null) {
+                $abgabedatum = $abgabedatum->format('Y');
+            } else {
+                $abgabedatum = '';
+            }
+
             $items[] = array(
                 'archivId' => $archivierung->getArchivId(),
                 'titel' => $archivierung->getTitel(),
+                'kategorie' => $archivierung->getKategorie()->getBezeichnung(),
+                'abgabedatum' => $abgabedatum,
             );
         }
 
         $array = array(
             'page' => $pagination->getCurrentPageNumber(),
+            'pageCount' => ceil($pagination->getTotalItemCount() / $this->pageSizeReferenzen),
             'totalCount' => $pagination->getTotalItemCount(),
-            'params' => $pagination->getParams(),
             'items' => $items
         );
 
