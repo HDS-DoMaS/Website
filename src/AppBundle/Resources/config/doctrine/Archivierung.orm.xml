@@ -100,6 +100,10 @@
       </cascade>
     </many-to-many>
     <many-to-many field="referenziert" mapped-by="referenzen" target-entity="Archivierung" />
-    <one-to-many field="anhaenge" target-entity="ArchivAnhang" mapped-by="archivierung" />
+    <one-to-many field="anhaenge" target-entity="ArchivAnhang" mapped-by="archivierung">
+      <cascade>
+        <cascade-persist />
+      </cascade>
+    </one-to-many>
   </entity>
 </doctrine-mapping>
