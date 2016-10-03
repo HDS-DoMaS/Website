@@ -8,7 +8,7 @@ security:
             memory:
                 users:
                     admin:
-                        password: TdlHc9F3x328
+                        password: TdlHc9F@!3x328
                         roles: 'ROLE_ADMIN'
 
                     # für tests:
