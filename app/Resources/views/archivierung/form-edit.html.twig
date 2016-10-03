@@ -4,7 +4,7 @@
 {% block bodyclass %}archivierung-form archivierung-form-edit{% endblock %}
 {% block headline %}
     <input id="form_kategorie" type="hidden" name="form[kategorie]" value="{{ form.vars.value.archivKategorieId }}">
-    Bearbeiten der {{ form.vars.value.kategorie.bezeichnung }}  #{{ form.vars.data.archivId }}
+    Bearbeiten - {{ form.vars.value.kategorie.bezeichnung }}  #{{ form.vars.data.archivId }}
 {% endblock %}
 {% block zurueckButton %}
     <a href="{{ path('_detailView', {'archivId': form.vars.data.archivId, 'zurueckButton': 'zurueck'}) }}" class="btn btn-default">zur Detailansicht</a>

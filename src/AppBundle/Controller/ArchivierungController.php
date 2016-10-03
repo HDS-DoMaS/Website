@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Benutzer;
+use AppBundle\Entity\DateiKategorie;
 use AppBundle\Form\Type\KeywordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -25,8 +26,11 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use AppBundle\Form\Type\ArchivZusatzType;
+use AppBundle\Form\Type\AnhangType;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Security\DomasUser;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
 
 
 class ArchivierungController extends Controller {
@@ -75,8 +79,8 @@ class ArchivierungController extends Controller {
         $archivierung->setKategorie($this->getDoctrine()->getRepository('AppBundle:ArchivKategorie')->findBy(array('bezeichnung' => $archivKategorie))[0]);
         $form = $this->getArchivierungForm($archivierung);
         $form->handleRequest($request);
-        if ($form->isValid()) {
 
+        if ($form->isSubmitted() && $form->isValid()) {
             if($isAdmin) {
                 $userId = 1;
             }else {
@@ -165,7 +169,7 @@ class ArchivierungController extends Controller {
         $form = $this->getArchivierungForm($archivierung);
 
         $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             foreach ($archivierung->getZusaetze() as $zusatz) {
                 // Kategorie Objekt setzten
@@ -192,8 +196,41 @@ class ArchivierungController extends Controller {
                 }
             }
 
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////7
+            $anhang = new ArchivAnhang();
+            $anhang->setArchivierung($archivierung);
+            $anhang->setDateiKategorie(
+                $this->getDoctrine()
+                ->getRepository('AppBundle:DateiKategorie')
+                ->find(1));
+            $anhang->setPfad('###');
+            $archivierung->addAnhaenge($anhang);
+
             $entityManager->persist($archivierung);
             $entityManager->flush();
+
+            $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivId . '/' . $anhang->getArchivAnhangId();
+            $file = $form->get("anhaenge")->getData();
+            $fileName = $file->getClientOriginalName();
+            $file->move(
+                $pfad, $fileName
+            );
+
+            $anhang->setPfad($fileName);
+/////////////////////////////////////////
+
+            $entityManager->persist($archivierung);
+            $entityManager->flush();
+
 
             $url = $this->generateUrl(
                 '_detailView',
@@ -230,15 +267,24 @@ class ArchivierungController extends Controller {
             ->add('beschreibung', TextareaType::class)
             ->add('fachbereich', EntityType::class, array(
                 'class' => 'AppBundle:Fachbereich',
-                'choice_label' => 'bezeichnung'
+                'choice_label' => 'bezeichnung',
+                'query_builder' => function(EntityRepository $archivierung) {
+                    return $archivierung->createQueryBuilder('f')->orderBy('f.bezeichnung', 'ASC');
+                },
             ))
             ->add('studiengang', EntityType::class, array(
                 'class' => 'AppBundle:Studiengang',
-                'choice_label' => 'bezeichnung'
+                'choice_label' => 'bezeichnung',
+                'query_builder' => function(EntityRepository $archivierung) {
+                    return $archivierung->createQueryBuilder('s')->orderBy('s.bezeichnung', 'ASC');
+                },
             ))
             ->add('kategorie', EntityType::class, array(
                 'class' => 'AppBundle:ArchivKategorie',
                 'choice_label' => 'bezeichnung',
+                'query_builder' => function(EntityRepository $archivierung) {
+                    return $archivierung->createQueryBuilder('k')->orderBy('k.bezeichnung', 'ASC');
+                },
             ))
             ->add('sichtbarkeit', CheckboxType::class, array(
                 'label'    => 'sichtbarkeit',
@@ -249,6 +295,7 @@ class ArchivierungController extends Controller {
                 'allow_add'    => true,
                 'allow_delete' => true,
             ))
+            ->add('anhaenge', FileType::class, array('mapped' => false))
             ->add('keywords', CollectionType::class, array(
                 'entry_type' => KeywordType::class,
                 'by_reference' => false,
@@ -604,56 +651,5 @@ class ArchivierungController extends Controller {
         }
 
         return $archivierung;
-    }
-
-	public function UploadAction(Request $request)
-    {
-		$Archivname_Action = $this->getArchivierung($archivId); // für den Hauptordner einer Archivierung
-		$Archiv_ID = $this->getAnhang($anhangId); //für Unterordner einer Archivierung
-
-		$path = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/';
-		$totalpath = $this->get('kernel')->getRootDir().'/../anhaenge/'.$Archivname_Action.'/'.$Archiv_ID.'/';
-
-		//erste Überprüfung
-		if(file_exists($path))
-		{
-			//do nothing
-		}
-		else
-		{
-		mkdir($path, 0700);
-		}
-
-		if(file_exists($totalpath))
-		{
-			//do nothing
-		}
-		else
-		{
-		mkdir($totalpath, 0700);
-		}
-
-
-
-		//$target_dir = $this->get('kernel')->getRootDir().'/../anhaenge/';
-
-		$post = Request::createFromGlobals();
-
-		if ($post->request->has('form_speichern'))
-		{
-			$filename= $request->files->get('fileToUpload');
-			$target_file = $totalpath . basename($_FILES["fileToUpload"]["name"]);
-
-			move_uploaded_file($filename, $target_file);
-
-
-		}
-		else
-		{
-			$name = 'Not submitted yet';
-
-			return $this->render('archivierung/form.html.twig');
-		}
-
     }
 }

@@ -48,6 +48,20 @@ class DateiKategorie
     }
 
     /**
+     * Set dateiKategorieId
+     *
+     * @param int $dateiKategorieId
+     *
+     * @return DateiKategorie
+     */
+    public function setDateiKategorieId($dateiKategorieId)
+    {
+        $this->dateiKategorieId = $dateiKategorieId;
+
+        return $this;
+    }
+
+    /**
      * Get dateiKategorieId
      *
      * @return integer
