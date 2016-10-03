@@ -45,3 +45,4 @@
 # Composer PHAR
 /composer.phar
 /web/phpMyAdmin/
+/app/config/security.yml
