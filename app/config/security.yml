@@ -8,16 +8,16 @@ security:
             memory:
                 users:
                     admin:
-                        password: admin123
+                        password: TdlHc9F3x328
                         roles: 'ROLE_ADMIN'
 
                     # für tests:
-                    student:
-                        password: student123
-                        roles: 'ROLE_STUDENT'
-                    employee:
-                        password: employee123
-                        roles: 'ROLE_EMPLOYEE'
+#                    student:
+#                        password: student123
+#                        roles: 'ROLE_STUDENT'
+#                    employee:
+#                        password: employee123
+#                        roles: 'ROLE_EMPLOYEE'
 
     # Rechte-Vererbung
     role_hierarchy:
