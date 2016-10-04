@@ -61,6 +61,9 @@
       <join-column name="Archiv_Kategorie_ID" referenced-column-name="Archiv_Kategorie_ID" />
     </one-to-one>
     <many-to-many field="keywords" inversed-by="archivierungen" target-entity="Keyword">
+      <order-by>
+        <order-by-field name="keyword" direction="ASC" />
+      </order-by>
       <join-table name="Archiv_Keywords">
         <join-columns>
           <join-column name="Archiv_ID" referenced-column-name="Archiv_ID" />
@@ -74,6 +77,9 @@
       </cascade>
     </many-to-many>
     <many-to-many field="zusaetze" inversed-by="archivierungen" target-entity="ArchivZusatz">
+      <order-by>
+        <order-by-field name="bezeichnung" direction="ASC" />
+      </order-by>
       <join-table name="Archiv_Zusatz_Referenzen">
         <join-columns>
           <join-column name="Archiv_ID" referenced-column-name="Archiv_ID" />
@@ -87,6 +93,9 @@
       </cascade>
     </many-to-many>
     <many-to-many field="referenzen" inversed-by="referenziert" target-entity="Archivierung">
+      <order-by>
+        <order-by-field name="titel" direction="ASC" />
+      </order-by>
       <join-table name="Archiv_Referenzen">
         <join-columns>
           <join-column name="Eltern_Archiv_ID" referenced-column-name="Archiv_ID" />
@@ -101,6 +110,9 @@
     </many-to-many>
     <many-to-many field="referenziert" mapped-by="referenzen" target-entity="Archivierung" />
     <one-to-many field="anhaenge" target-entity="ArchivAnhang" mapped-by="archivierung">
+      <order-by>
+        <order-by-field name="pfad" direction="ASC" />
+      </order-by>
       <cascade>
         <cascade-persist />
       </cascade>
