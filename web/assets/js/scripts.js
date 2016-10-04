@@ -1,4 +1,58 @@
+function getBloodHound(url) {
+    return new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: {
+            url: url,
+            ttl: 600000 // 10 Minuten
+        },
+        remote: {
+            url: url + '%QUERY',
+            wildcard: '%QUERY'
+        }
+    });
+}
+
+function bindTypeahead($e) {
+    // Typeahead wurde schon gebunden
+    if($(this).hasClass('has-typeahead')) {
+        return false;
+    }
+
+    if($e.attr('data-typehead').length > 0) {
+        var url = 'ajax/' + $e.data('typehead').replace('-', '/') + '/';
+
+        // nicht auf der suchseite
+        if(window.location.pathname.indexOf('archivierung/suche') < 0) {
+            url = '../' + url;
+        }
+
+        $e.typeahead(
+            {
+                highlight: true,
+                hint: true,
+                minLength: 0
+            },
+            {
+                display: 'value',
+                limit: 8,
+                source: getBloodHound(url)
+            }
+        );
+    }
+
+    $e.on('focus', function () {
+        $(this).typeahead('open');
+    });
+
+    $(this).addClass('has-typeahead');
+}
+
 $(function() {
+    // Typahead binden
+    $('.typeahead').each(function () {
+        bindTypeahead($(this));
+    });
 
     // Nur auf der suchseite
     if($('body.suche')) {
@@ -19,47 +73,6 @@ $(function() {
         $('.clickable-row').click(function() {
             window.document.location = $(this).data('href');
         });
-
-        // Bloodhound Datasource mit dynamischer URL
-        function getBloodHound(url) {
-            url += '/';
-
-            return new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                prefetch: {
-                    url: url,
-                    ttl: 600000 // 10 Minuten
-                },
-                remote: {
-                    url: url + '%QUERY',
-                    wildcard: '%QUERY'
-                }
-            });
-        }
-
-        // Typahead binden
-        $('.typeahead').each(function () {
-            if($(this).attr('data-typehead').length > 0) {
-                $(this).typeahead(
-                    {
-                        highlight: true,
-                        hint: true,
-                        minLength: 0
-                    },
-                    {
-                        display: 'value',
-                        limit: 8,
-                        source: getBloodHound('ajax/' + $(this).data('typehead').replace('-', '/'))
-                    }
-                );
-            }
-        }).on('focus', function () {
-            $(this).typeahead('open');
-        });
-
-
-
     } // if($('body.suche'))
 
     // Suche

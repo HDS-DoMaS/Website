@@ -54,7 +54,7 @@
                                     <li>
                                         <div class="col-sm-10">
                                             <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
-                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                            <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control typeahead" data-typehead="zusatz-autor" value="{{ zusatz.vars.value.bezeichnung }}" />
                                         </div>
                                     </li>
                                     {% set zusatzCount = zusatzCount + 1 %}
@@ -126,7 +126,7 @@
                                         <li>
                                             <div class="col-sm-10">
                                                 <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
-                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control typeahead" data-typehead="zusatz-betreuer" value="{{ zusatz.vars.value.bezeichnung }}" />
                                             </div>
                                         </li>
                                         {% set zusatzCount = zusatzCount + 1 %}
@@ -147,7 +147,7 @@
                                         <li>
                                             <div class="col-sm-10">
                                                 <input type="hidden" id="form_zusaetze_{{ zusatzCount }}_archivZusatzKategorieId" name="form[zusaetze][{{ zusatzCount }}][archivZusatzKategorieId]" required="required" class="form-control" value="{{ zusatz.vars.value.archivZusatzKategorieId }}" />
-                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control" value="{{ zusatz.vars.value.bezeichnung }}" />
+                                                <input type="text" id="form_zusaetze_{{ zusatzCount }}_bezeichnung" name="form[zusaetze][{{ zusatzCount }}][bezeichnung]" required="required" class="form-control typeahead" data-typehead="zusatz-unternehmen" value="{{ zusatz.vars.value.bezeichnung }}" />
                                             </div>
                                         </li>
                                         {% set zusatzCount = zusatzCount + 1 %}
@@ -197,7 +197,7 @@
                             {% for keyword in form.keywords %}
                                 <li>
                                     <div class="col-sm-10">
-                                        <input type="text" id="form_keywords_{{ keywordCount }}_keyword" name="form[keywords][{{ keywordCount }}][keyword]" required="required" class="form-control" value="{{ keyword.vars.value.keyword }}" />
+                                        <input type="text" id="form_keywords_{{ keywordCount }}_keyword" name="form[keywords][{{ keywordCount }}][keyword]" required="required" class="form-control typeahead" data-typehead="keywords" value="{{ keyword.vars.value.keyword }}" />
                                     </div>
                                 </li>
                                 {% set keywordCount = keywordCount + 1 %}
@@ -235,7 +235,7 @@
         var $collectionHolderZusaetze;
         var $collectionHolderReferenzen;
 
-        function addZusatzForm($collectionHolderZusaetze, $newLinkLi) {
+        function addZusatzForm($collectionHolderZusaetze, $newLinkLi, zusatz) {
             // Get the data-prototype explained earlier
             var prototypeId = $collectionHolderZusaetze.data('id');
             var prototypeBezeichnung = $collectionHolderZusaetze.data('bezeichnung');
@@ -246,7 +246,7 @@
             // Replace '__name__' in the prototype's HTML to
             // instead be a number based on how many items we have
             var newForm = prototypeId.replace(/__name__/g, index)
-                    + prototypeBezeichnung.replace(/__name__/g, index);
+                    + prototypeBezeichnung.replace(/__name__/g, index).replace('class="form-control"', 'class="form-control typeahead" data-typehead="zusatz-' + zusatz.toLowerCase() + '"');
 
             // increase the index with one for the next item
             $('ul.zusaetze').data('index', index + 1);
@@ -259,6 +259,11 @@
 
             // set the ID in the hidden field
             $newFormLi.find("input[id$='archivZusatzKategorieId']").val($collectionHolderZusaetze.data('zusatzkategorie'));
+
+            // Typeahead binden
+            $newFormLi.find('.typeahead').each(function() {
+                bindTypeahead($(this));
+            });
 
             // add a delete link
             addZusatzFormDeleteLink($newFormLi);
@@ -290,6 +295,9 @@
             // instead be a number based on how many items we have
             var newForm = prototype.replace(/__name__/g, index);
 
+            // Typeahead Attribute
+            newForm = newForm.replace('class="form-control"', 'class="form-control typeahead" data-typehead="keywords"');
+
             // increase the index with one for the next item
             $collectionHolderKeywords.data('index', index + 1);
 
@@ -298,6 +306,11 @@
 
             $newLinkLiKeywords.before($newFormLi);
             $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // Typeahead binden
+            $newFormLi.find('.typeahead').each(function() {
+                bindTypeahead($(this));
+            });
 
             // add a delete link
             addKeywordFormDeleteLink($newFormLi);
@@ -555,7 +568,7 @@
                 e.preventDefault();
 
                 // add a new form
-                addZusatzForm($(this).closest('ul.zusaetze'), $(this));
+                addZusatzForm($(this).closest('ul.zusaetze'), $(this), $(this).closest('ul.zusaetze').data('button'));
             });
 
             var $addKeywordLink = $('<a href="#" class="btn add_keywordlink"><span class="glyphicon glyphicon-plus"></span> Keyword hinzufügen</a>');
