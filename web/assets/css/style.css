@@ -823,3 +823,12 @@ ul.keywords li div{
 #referenzenPaging a {
     font-size: 13px;
 }
+
+#referenzenLoading {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: #fff;
+    opacity: .6;
+}
