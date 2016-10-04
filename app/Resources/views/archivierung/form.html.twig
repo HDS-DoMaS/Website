@@ -244,6 +244,8 @@
             // get the new index
             var index = $collectionHolderZusaetze.data('index');
 
+            console.log($collectionHolderZusaetze.data());
+
             // Replace '__name__' in the prototype's HTML to
             // instead be a number based on how many items we have
             var newForm = prototypeId.replace(/__name__/g, index)
@@ -566,7 +568,7 @@
             $collectionHolder.append($newLinkLiZusaetze);
 
             // count the current form inputs
-            $collectionHolder.data('index', $collectionHolder.find(':input').length / 2);
+            $collectionHolder.data('index', $collectionHolder.find(':input:not(.tt-hint)').length / 2);
 
             $('.add_zusatzlink').each(function() {
                 // change the "add" link text
@@ -595,7 +597,7 @@
 
             // count the current form inputs we have (e.g. 2), use that as the new
             // index when inserting a new item (e.g. 2)
-            $collectionHolderKeywords.data('index', $collectionHolderKeywords.find(':input').length);
+            $collectionHolderKeywords.data('index', $collectionHolderKeywords.find(':input:not(.tt-hint)').length);
 
             $addKeywordLink.on('click', function(e) {
                 // prevent the link from creating a "#" on the URL
@@ -629,7 +631,7 @@
 
             // count the current form inputs we have (e.g. 2), use that as the new
             // index when inserting a new item (e.g. 2)
-            $collectionHolderReferenzen.data('index', $collectionHolderReferenzen.find(':input').length);
+            $collectionHolderReferenzen.data('index', $collectionHolderReferenzen.find(':input:not(.tt-hint)').length);
 
             // Click on 'hinzufügen'
             $('#referenzenTabelle').delegate('.addReferenz', 'click', function(e) {
