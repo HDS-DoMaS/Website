@@ -33,13 +33,13 @@ use AppBundle\Security\DomasUser;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 
-
-class ArchivierungController extends Controller {
-
+class ArchivierungController extends Controller
+{
     private $grundPfad;
     private $anhaengePfad;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->grundPfad = $_SERVER["DOCUMENT_ROOT"] . "/../";
         $this->anhaengePfad = $this->grundPfad . "anhaenge/";
     }
@@ -50,19 +50,21 @@ class ArchivierungController extends Controller {
      *     name="_neuArchivierungDefault",
      * )
      */
-    public function neuArchivierungDeafultAction(Request $request) {
-
+    public function neuArchivierungDeafultAction(Request $request)
+    {
         return $this->redirect($this->generateUrl(
             '_neuArchivierung',
             array('archivKategorie' => 'Bachelorarbeit')
         ));
     }
+
     /**
      * @Route("/archivierung/neu/{archivKategorie}",
      *     name="_neuArchivierung",
      * )
      */
-    public function neuArchivierungAction(Request $request, $archivKategorie) {
+    public function neuArchivierungAction(Request $request, $archivKategorie)
+    {
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
         $isEmployee = $this->get('security.authorization_checker')->isGranted(DomasUser::employeeRole);
         $user = $this->getUser();
@@ -82,9 +84,9 @@ class ArchivierungController extends Controller {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if($isAdmin) {
+            if ($isAdmin) {
                 $userId = 1;
-            }else {
+            } else {
                 $userId = $user->getBenutzerId();
             }
 
@@ -92,14 +94,14 @@ class ArchivierungController extends Controller {
                 ->getRepository('AppBundle:Benutzer')
                 ->find($userId));
 
-            $date = \DateTime::createFromFormat('Y-m-d',date('Y-m-d'));
+            $date = \DateTime::createFromFormat('Y-m-d', date('Y-m-d'));
             $archivierung->setErstelldatum($date);
 
             $entityManager = $this->getDoctrine()->getManager();
 
             foreach ($archivierung->getZusaetze() as $zusatz) {
                 // Kategorie Objekt setzten
-                if(null == $zusatz->getZusatzKategorie()) {
+                if (null == $zusatz->getZusatzKategorie()) {
                     $zusatz->setZusatzKategorie(
                         $this->getDoctrine()
                             ->getRepository('AppBundle:ArchivZusatzKategorie')
@@ -125,7 +127,7 @@ class ArchivierungController extends Controller {
             return $this->redirect($url);
         }
 
-        if($archivierung->getKategorie()->getBezeichnung() != 'Anleitung'){
+        if ($archivierung->getKategorie()->getBezeichnung() != 'Anleitung') {
             return $this->render(
                 'archivierung/form.html.twig',
                 array('form' => $form->createView())
@@ -138,15 +140,14 @@ class ArchivierungController extends Controller {
         }
     }
 
-
     /**
      * @Route("/archivierung/bearbeiten/{archivId}",
      *     name="_editArchivierung",
      *     requirements={"archivId": "\d+"}
      * )
      */
-    public function editArchivierungAction(Request $request, $archivId) {
-
+    public function editArchivierungAction(Request $request, $archivId)
+    {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
@@ -187,7 +188,7 @@ class ArchivierungController extends Controller {
             $entityManager = $this->getDoctrine()->getManager();
             foreach ($archivierung->getZusaetze() as $zusatz) {
                 // Kategorie Objekt setzten
-                if(null == $zusatz->getZusatzKategorie()) {
+                if (null == $zusatz->getZusatzKategorie()) {
                     $zusatz->setZusatzKategorie(
                         $this->getDoctrine()
                             ->getRepository('AppBundle:ArchivZusatzKategorie')
@@ -226,7 +227,7 @@ class ArchivierungController extends Controller {
             }
 
             //Anhänge hochladen
-            if(empty($form->get("uploads")->getData()) == false){
+            if (empty($form->get("uploads")->getData()) == false) {
                 //neuen Anhang erstellen und mit Werten füllen
                 $anhang = new ArchivAnhang();
                 $anhang->setArchivierung($archivierung);
@@ -264,12 +265,12 @@ class ArchivierungController extends Controller {
             return $this->redirect($url);
         }
 
-        if($archivierung->getKategorie()->getBezeichnung() != "Anleitung"){
+        if ($archivierung->getKategorie()->getBezeichnung() != "Anleitung") {
             return $this->render(
                 'archivierung/form-edit.html.twig',
                 array('form' => $form->createView())
             );
-        } else{
+        } else {
             return $this->render(
                 'archivierung/form-edit-anleitung.html.twig',
                 array('form' => $form->createView())
@@ -277,7 +278,8 @@ class ArchivierungController extends Controller {
         }
     }
 
-    private function getArchivierungForm(Archivierung $archivierung) {
+    private function getArchivierungForm(Archivierung $archivierung)
+    {
         return $this->createFormBuilder($archivierung)
             ->add('titel', TextType::class)
             ->add('zusaetze', EntityType::class, array(
@@ -292,56 +294,55 @@ class ArchivierungController extends Controller {
             ->add('fachbereich', EntityType::class, array(
                 'class' => 'AppBundle:Fachbereich',
                 'choice_label' => 'bezeichnung',
-                'query_builder' => function(EntityRepository $archivierung) {
+                'query_builder' => function (EntityRepository $archivierung) {
                     return $archivierung->createQueryBuilder('f')->orderBy('f.bezeichnung', 'ASC');
                 },
             ))
             ->add('studiengang', EntityType::class, array(
                 'class' => 'AppBundle:Studiengang',
                 'choice_label' => 'bezeichnung',
-                'query_builder' => function(EntityRepository $archivierung) {
+                'query_builder' => function (EntityRepository $archivierung) {
                     return $archivierung->createQueryBuilder('s')->orderBy('s.bezeichnung', 'ASC');
                 },
             ))
             ->add('kategorie', EntityType::class, array(
                 'class' => 'AppBundle:ArchivKategorie',
                 'choice_label' => 'bezeichnung',
-                'query_builder' => function(EntityRepository $archivierung) {
+                'query_builder' => function (EntityRepository $archivierung) {
                     return $archivierung->createQueryBuilder('k')->orderBy('k.bezeichnung', 'ASC');
                 },
             ))
             ->add('sichtbarkeit', CheckboxType::class, array(
-                'label'    => 'sichtbarkeit',
+                'label' => 'sichtbarkeit',
             ))
             ->add('zusaetze', CollectionType::class, array(
                 'entry_type' => ArchivZusatzType::class,
                 'by_reference' => false,
-                'allow_add'    => true,
+                'allow_add' => true,
                 'allow_delete' => true,
             ))
             ->add('referenzen', CollectionType::class, array(
                 'entry_type' => ReferenzenType::class,
                 'by_reference' => false,
-                'allow_add'    => true,
+                'allow_add' => true,
                 'allow_delete' => true,
             ))
             ->add('anhaenge', CollectionType::class, array(
                 'entry_type' => AnhangType::class,
                 'by_reference' => false,
-                'allow_add'    => true,
+                'allow_add' => true,
                 'allow_delete' => true,
             ))
             ->add('uploads', FileType::class, array('mapped' => false))
             ->add('keywords', CollectionType::class, array(
                 'entry_type' => KeywordType::class,
                 'by_reference' => false,
-                'allow_add'    => true,
+                'allow_add' => true,
                 'allow_delete' => true,
             ))
             ->add('speichern', SubmitType::class)
             ->getForm();
     }
-
 
     /**
      * @Route("/archivierung/detail/zurueck",
@@ -351,25 +352,23 @@ class ArchivierungController extends Controller {
      * drücken des Zurückknopfes in der Detailview.
      * entscheiden welche auf welche seite der history redirected werden muss und diese dann aus der history löschen.
      */
-    public function detailViewBackAction(Request $request) {
-
+    public function detailViewBackAction(Request $request)
+    {
         $session = $request->getSession();
         $historyList = $session->get("historyList", array());   // wenn nicht vorhanden: hitoryList = leeres array.
-        $biggestIndex = sizeof($historyList)-1;
-
+        $biggestIndex = sizeof($historyList) - 1;
 
         // wenn es keine history gibt, zurueck zur suche springen
-        if($historyList == null || $biggestIndex < 0 ) {
+        if ($historyList == null || $biggestIndex < 0) {
             $return = $this->redirect($this->generateUrl('_default'));
-        }
-        // ansonsten redirect zum letzten eintrag
-        else{
+        } // ansonsten redirect zum letzten eintrag
+        else {
             $url = $historyList[$biggestIndex];
             $urlControllerName = $this->URLToControllerName($url, $request);
 
             // wenn es sich um eine detailView handelt, dieser mitgeben dass sie nicht zum ersten mal aufgerufen wird.
             // dadurch wird ihr referer nicht erneut in die history eingetragen und es entsteht keine schleife.
-            if($urlControllerName === "_detailView" && strpos($url, '/zurueck') === false) {
+            if ($urlControllerName === "_detailView" && strpos($url, '/zurueck') === false) {
                 $url = $url . '/zurueck';
             }
 
@@ -378,7 +377,6 @@ class ArchivierungController extends Controller {
             array_splice($historyList, $biggestIndex, 1);
             $session->set("historyList", $historyList);
         }
-
         return $return;
     }
 
@@ -395,8 +393,8 @@ class ArchivierungController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      *
      */
-    public function detailViewAction($archivId, Request $request, $zurueckButton = "errorString") {
-
+    public function detailViewAction($archivId, Request $request, $zurueckButton = "errorString")
+    {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
@@ -405,81 +403,64 @@ class ArchivierungController extends Controller {
 
         $sichtbarkeit = $archivierung->getSichtbarkeit();
 
-
         //LOGIK für den zurück-knopf:
-
         // session hohlen und gucken ob es schon eine history liste gibt
         $session = $request->getSession();
         $historyList = $session->get("historyList", array());
 
         // referer pathinfo auslesen
         $referer = $request->headers->get('referer');
-        if($referer != null) {
+        if ($referer != null) {
             $refererControllerId = $this->URLToControllerName($referer, $request);
-        }
-        else{
+        } else {
             $refererControllerId = false;
         }
 
         // je nach referer entscheiden ob der history etwas hinzugefügt wird..
-
         //wenn es sich um eine detailView handelt, an die history anhängen.
-        if($refererControllerId === "_detailView") {
-
+        if ($refererControllerId === "_detailView") {
             //ausser man befindet sich sowieso grade in einem zurück-request.
-            if($zurueckButton !== "zurueck") {
-
-                $biggestIndex = sizeof($historyList)-1;
+            if ($zurueckButton !== "zurueck") {
+                $biggestIndex = sizeof($historyList) - 1;
 
                 //checken ob man nicht die seite gerade nur refresht
                 if ($biggestIndex < 0 || $referer != $historyList[$biggestIndex]) {
                     array_push($historyList, $referer);
                 }
             }
-            else{
-                // Mach nichts.
-            }
-
-        }
-        // wenn man von der suchseite kommt hat, neue history erstellen und referer anhängen.
-        elseif($refererControllerId === "_suche") {
+        } // wenn man von der suchseite kommt hat, neue history erstellen und referer anhängen.
+        elseif ($refererControllerId === "_suche") {
             $historyList = array();
             array_push($historyList, $referer);
-        }
-
-        // wenn man grade von der editView kommt, nichts tun.
-        elseif($refererControllerId === "_editArchivierung") {
+        } // wenn man grade von der editView kommt, nichts tun.
+        elseif ($refererControllerId === "_editArchivierung") {
             // mach nix
-        }
-
-        // wenn es keinen referer gibt, gibt es auch keine history
-        else{
+        } // wenn es keinen referer gibt, gibt es auch keine history
+        else {
             $historyList = array();
         }
 
         $session->set("historyList", $historyList); // in der history speichern
 
-
         // RENDERN der View:
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
-        if($kategorie == "Anleitung") {
+        if ($kategorie == "Anleitung") {
             return $this->render(
                 'archivierung/detailView/anleitung.html.twig',
-                array(  'archivierung'  => $archivierung,
-                        'isAdmin'       => $isAdmin,
-                        'isErsteller'   => $isErsteller,
-                        'sichtbarkeit'  => $sichtbarkeit
-                    )
+                array('archivierung' => $archivierung,
+                    'isAdmin' => $isAdmin,
+                    'isErsteller' => $isErsteller,
+                    'sichtbarkeit' => $sichtbarkeit
+                )
             );
-        }
-        else{
+        } else {
             return $this->render(
                 'archivierung/detailView/arbeit.html.twig',
-                array(  'archivierung'  => $archivierung,
-                        'isAdmin'       => $isAdmin,
-                        'isErsteller'   => $isErsteller,
-                        'sichtbarkeit'  => $sichtbarkeit
+                array('archivierung' => $archivierung,
+                    'isAdmin' => $isAdmin,
+                    'isErsteller' => $isErsteller,
+                    'sichtbarkeit' => $sichtbarkeit
                 )
             );
         }
@@ -495,8 +476,8 @@ class ArchivierungController extends Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      * öffnen eines Anhanges einer Archivierung mit vorherigem Authorisierungscheck
      */
-    public function detailViewFileAction($anhangId) {
-
+    public function detailViewFileAction($anhangId)
+    {
         //AnhangEntity aus DB laden
         $anhang = $this->getAnhang($anhangId);
         $archivierung = $anhang->getArchivierung();
@@ -506,8 +487,7 @@ class ArchivierungController extends Controller {
 
         if ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
             $sichtbarkeit = 0;  // Gutachten sind immer nicht sichtbar!
-        }
-        else {
+        } else {
             $sichtbarkeit = $archivierung->getSichtbarkeit();
         }
 
@@ -545,8 +525,8 @@ class ArchivierungController extends Controller {
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteArchivierungAction($archivId) {
-
+    public function deleteArchivierungAction($archivId)
+    {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
@@ -578,8 +558,8 @@ class ArchivierungController extends Controller {
      * @param $archivId
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteConfirmArchivierungAction($archivId) {
-
+    public function deleteConfirmArchivierungAction($archivId)
+    {
         // Archivierung aus DB auslesen
         $archivierung = $this->getArchivierung($archivId);
 
@@ -609,13 +589,13 @@ class ArchivierungController extends Controller {
     }
 
 
-
     /** aus einer URL die dazugehoerige ControllerFunktion finden
      */
-    private function URLToControllerName($url, $request) {
+    private function URLToControllerName($url, $request)
+    {
         $urlControllerName = false;   //fehlerfall
 
-        if($url != null) {
+        if ($url != null) {
             $urlFirstPart = explode('?', $url)[0];
 
             $serverName = $request->getBaseURL();  // lokales testen. Auf life-System ist das == null.
@@ -635,7 +615,8 @@ class ArchivierungController extends Controller {
         return $urlControllerName;
     }
 
-    private function removeArchivierung($archivierung) {
+    private function removeArchivierung($archivierung)
+    {
         $entityManager = $this->getDoctrine()->getManager();
 
         // tells Doctrine you want to (eventually) delete the Product (no queries yet)
@@ -648,10 +629,11 @@ class ArchivierungController extends Controller {
     /**
      * Prüft ob der aktuell eingeloggte User die $archivierung erstellt hat.
      */
-    private function UserIsErsteller($archivierung) {
+    private function UserIsErsteller($archivierung)
+    {
         $user = $this->getUser();
 
-        if($user instanceof Benutzer) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
+        if ($user instanceof Benutzer) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
             return ($archivierung->getBenutzerId() === $user->getBenutzerId());
         }
 
@@ -659,7 +641,8 @@ class ArchivierungController extends Controller {
     }
 
 
-    private function getAnhang($anhangId) {
+    private function getAnhang($anhangId)
+    {
         $anhang = $this->getDoctrine()
             ->getRepository('AppBundle:ArchivAnhang')
             ->find($anhangId);
@@ -674,7 +657,8 @@ class ArchivierungController extends Controller {
         return $anhang;
     }
 
-    private function getArchivierung($archivId) {
+    private function getArchivierung($archivId)
+    {
         $archivierung = $this->getDoctrine()
             ->getRepository('AppBundle:Archivierung')
             ->find($archivId);
