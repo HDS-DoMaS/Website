@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Benutzer;
 use AppBundle\Entity\DateiKategorie;
+use AppBundle\Form\Type\AnhangType;
 use AppBundle\Form\Type\KeywordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -172,6 +173,12 @@ class ArchivierungController extends Controller {
             $originalKeywords->add($keyword);
         }
 
+        // Ursprüngliche Anhaenge
+        $originalAnhaenge = new ArrayCollection();
+        foreach ($archivierung->getAnhaenge() as $anhang) {
+            $originalAnhaenge->add($anhang);
+        }
+
         // Formular erstellen
         $form = $this->getArchivierungForm($archivierung);
 
@@ -203,6 +210,14 @@ class ArchivierungController extends Controller {
                 }
             }
 
+            // entfernte Verweise auf Anhaenge löschen (Dateien werden aus Sicherheitsgründen nicht gelöscht)
+            foreach ($originalAnhaenge as $anhang) {
+                if (false === $archivierung->getAnhaenge()->contains($anhang)) {
+                    echo($anhang->getArchivAnhangId());
+                    $entityManager->remove($anhang);
+                }
+            }
+
             // Referenzen mit Werten aus DB überschreiben
             $archivRepos = $this->getDoctrine()->getRepository('AppBundle:Archivierung');
             foreach ($archivierung->getReferenzen() as $referenz) {
@@ -210,41 +225,36 @@ class ArchivierungController extends Controller {
                 $archivierung->addReferenzen($archivRepos->find($referenz->getArchivId()));
             }
 
+            //Anhänge hochladen
+            if(empty($form->get("uploads")->getData()) == false){
+                //neuen Anhang erstellen und mit Werten füllen
+                $anhang = new ArchivAnhang();
+                $anhang->setArchivierung($archivierung);
+                $anhang->setDateiKategorie(
+                    $this->getDoctrine()
+                        ->getRepository('AppBundle:DateiKategorie')
+                        ->find(1));/* TODO: individuelle Datekategorie festlegen */
+                $anhang->setPfad('###');
+                $archivierung->addAnhaenge($anhang);
 
+                //Anhang in DB hinzufügen damit die AnhangId erstellt wird
+                $entityManager->persist($archivierung);
+                $entityManager->flush();
 
+                //Datei hochladen mit aktueller AnhangId für Ordnernamen
+                $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivId . '/' . $anhang->getArchivAnhangId();
+                $file = $form->get("uploads")->getData();
+                $fileName = $file->getClientOriginalName();
+                $file->move(
+                    $pfad, $fileName
+                );
 
-
-
-
-
-
-
-//////////////////////////////////////////7
-            $anhang = new ArchivAnhang();
-            $anhang->setArchivierung($archivierung);
-            $anhang->setDateiKategorie(
-                $this->getDoctrine()
-                ->getRepository('AppBundle:DateiKategorie')
-                ->find(1));
-            $anhang->setPfad('###');
-            $archivierung->addAnhaenge($anhang);
-
-            $entityManager->persist($archivierung);
-            $entityManager->flush();
-
-            $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivId . '/' . $anhang->getArchivAnhangId();
-            $file = $form->get("anhaenge")->getData();
-            $fileName = $file->getClientOriginalName();
-            $file->move(
-                $pfad, $fileName
-            );
-
-            $anhang->setPfad($fileName);
-/////////////////////////////////////////
+                //Dateinamen des Anhangs nachtragen
+                $anhang->setPfad($fileName);
+            }
 
             $entityManager->persist($archivierung);
             $entityManager->flush();
-
 
             $url = $this->generateUrl(
                 '_detailView',
@@ -315,7 +325,13 @@ class ArchivierungController extends Controller {
                 'allow_add'    => true,
                 'allow_delete' => true,
             ))
-            ->add('anhaenge', FileType::class, array('mapped' => false))
+            ->add('anhaenge', CollectionType::class, array(
+                'entry_type' => AnhangType::class,
+                'by_reference' => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ))
+            ->add('uploads', FileType::class, array('mapped' => false))
             ->add('keywords', CollectionType::class, array(
                 'entry_type' => KeywordType::class,
                 'by_reference' => false,

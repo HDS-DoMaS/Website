@@ -777,15 +777,18 @@ ul.keywords li div{
     border-top: 0;
 }
 
-.referenzen {
+.referenzen,
+.anhaenge {
     margin: 0;
 }
 
-.referenzen td {
+.referenzen td,
+.anhaenge td{
     padding-bottom: 12px;
 }
 
-.referenzen td:first-child {
+.referenzen td:first-child,
+.anhaenge td:first-child{
     padding-right: 15px;
 }
 

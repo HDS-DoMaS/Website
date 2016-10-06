@@ -140,6 +140,19 @@ class ArchivAnhang
     }
 
     /**
+     * Set archivAnhangId
+     *
+     * @param int $archivAnhangId
+     *
+     * @return ArchivAnhang
+     */
+    public function setArchivAnhangId($archivAnhangId)
+    {
+        $this->archivAnhangId = $archivAnhangId;
+        return $this;
+    }
+
+    /**
      * Get archivAnhangId
      *
      * @return integer
