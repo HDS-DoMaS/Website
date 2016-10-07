@@ -135,6 +135,14 @@ a:active {
     cursor: not-allowed;
     opacity: 0.4;
 }
+#disable-upload > .alert-warning{
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px){
+    #disable-upload{ display:none; }
+}
+
 /*
  * Inputs
  */

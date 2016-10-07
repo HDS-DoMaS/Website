@@ -12,9 +12,9 @@ security:
                         roles: 'ROLE_ADMIN'
 
                     # für tests:
-#                    student:
-#                        password: student123
-#                        roles: 'ROLE_STUDENT'
+                    student:
+                        password: student123
+                        roles: 'ROLE_STUDENT'
 #                    employee:
 #                        password: employee123
 #                        roles: 'ROLE_EMPLOYEE'
