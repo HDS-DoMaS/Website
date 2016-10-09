@@ -705,13 +705,28 @@ span.twitter-typeahead {
     }
 }
 
+ul.uploads li {
+    clear: both;
+}
+
+ul.uploads li div {
+    width: 600px;
+}
+
+ul.uploads select.form-control {
+    float: left;
+    width: 220px;
+    margin-right: 10px;
+}
+
 ul.zusaetze li div,
-ul.keywords li div{
+ul.keywords li div {
     width: auto;
 }
 
 .zusaetze .col-sm-10,
-.keywords .col-sm-10 {
+.keywords .col-sm-10,
+.uploads .col-sm-10 {
     padding-left: 0;
 }
 
@@ -746,9 +761,9 @@ ul.keywords li div{
     border-color: #000;
 }
 
-.archivierung-form-edit .body .glyphicon, .archivierung-form .body .glyphicon {
-    font-size: 0.8em;
-    padding: 0 8px 0 0;
+.archivierung-form-edit .body .btn .glyphicon,
+.archivierung-form .body .btn .glyphicon {
+    padding: 0 6px 0 0;
 }
 
 .fileupload {

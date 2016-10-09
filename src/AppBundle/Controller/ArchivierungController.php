@@ -117,6 +117,36 @@ class ArchivierungController extends Controller
                 $archivierung->addReferenzen($archivRepos->find($referenz->getArchivId()));
             }
 
+            //Anhänge hochladen
+            if (!empty($form->get("uploads")->getData())) {
+                foreach($form->get("uploads") AS $upload) {
+                    //neuen Anhang erstellen und mit Werten füllen
+                    $anhang = new ArchivAnhang();
+                    $anhang->setArchivierung($archivierung);
+                    $anhang->setDateiKategorie(
+                        $this->getDoctrine()
+                            ->getRepository('AppBundle:DateiKategorie')
+                            ->find($form->get("dateikategorie")->getData()[$upload->getName()]));
+                    $anhang->setPfad('###');
+                    $archivierung->addAnhaenge($anhang);
+
+                    //Anhang in DB hinzufügen damit die AnhangId erstellt wird
+                    $entityManager->persist($archivierung);
+                    $entityManager->flush();
+
+                    //Datei hochladen mit aktueller AnhangId für Ordnernamen
+                    $file = $upload->getData();
+                    $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
+                    $fileName = $file->getClientOriginalName();
+                    $file->move(
+                        $pfad, $fileName
+                    );
+
+                    //Dateinamen des Anhangs nachtragen
+                    $anhang->setPfad($fileName);
+                }
+            }
+
             $entityManager->persist($archivierung);
             $entityManager->flush();
 
@@ -227,31 +257,33 @@ class ArchivierungController extends Controller
             }
 
             //Anhänge hochladen
-            if (empty($form->get("uploads")->getData()) == false) {
-                //neuen Anhang erstellen und mit Werten füllen
-                $anhang = new ArchivAnhang();
-                $anhang->setArchivierung($archivierung);
-                $anhang->setDateiKategorie(
-                    $this->getDoctrine()
-                        ->getRepository('AppBundle:DateiKategorie')
-                        ->find(1));/* TODO: individuelle Datekategorie festlegen */
-                $anhang->setPfad('###');
-                $archivierung->addAnhaenge($anhang);
+            if (!empty($form->get("uploads")->getData())) {
+                foreach($form->get("uploads") AS $upload) {
+                    //neuen Anhang erstellen und mit Werten füllen
+                    $anhang = new ArchivAnhang();
+                    $anhang->setArchivierung($archivierung);
+                    $anhang->setDateiKategorie(
+                        $this->getDoctrine()
+                            ->getRepository('AppBundle:DateiKategorie')
+                            ->find($form->get("dateikategorie")->getData()[$upload->getName()]));
+                    $anhang->setPfad('###');
+                    $archivierung->addAnhaenge($anhang);
 
-                //Anhang in DB hinzufügen damit die AnhangId erstellt wird
-                $entityManager->persist($archivierung);
-                $entityManager->flush();
+                    //Anhang in DB hinzufügen damit die AnhangId erstellt wird
+                    $entityManager->persist($archivierung);
+                    $entityManager->flush();
 
-                //Datei hochladen mit aktueller AnhangId für Ordnernamen
-                $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivId . '/' . $anhang->getArchivAnhangId();
-                $file = $form->get("uploads")->getData();
-                $fileName = $file->getClientOriginalName();
-                $file->move(
-                    $pfad, $fileName
-                );
+                    //Datei hochladen mit aktueller AnhangId für Ordnernamen
+                    $file = $upload->getData();
+                    $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
+                    $fileName = $file->getClientOriginalName();
+                    $file->move(
+                        $pfad, $fileName
+                    );
 
-                //Dateinamen des Anhangs nachtragen
-                $anhang->setPfad($fileName);
+                    //Dateinamen des Anhangs nachtragen
+                    $anhang->setPfad($fileName);
+                }
             }
 
             $entityManager->persist($archivierung);
@@ -333,7 +365,28 @@ class ArchivierungController extends Controller
                 'allow_add' => true,
                 'allow_delete' => true,
             ))
-            ->add('uploads', FileType::class, array('mapped' => false))
+            ->add('uploads', CollectionType::class, array(
+                'mapped' => false,
+                'entry_type' => FileType::class,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ))
+            ->add('dateikategorie', CollectionType::class, array(
+                'mapped' => false,
+                'entry_type' => TextType::class,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+            ))
+            ->add('dateikategorien', EntityType::class, array(
+                'mapped' => false,
+                'class' => 'AppBundle:DateiKategorie',
+                'choice_label' => 'bezeichnung',
+                'query_builder' => function (EntityRepository $archivierung) {
+                    return $archivierung->createQueryBuilder('d')->orderBy('d.bezeichnung', 'ASC');
+                },
+            ))
             ->add('keywords', CollectionType::class, array(
                 'entry_type' => KeywordType::class,
                 'by_reference' => false,

@@ -183,13 +183,20 @@
                                         <input type="hidden" id="form_anhaenge_{{ anhaengeCount }}_archivId" name="form[anhaenge][{{ anhaengeCount }}][archivId]" required="required" class="form-control" value="{{ anhang.vars.value.archivId }}" />
                                         <input type="hidden" id="form_anhaenge_{{ anhaengeCount }}_pfad" name="form[anhaenge][{{ anhaengeCount }}][pfad]" required="required" class="form-control" value="{{ anhang.vars.value.pfad }}" />
                                         <input type="hidden" id="form_anhaenge_{{ anhaengeCount }}_dateiKategorieId" name="form[anhaenge][{{ anhaengeCount }}][dateiKategorieId]" required="required" class="form-control" value="{{ anhang.vars.value.dateikategorieId }}" />
-                                        <a href="{{ path('_detailViewFile', {'anhangId':anhang.vars.value.archivAnhangId}) }}" target="_blank"><span class="glyphicon glyphicon-paperclip"></span> {{ anhang.vars.value.pfad }}</a>
+                                        <a href="{{ path('_detailViewFile', {'anhangId':anhang.vars.value.archivAnhangId}) }}" target="_blank"><span class="glyphicon glyphicon-paperclip"></span> {{ anhang.vars.data.dateiKategorie.bezeichnung }} - {{ anhang.vars.value.pfad }}</a>
                                     </td>
                                 </tr>
                                 {% set anhaengeCount = anhaengeCount + 1 %}
                             {% endfor %}
                         </table>
-                        <input id="form_uploads" name="form[uploads]" type="file">
+                        <select id="form_dateikategorie" class="form-control hidden">
+                            {% for key,val in form.dateikategorien.vars.choices %}
+                                <option value="{{ val.value }}" {{  form.dateikategorien.vars.value == '' and key==0 ? ' selected ' :(val.value == form.dateikategorien.vars.value ? ' selected ' : '') }}>
+                                    {{ val.label | trans }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <ul class="uploads" data-prototype="{{ form_widget(form.uploads.vars.prototype)|e('html_attr') }}" data-dateikategorie="{{ form_widget(form.dateikategorie.vars.prototype)|e('html_attr') }}"></ul>
                     </div>
                 </div>
                 <div class="form-group">
@@ -238,6 +245,7 @@
     <script type="text/javascript">
         $("[name='form[sichtbarkeit]']").bootstrapSwitch();
 
+        var $collectionHolderUploads;
         var $collectionHolderZusaetze;
         var $collectionHolderReferenzen;
 
@@ -568,6 +576,35 @@
             };
         })();
 
+        function addUploadsForm($collectionHolderUploads, $newLinkLiUploads) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolderUploads.data('prototype');
+            var dateikategoriename = 'form[dateikategorie][__name__]';
+
+            // get the new index
+            var index = $collectionHolderUploads.data('index');
+
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+            dateikategoriename = dateikategoriename.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolderUploads.data('index', index + 1);
+
+            // Dateikategorie
+            var dateikategorie = '<select title="Datei-Kategorie" class="form-control" name="' + dateikategoriename + '">' + $('#form_dateikategorie').html(); + '</select>';
+
+            // Display the form in the page in an li, before the "Add a keyword" link li
+            var $newFormLi = $('<li></li>').append(dateikategorie + newForm);
+
+            $newLinkLiUploads.before($newFormLi);
+            $newFormLi.wrapInner('<div class="col-sm-10"></div>');
+
+            // add a delete link
+            addKeywordFormDeleteLink($newFormLi);
+        }
+
         jQuery(document).ready(function() {
             var $addZusatzLink = $('<a href="#" class="btn add_zusatzlink"><span class="glyphicon glyphicon-plus"></span> Zusatz hinzufügen</a>');
             var $newLinkLiZusaetze = $('<li></li>').append($addZusatzLink);
@@ -598,7 +635,7 @@
                 addZusatzForm($(this).closest('ul.zusaetze'), $(this), $(this).closest('ul.zusaetze').data('button'));
             });
 
-            var $addKeywordLink = $('<a href="#" class="btn add_keywordlink"><span class="glyphicon glyphicon-plus"></span> Keyword hinzufügen</a>');
+            var $addKeywordLink = $('<a href="#" class="btn add_keywordlink"><span class="glyphicon glyphicon-plus"></span>Keyword hinzufügen</a>');
             var $newLinkLiKeywords = $('<li></li>').append($addKeywordLink);
             // Get the ul that holds the collection of keywords
             $collectionHolderKeywords = $('ul.keywords');
@@ -669,10 +706,30 @@
 
                 return false;
             });
+
+            //
+            // UPLOADS
+            //
+            var $addUploadsLink = $('<a href="#" class="btn add_uploadslink"><span class="glyphicon glyphicon-plus"></span>Anhang hinzufügen</a>');
+            var $newLinkLiUploads = $('<li></li>').append($addUploadsLink);
+
+            $collectionHolderUploads = $('ul.uploads');
+
+            $collectionHolderUploads.append($newLinkLiUploads);
+
+            $collectionHolderUploads.data('index', 0);
+
+            $addUploadsLink.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new keyword form (see next code block)
+                addUploadsForm($collectionHolderUploads, $newLinkLiUploads);
+            });
         });
     </script>
 
-    <script>  //Für das dynamische ändern des Studiengang-Feldes bei Eingabe im Fachbereich-Feld
+    <script type="text/javascript">  //Für das dynamische ändern des Studiengang-Feldes bei Eingabe im Fachbereich-Feld
         var hideWrongStudiengaenge = function() {
             var fachbereiche = document.getElementById("form_fachbereich");
             var fachbereichSelectedClass = fachbereiche.options[fachbereiche.selectedIndex].className;
