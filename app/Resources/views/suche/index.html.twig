@@ -236,7 +236,16 @@
                                         {% set autor = autor | merge([zusatz.bezeichnung]) %}
                                     {% endif %}
                                 {% endfor %}
-                                {{ autor | join(', ') | highlight(form.freitext.vars.value, form.autor.vars.value) | raw }}
+
+                                {% set autor = autor | join(', ') | highlight(form.freitext.vars.value, form.autor.vars.value) | raw %}
+
+                                {% if autor|length > 20 %}
+                                    <div class="smaller">
+                                {% endif %}
+                                {{ autor }}
+                                {% if autor|length > 20 %}
+                                    </div>
+                                {% endif %}
                             </td>
                             <td{% if pagination.isSorted('fachbereich.bezeichnung') %} class="sorted"{% endif %}>
                                 {{ archivierung.fachbereich.bezeichnung | highlight(form.freitext.vars.value, form.fachbereich.vars.value) | raw }}

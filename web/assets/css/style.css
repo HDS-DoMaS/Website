@@ -427,6 +427,10 @@ th.desc a:before{
 .filter {
     padding:20px 0 14px;
 }
+table .smaller {
+    font-size: 0.9em;
+    line-height: 1.7;
+}
 /*
  * Top
  */
@@ -832,6 +836,10 @@ ul.keywords li div {
 
 #referenzenTabelle.visible {
     margin-top: 3px;
+}
+
+#referenzenTabelle.empty {
+    border-bottom: 0;
 }
 
 #referenzenTabelle .tButton {

@@ -473,9 +473,12 @@
                 }
 
                 html += '</div>';
-            }
 
-            $('#referenzenPaging').html(html);
+                $('#referenzenPaging').html(html);
+                $('#referenzenTabelle').removeClass('empty');
+            } else {
+                $('#referenzenTabelle').addClass('empty');
+            }
         }
 
         function preg_quote (str, delimiter) {
@@ -514,24 +517,28 @@
                     + '<th><a>Abgabe</a></th>'
                     + '</tr>';
 
-            response.items.forEach(function (item) {
-                html += '<tr>';
+            if(response.items.length == 0) {
+                html += '<tr><td colspan="7">Keine Archivierungen für den Suchbegriff "' + search + '" gefunden</td></tr>';
+            } else {
+                response.items.forEach(function (item) {
+                    html += '<tr>';
 
-                // Button
-                if(IsInReferenzen(item.archivId)) {
-                    html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm disabled" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-eject"></span>hinzugefügt</a></td>';
-                } else {
-                    html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-plus"></span>hinzufügen</a></td>';
-                }
+                    // Button
+                    if(IsInReferenzen(item.archivId)) {
+                        html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm disabled" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-eject"></span>hinzugefügt</a></td>';
+                    } else {
+                        html += '<td class="tButton"><a href="#" class="addReferenz btn btn-sm" data-id="' + item.archivId + '" data-titel="' + item.titel + '"><span class="glyphicon glyphicon-plus"></span>hinzufügen</a></td>';
+                    }
 
-                html += '<td>' + item.archivId + '</td>'
-                        + '<td>' + highlight(item.titel, search) + '</td>'
-                        + '<td>' + highlight(item.fachbereich, search) + '</td>'
-                        + '<td>' + highlight(item.studiengang, search) + '</td>'
-                        + '<td>' + highlight(item.kategorie, search) + '</td>'
-                        + '<td>' + highlight(item.abgabedatum, search) + '</td>';
-                        + '</tr>';
-            });
+                    html += '<td>' + item.archivId + '</td>'
+                            + '<td>' + highlight(item.titel, search) + '</td>'
+                            + '<td>' + highlight(item.fachbereich, search) + '</td>'
+                            + '<td>' + highlight(item.studiengang, search) + '</td>'
+                            + '<td>' + highlight(item.kategorie, search) + '</td>'
+                            + '<td>' + highlight(item.abgabedatum, search) + '</td>';
+                            + '</tr>';
+                });
+            }
 
             // Paging
             referenzenPaging(response);
@@ -541,7 +548,7 @@
         }
 
         function referenzenAjaxRequest(page) {
-            var delayTime = 300;
+            var delayTime = 200;
 
             if(page > 0) {
                 delayTime = 0;
