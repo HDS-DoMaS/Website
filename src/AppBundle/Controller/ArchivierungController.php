@@ -537,15 +537,19 @@ class ArchivierungController extends Controller
 
         $isAdmin = $this->get('security.authorization_checker')->isGranted(DomasUser::adminRole);
         $isErsteller = $this->UserIsErsteller($archivierung);
+        $isGutachten = ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten");
+        $sichtbarkeit = $archivierung->getSichtbarkeit();
 
-        if ($anhang->getDateiKategorie()->getBezeichnung() === "Gutachten") {
-            $sichtbarkeit = 0;  // Gutachten sind immer nicht sichtbar!
-        } else {
-            $sichtbarkeit = $archivierung->getSichtbarkeit();
+        //Wenn es ein Gutachten ist darf NUR der Ersteller es sehen:
+        if($isGutachten && !$isErsteller) {
+            $this->addFlash('error',
+                'Sie haben nicht die nötige Authorisierung, um diesen Anhang zu öffnen.');
+
+            return $this->redirect($this->generateUrl('_default'));
         }
 
-        // Wenn nicht authorisiert:
-        if (!$sichtbarkeit && !$isErsteller && !$isAdmin) {
+        // Wenn es kein Gutachten ist, aber man trotzdem nicht authorisiert ist, weil die Sichtbarkeit beschraenkt ist:
+        if (!$isGutachten && !$sichtbarkeit && !$isErsteller && !$isAdmin) {
             $this->addFlash('error',
                 'Sie haben nicht die nötige Authorisierung, um diesen Anhang zu öffnen.');
 
@@ -686,8 +690,15 @@ class ArchivierungController extends Controller
     {
         $user = $this->getUser();
 
+        //User ist ShibbolethUser
         if ($user instanceof Benutzer) {    // Ausnahme bei admin! Dieser hat mit "isAdmin" ohnehin Berechtigung auf alles.
             return ($archivierung->getBenutzerId() === $user->getBenutzerId());
+        }
+
+        // User ist admin
+        elseif( in_array(DomasUser::adminRole, $user->getRoles(), true) ){
+
+            return $archivierung->getBenutzerId() === 1;//admin Id in der DB.
         }
 
         return false;

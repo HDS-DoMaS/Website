@@ -8,10 +8,10 @@ security:
             memory:
                 users:
                     admin:
-                        password: admin123
+                        password: <IxxP6KnfÄv=%
                         roles: 'ROLE_ADMIN'
 
-                    # für tests:
+                    # für testzwecke:
 #                    student:
 #                        password: student123
 #                        roles: 'ROLE_STUDENT'

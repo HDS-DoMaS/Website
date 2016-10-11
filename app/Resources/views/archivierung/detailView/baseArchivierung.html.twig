@@ -99,8 +99,8 @@
                             <dt>Datei-Anhänge</dt>
                             {% for anhang in archivierung.getAnhaenge() %}
 
-                                {#Gutachten verbergen#}
-                                {% if isErsteller or isAdmin or anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
+                                {#Gutachten vor Admin und Studenten verbergen#}
+                                {% if isErsteller or anhang.getDateiKategorie().getBezeichnung() != 'Gutachten' %}
                                     <dd>
                                         <a href="{{ path('_detailViewFile', {'anhangId' : anhang.getArchivAnhangId()}) }}" target="_blank">
                                             <span class="glyphicon glyphicon-paperclip"></span>
