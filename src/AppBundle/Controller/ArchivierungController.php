@@ -13,6 +13,7 @@ use AppBundle\Entity\Archivierung;
 use AppBundle\Entity\ArchivAnhang;
 use AppBundle\Entity\ArchivZusatz;
 use AppBundle\Helper\MimeTypeHelper;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -31,6 +32,8 @@ use AppBundle\Form\Type\ReferenzenType;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Security\DomasUser;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 
 class ArchivierungController extends Controller
@@ -640,6 +643,15 @@ class ArchivierungController extends Controller
             'Die Archivierung wurde gelöscht.'
         );
 
+        // Datei aus dem Filesystem löschen:
+        $pfad = $this->anhaengePfad . "archivierung" . $archivId;
+        $fileSystem = new Filesystem();
+        try {
+            $fileSystem->remove($pfad);
+        } catch (IOExceptionInterface $e) {
+            throw new Exception();
+        }
+        
         // URL für weiterleitung
         $url = $this->generateUrl("_default");
         return $this->redirect($url);
