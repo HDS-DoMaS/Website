@@ -141,6 +141,10 @@ class ArchivierungController extends Controller
                     $file = $upload->getData();
                     $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
                     $fileName = $file->getClientOriginalName();
+
+                    //TEST TODO
+                    $fileName = urlencode($fileName);
+
                     $file->move(
                         $pfad, $fileName
                     );
@@ -280,6 +284,10 @@ class ArchivierungController extends Controller
                     $file = $upload->getData();
                     $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
                     $fileName = $file->getClientOriginalName();
+
+                    //TEST TODO
+                    $fileName = urlencode($fileName);
+
                     $file->move(
                         $pfad, $fileName
                     );
@@ -497,6 +505,13 @@ class ArchivierungController extends Controller
         }
 
         $session->set("historyList", $historyList); // in der history speichern
+
+
+        // decodieren der beim dateiupload codierten filenames:     //TEST TODO
+        foreach($archivierung->getAnhaenge() as $anhang){
+            $decodedFileName = urldecode($anhang->getPfad());
+            $anhang->setPfad($decodedFileName);
+        }
 
         // RENDERN der View:
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
