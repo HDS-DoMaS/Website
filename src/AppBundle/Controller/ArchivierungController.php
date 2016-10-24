@@ -6,6 +6,7 @@ use AppBundle\Entity\Benutzer;
 use AppBundle\Entity\DateiKategorie;
 use AppBundle\Form\Type\AnhangType;
 use AppBundle\Form\Type\KeywordType;
+use Normalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -34,6 +35,7 @@ use AppBundle\Security\DomasUser;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Finder\Finder;
 
 
 class ArchivierungController extends Controller
@@ -139,18 +141,30 @@ class ArchivierungController extends Controller
 
                     //Datei hochladen mit aktueller AnhangId für Ordnernamen
                     $file = $upload->getData();
-                    $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
+                    $pfad = $this->getParameter('upload_directory') . 'archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
                     $fileName = $file->getClientOriginalName();
 
-                    //TEST TODO
-                    $fileName = urlencode($fileName);
+                    // Wenn es sich um einen Mac handelt, sichergehen dass alles richtig codiert ist.
+                    $normalizedFilename = $fileName;
+                    if(!Normalizer::isNormalized($fileName)){
+                        $normalizedFilename = Normalizer::normalize($fileName);
+                    }
 
+                    // file ins Verzeichnis persistieren
                     $file->move(
-                        $pfad, $fileName
+                        $pfad, $normalizedFilename
                     );
 
-                    //Dateinamen des Anhangs nachtragen
-                    $anhang->setPfad($fileName);
+                    // Sichergehen dass der filename auch wirklich so in der DB gespeichert wird wie er im Verzeichnis steht
+                    $fileFinder = new Finder();
+                    $fileFinder->files()->in($pfad);
+                    $persistedFilename = null;
+                    foreach($fileFinder as $temp){
+                        $persistedFilename = $temp->getFilename();
+                    }
+
+                    //Dateinamen des Anhangs für die Datenbank nachtragen
+                    $anhang->setPfad($persistedFilename);
                 }
             }
 
@@ -285,15 +299,27 @@ class ArchivierungController extends Controller
                     $pfad = $this->getParameter('upload_directory') . '/archivierung' . $archivierung->getArchivId() . '/' . $anhang->getArchivAnhangId();
                     $fileName = $file->getClientOriginalName();
 
-                    //TEST TODO
-                    $fileName = urlencode($fileName);
+                    // Wenn es sich um einen Mac handelt, sichergehen dass alles richtig codiert ist.
+                    $normalizedFilename = $fileName;
+                    if(!Normalizer::isNormalized($fileName)){
+                        $normalizedFilename = Normalizer::normalize($fileName);
+                    }
 
+                    // file ins Verzeichnis persistieren
                     $file->move(
-                        $pfad, $fileName
+                        $pfad, $normalizedFilename
                     );
 
-                    //Dateinamen des Anhangs nachtragen
-                    $anhang->setPfad($fileName);
+                    // Sichergehen dass der filename auch wirklich so in der DB gespeichert wird wie er im Verzeichnis steht
+                    $fileFinder = new Finder();
+                    $fileFinder->files()->in($pfad);
+                    $persistedFilename = null;
+                    foreach($fileFinder as $temp){
+                        $persistedFilename = $temp->getFilename();
+                    }
+
+                    //Dateinamen des Anhangs für die Datenbank nachtragen
+                    $anhang->setPfad($persistedFilename);
                 }
             }
 
@@ -506,13 +532,6 @@ class ArchivierungController extends Controller
 
         $session->set("historyList", $historyList); // in der history speichern
 
-
-        // decodieren der beim dateiupload codierten filenames:     //TEST TODO
-        foreach($archivierung->getAnhaenge() as $anhang){
-            $decodedFileName = urldecode($anhang->getPfad());
-            $anhang->setPfad($decodedFileName);
-        }
-
         // RENDERN der View:
         $kategorie = $archivierung->getKategorie()->getBezeichnung();
 
@@ -658,7 +677,7 @@ class ArchivierungController extends Controller
             'Die Archivierung wurde gelöscht.'
         );
 
-        // Datei aus dem Filesystem löschen:
+        // Anhänge aus dem Filesystem löschen:
         $pfad = $this->anhaengePfad . "archivierung" . $archivId;
         $fileSystem = new Filesystem();
         try {
